@@ -6,6 +6,7 @@
 
 * [Context](introduction/untitled-1.md)
 * [Vision](introduction/goals-and-constraints.md)
+* [Core Principles](introduction/core-principles.md)
 * [The Constellation](introduction/the-constellation.md)
 * [High Level Architecture](introduction/untitled-2.md)
 
@@ -19,10 +20,6 @@
 
 * [Encryption](cross-cutting/encryption.md)
 * [Distributed FaaS](cross-cutting/distributed-functions-as-a-service.md)
-
-## Compute Deep Dive <a id="compute"></a>
-
-* [Scaling with SCaaS](compute/untitled-6.md)
 
 ## Global
 
@@ -38,5 +35,6 @@
 
 ## WIP <a id="notes"></a>
 
+* [Scaling with SCaaS](notes/untitled-6.md)
 * [\*\*Notes to Self\*\*](notes/untitled-3.md)
 
