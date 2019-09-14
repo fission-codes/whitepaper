@@ -22,10 +22,8 @@
 ## Compute Deep Dive <a id="compute"></a>
 
 * [Scaling with SCaaS](compute/untitled-6.md)
-* [Untitled](compute/untitled.md)
 
 ## WIP <a id="notes"></a>
 
 * [\*\*Notes to Self\*\*](notes/untitled-3.md)
-* [Untitled](notes/untitled.md)
 
