@@ -1,2 +1,6 @@
-# Goals & Constraints
+---
+description: Goals & Constraints
+---
+
+# Vision
 
