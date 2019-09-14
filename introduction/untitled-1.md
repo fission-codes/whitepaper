@@ -6,7 +6,7 @@ The internet is fundamentally a decentralized network. Since this network is bei
 
 The ossification of the web into a handful of major hubs is in no way surprising. Any such system will tend towards capture over time, via social contracts that provide a disincentive to exit \(e.g. social networks\). The fundamental gravity of centralization needs to be actively and persistently resisted by applying opposing forces.
 
-The web of 2019 is beginning to show signs of social flux: average everyday people are beginning to become concious of the value of their personal data, and the role that these technologies play in their society, politics, and daily lives. The past decade has seen new approaches to secuirty, distributed systems, and decentralization.
+The web of 2019 is beginning to show signs of social flux: average everyday people are beginning to become conscious of the value of their personal data, and the role that these technologies play in their society, politics, and daily lives. The past decade has seen new approaches to security, distributed systems, and decentralization.
 
 ### Software Trends
 

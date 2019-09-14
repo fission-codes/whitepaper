@@ -5,13 +5,24 @@
 ## Introduction
 
 * [Context](introduction/untitled-1.md)
+* [Goals & Constraints](introduction/goals-and-constraints.md)
 * [High Level Architecture](introduction/untitled-2.md)
 
-## Main Components
+## System Foundation <a id="main-components"></a>
 
-* [Storage](main-components/untitled-4.md)
+* [Unified Storage](main-components/untitled-4.md)
 * [Digital Scarcity](main-components/untitled-5.md)
-* [SCaaS](main-components/untitled-6.md)
+* [Portable Compute](main-components/portable-compute.md)
+
+## Platform Components
+
+* [Encryption](platform-components/encryption.md)
+* [Distributed FaaS](platform-components/distributed-functions-as-a-service.md)
+
+## Compute Deep Dive <a id="compute"></a>
+
+* [Scaling with SCaaS](compute/untitled-6.md)
+* [Untitled](compute/untitled.md)
 
 ## WIP <a id="notes"></a>
 

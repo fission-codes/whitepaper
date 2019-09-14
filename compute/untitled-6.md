@@ -1,14 +1,14 @@
-# SCaaS
+# Scaling with SCaaS
 
-Smart contract programming has been largely written by developers with primarily a traditional web background. Tooling and perspective is often limiuted to a classic single-application mindset, not taking stock of the unique tradeoffs of running on a global system.
+Smart contract programming has been largely written by developers with primarily a traditional web background. Tooling and perspective is often limited to a classic single-application mindset, not taking stock of the unique trade-offs of running on a global system.
 
-While most smart contracts use cases today are written totally bespoke, effectievly carving up the shared word computer into discrete fifedoms, we the microcontract/interlock design pattern
+While most smart contracts use cases today are written totally bespoke, effectively carving up the shared word computer into discrete fiefdoms, we the microcontract/interlock design pattern
 
 ## Status Codes
 
 ## CQRS: Command / Query Separation
 
-* Queries can run lcoally for free / gasless
+* Queries can run locally for free / gas-less
 
 ### State Reuse
 
