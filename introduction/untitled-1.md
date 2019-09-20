@@ -31,7 +31,7 @@ Software continues its march of abstraction
 * Scandals: Snowden, Cambridge Analytica
 * Apple has begun selling its services as "more secure"
 
-## Paradeigm Shift
+## Paradigm Shift
 
 > If you don't like what you got Why don't you change it? If your world is all screwed up Rearrange it! ~ Trooper, Raise a Little Hell
 
