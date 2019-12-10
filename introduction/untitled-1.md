@@ -25,7 +25,7 @@ Software continues its march of abstraction
 
 * Data security
 
-   GDPR
+  GDPR
 
 * Lock-in fatigue
 * Scandals: Snowden, Cambridge Analytica

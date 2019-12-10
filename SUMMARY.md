@@ -21,10 +21,16 @@
 * [Encryption](cross-cutting/encryption.md)
 * [Distributed FaaS](cross-cutting/distributed-functions-as-a-service.md)
 
+## Identity
+
+* [DID & MultiKey Schemes](identity/identity.md)
+* [Authentication](identity/authentication.md)
+* [Authorization](identity/authorization.md)
+* [Token-Based Delegate Auth](identity/token-based-delegate-auth.md)
+
 ## Global
 
 * [Applications](global/applications.md)
-* [Identity](global/identity.md)
 * [Shared Mutable State](global/shared-mutable-state.md)
 * [Intra-Platform Interaction](global/interaction.md)
 
