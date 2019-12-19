@@ -116,7 +116,7 @@ SIGNATURE
 
 The signature MUST include a monotonically-increasing nonce.
 
-The use of a nonce in conjunction with a timestamp ensures that a man-in-the-middle attack cannot do a fast-follow replay. Montonically increasing nonces 
+The use of a nonce in conjunction with a timestamp ensures that a man-in-the-middle attack cannot do a fast-follow replay. Monotonically increasing nonces 
 
 #### Timestamp
 
