@@ -6,23 +6,25 @@ description: Proof that the user performing the action is who they say they are
 
 ## DIDs
 
-User authentication is provided by 
-
-Fission IDs conform to the W3C DID spec, but only requires a message signed with the associated private key to authenticate.
-
-> Motivation. There is a need for non updateable DID's for use in IOT and other applications, where lack of network, size of code base and other such concerns are paramount to adoption. These concerns need to be addressed while not lowering the overall security guarantees.
+User authentication is provided by signing messages with an asymmetric key pair. For maximum comparability, this is then wrapped in a [W3C-specified DID document](https://www.w3.org/TR/did-core/).
 
 ### Encoding
 
-The base Edwards 25519 key is encoded in base64 for transmission and consistency.
+The key MUST be encoded in base64 for transmission and consistency.
 
 ### Method
 
-Fission DIDs use the `nacl` DID method.
+Fission uses the `nacl` DID method \([spec](https://github.com/uport-project/nacl-did)\).
 
 ### Unique Key
 
 Unlike other DID methods, a Fission Identity MUST contain _exactly one_ key. Fission treats identity as pseudonymous at best, and thus relegates access control to the realm of verifiable claims.
+
+> Motivation. There is a need for non updateable DID's for use in IOT and other applications, where lack of network, size of code base and other such concerns are paramount to adoption. These concerns need to be addressed while not lowering the overall security guarantees.
+>
+> ~The [uPort NaCL README](https://github.com/uport-project/nacl-did)
+
+Our motivation is focused primarily on universality. Rather than updating a document over time, the DID is minimal, immutable, and may be reconstructed from a key pair at any time.
 
 ### Content Address
 
@@ -40,6 +42,32 @@ We have chosen Edwards 25519 for a multitude of reasons, not least of which bein
 Elliptic curve cryptography is by no means "perfect security", and can be defeated if the verifier does not verify that the public key actually falls on the correct curve.
 
 ## DID Document
+
+The DID document itself may be reconstructed from a publick key at any time. This layer exists purely for compatability purposes.
+
+### Keys
+
+#### `@context`
+
+The `@context` key simply states which version of the spec this DID conforms to.
+
+For example: `'https://w3id.org/did/v1'`
+
+#### `id`
+
+The `id` is the concatenation of the method `did:nacl` with the public key.
+
+For example: `'did:nacl:Md8JiMIwsapml_FtQ2ngnGftNP5UmVCAUuhnLyAsPxI'`
+
+#### `publicKey`
+
+The public key MUST contain ONE key. It is described in the following format:
+
+```javascript
+{
+  id: 'did:nacl:myPublicKey
+}
+```
 
 ### Example Document
 
