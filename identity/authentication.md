@@ -10,13 +10,19 @@ User authentication is provided by
 
 Fission IDs conform to the W3C DID spec, but only requires a message signed with the associated private key to authenticate.
 
+> Motivation. There is a need for non updateable DID's for use in IOT and other applications, where lack of network, size of code base and other such concerns are paramount to adoption. These concerns need to be addressed while not lowering the overall security guarantees.
+
+### Encoding
+
+The base Edwards 25519 key is encoded in base64 for transmission and consistency.
+
 ### Method
 
-Fission uses the `nacl` DID method
+Fission DIDs use the `nacl` DID method.
 
 ### Unique Key
 
-Unlike other DID methods, a Fission Identity \(FID\) MUST contain _exactly one_ key. Fission treats identity as pseudonymous at best, and thus regelates access control to the realm of verifiable claims.
+Unlike other DID methods, a Fission Identity \(FID\) MUST contain _exactly one_ key. Fission treats identity as pseudonymous at best, and thus relegates access control to the realm of verifiable claims.
 
 ### Content Address
 
@@ -51,11 +57,11 @@ Following Postel's Law, the Fission Web API accepts any key signing scheme, but 
 
 ## JWT Authentication
 
+Fission uses the familiar JWT format, with a few extra keys.
 
+### Signature Auth
 
-{% hint style="info" %}
-The IETF Network Working Group has a work-in-progress spec for a type of signature-based authentication. This spec has been in progress since 2013, and is not finalized. This serves our needs better than shoehorning in signature authentication on top of JWTs, and gives us a more aligned approach to authentication. We may move to this method in the future.
-{% endhint %}
+Authentication method will be extensible in the future, ideally converging to the IETF's Signature method as that becomes a more mature standard. 
 
 ### Complete Example
 
@@ -91,7 +97,7 @@ SIGNATURE
     iss:  'did:ethr:0xf3beac30c498d9e26865f34fcaa57dbb935b0d74'
   },
   signature: 'kkSmdNE9Xbiql_KCg3IptuJotm08pSEeCOICBCN_4YcgyzFc4wIfBdDQcz76eE-z7xUR3IBb6-r-lRfSJcHMiAA',
-  data: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NkstUiJ9.eyJpYXQiOjE1NzE2OTIyMzMsImV4cCI6MTk1NzQ2MzQyMSwiYXVkIjoiZGlkOmV0aHI6MHhmM2JlYWMzMGM0OThkOWUyNjg2NWYzNGZjYWE1N2RiYjkzNWIwZDc0IiwibmFtZSI6InVQb3J0IERldmVsb3BlciIsImlzcyI6ImRpZDpldGhyOjB4ZjNiZWFjMzBjNDk4ZDllMjY4NjVmMzRmY2FhNTdkYmI5MzViMGQ3NCJ9'
+  data: 'eyJ0eXAiOiJKV1bQiLCJhbGciOiJFUzI1NkstUiJ9.eyJpYXQiOjE1NzE2OTIyMzMsImV4cCI6MTk1NzQ2MzQyMSwiYXVkIjoiZGlkOmV0aHI6MHhmM2JlYWMzMGM0OThkOWUyNjg2NWYzNGZjYWE1N2RiYjkzNWIwZDc0IiwibmFtZSI6InVQb3J0IERldmVsb3BlciIsImlzcyI6ImRpZDpldGhyOjB4ZjNiZWFjMzBjNDk4ZDllMjY4NjVmMzRmY2FhNTdkYmI5MzViMGQ3NCJ9'
 }
 ```
 
