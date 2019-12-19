@@ -28,6 +28,19 @@ Unlike other DID methods, a Fission Identity \(FID\) MUST contain _exactly one_ 
 
 Since a Fission DID does not change, it may be referenced at a stable CID.
 
+## Eliptic Curve Standard
+
+Following [Postel's Law](https://lawsofux.com/postels-law), the Fission accepts any key signing scheme, but only generates keys on [Curve 25519](https://cr.yp.to/ecdh.html), with signatures on the [Edwards Curve](http://cr.yp.to/newelliptic/newelliptic.html).
+
+We have chosen Edwards 25519 for a multitude of reasons, not least of which being reasonable performance and quantum-resistant security.
+
+> \[...\] concretely Curve25519 works with keys consisting of about 256 bits, while an equivalent RSA instantiation would need key sizes of 3072 bits long.  
+> [Source](https://www.esat.kuleuven.be/cosic/elliptic-curves-are-quantum-dead-long-live-elliptic-curves/)
+
+Eliptic curve cryptography is by no means "perfect security", and can be defeated if the verifier does not verify that the public key actually falls on the correct curve.
+
+## DID Document
+
 ### Example Document
 
 ```javascript
@@ -50,10 +63,6 @@ Since a Fission DID does not change, it may be referenced at a stable CID.
   ]
 }
 ```
-
-## Curve25519 & Edwards25519
-
-Following Postel's Law, the Fission Web API accepts any key signing scheme, but only generate Curve25519 keys. The Edwards Curve is ...
 
 ## JWT Authentication
 
