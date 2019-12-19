@@ -61,11 +61,32 @@ For example: `'did:nacl:Md8JiMIwsapml_FtQ2ngnGftNP5UmVCAUuhnLyAsPxI'`
 
 #### `publicKey`
 
-The public key MUST contain ONE key. It is described in the following format:
+The public key MUST contain _exactly one_ key. It is described in the following format:
 
 ```javascript
 {
-  id: 'did:nacl:myPublicKey
+  id: 'did:nacl:myPublicKey',
+  type: 'ED25519SignatureVerification',
+  owner: 'did:nacl:myPublicKey',
+  publicKeyBase64: 'myPublicKey'
+}
+```
+
+This contains a lot of redundant information, but is required to be compatible with other DID services.
+
+#### `authentication`
+
+Authentication key MUST:
+
+* Contain exactly one key
+* This key must be the same as in the `publicKey`
+* Use the key pointer `#key1` 
+* Specify the `ED25519SigningAuthentication` scheme
+
+```javascript
+{
+  type: 'ED25519SigningAuthentication',
+  publicKey: `did:nacl:myPublicKey#key1`
 }
 ```
 
@@ -145,6 +166,20 @@ SIGNATURE
 The signature MUST include a monotonically-increasing nonce.
 
 The use of a nonce in conjunction with a timestamp ensures that a man-in-the-middle attack cannot do a fast-follow replay. Monotonically increasing nonces 
+
+```text
+        pubkey = Ed.toPublic sk
+        payload = JWT.Payload
+          { iss = "did:nacl:" <> Crypto.toBase64 pubkey
+          , iat = time
+          , exp = time // maybe?
+          , req = { method = requestMethod req
+  , path = BS.Lazy.toStrict <| toLazyByteString <| requestPath req
+  , query = renderQuery True <| toList <| requestQueryString req
+  , bodyDigest = digestBody req
+  }
+          } 
+```
 
 #### Timestamp
 
