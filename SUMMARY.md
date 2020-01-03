@@ -23,7 +23,7 @@
 
 ## Identity
 
-* [DID & MultiKey Schemes](identity/identity.md)
+* [DID Document](identity/identity.md)
 * [Authentication](identity/authentication.md)
 * [Authorization](identity/authorization.md)
 * [Token-Based Delegate Auth](identity/token-based-delegate-auth.md)
