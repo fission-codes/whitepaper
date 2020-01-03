@@ -1,2 +1,2 @@
-# Distributed FaaS
+# Distributed & Edge FaaS
 

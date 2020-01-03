@@ -19,7 +19,7 @@
 ## Cross Cutting
 
 * [Encryption](cross-cutting/encryption.md)
-* [Distributed FaaS](cross-cutting/distributed-functions-as-a-service.md)
+* [Distributed & Edge FaaS](cross-cutting/distributed-functions-as-a-service.md)
 
 ## Identity
 
