@@ -23,6 +23,7 @@
 
 ## Identity
 
+* [Overview](identity/id-overview.md)
 * [DID Document](identity/identity.md)
 * [Authentication](identity/authentication.md)
 * [Authorization](identity/authorization.md)
