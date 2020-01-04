@@ -24,17 +24,32 @@ For example
 
 The public key array MUST:
 
+* Contain EXACTLY two key records
+* The public keys MUST be identital
+* Both `owner` fields MUST be in the form `did:nacl:<publicKey>`
+* The first key 
+  * Must use the index `#key1`
+  * MUST have the type `ED25519SignatureVerification`
+* The second key 
+  * Must use the index `#key2`
+  * MUST have the type `Curve25519EncryptionPublicKey`
 * Contain _exactly one_ key
 * Be encoded in base64 \(for transmission and consistency\)
-* Follow this format:
+
+Example
 
 ```javascript
-{
-  id: 'did:nacl:myPublicKey',
+[{
+  id: 'did:nacl:myPublicKey#key1',
   type: 'ED25519SignatureVerification',
   owner: 'did:nacl:myPublicKey',
-  publicKeyBase64: 'myPublicKey'
-}
+  publicKeyBase64: 'encodedPublicKey1'
+}, {
+  id: 'did:nacl:myPublicKey#key2',
+  type: 'Curve25519EncryptionPublicKey',
+  owner: 'did:nacl:myPublicKey',
+  publicKeyBase64: 'encodedPublicKey2'
+}]
 ```
 
 {% hint style="warning" %}
@@ -53,10 +68,9 @@ Our motivation is focused primarily on universality. Rather than updating a docu
 
 The `authentication` array MUST:
 
-* Contain exactly one key
-* This key must be the same as in the `publicKey`
-* Use the index `#key1` 
-* Specify the `ED25519SigningAuthentication` scheme
+* Contain EXACTLY one key record
+* The key MUST be identical to `#key1`
+* Specify the `ED25519SigningAuthentication` type
 
 ```javascript
 {
@@ -71,14 +85,17 @@ The `authentication` array MUST:
 {
   '@context': 'https://w3id.org/did/v1',
   id: 'did:nacl:Md8JiMIwsapml_FtQ2ngnGftNP5UmVCAUuhnLyAsPxI',
-  publicKey: [
-    {
-      id: `did:nacl:Md8JiMIwsapml_FtQ2ngnGftNP5UmVCAUuhnLyAsPxI#key1`,
-      type: 'ED25519SignatureVerification',
-      owner: 'did:nacl:Md8JiMIwsapml_FtQ2ngnGftNP5UmVCAUuhnLyAsPxI',
-      publicKeyBase64: 'Md8JiMIwsapml_FtQ2ngnGftNP5UmVCAUuhnLyAsPxI'
-    }
-  ],
+  publicKey: [{
+    id: `did:nacl:Md8JiMIwsapml_FtQ2ngnGftNP5UmVCAUuhnLyAsPxI#key1`,
+    type: 'ED25519SignatureVerification',
+    owner: 'did:nacl:Md8JiMIwsapml_FtQ2ngnGftNP5UmVCAUuhnLyAsPxI',
+    publicKeyBase64: 'Md8JiMIwsapml_FtQ2ngnGftNP5UmVCAUuhnLyAsPxI'
+  },{
+    id: `did:nacl:Md8JiMIwsapml_FtQ2ngnGftNP5UmVCAUuhnLyAsPxI#key2`,
+    type: 'Curve25519EncryptionPublicKey',
+    owner: 'did:nacl:Md8JiMIwsapml_FtQ2ngnGftNP5UmVCAUuhnLyAsPxI',
+    publicKeyBase64: 'OAsnUyuUBISGsOherdxO6rgzUeGe9SnffDXQk6KpkAY'
+  }]
   authentication: [
     {
       type: 'ED25519SigningAuthentication',
@@ -87,6 +104,8 @@ The `authentication` array MUST:
   ]
 }
 ```
+
+Source: [https://github.com/uport-project/nacl-did\#did-document](https://github.com/uport-project/nacl-did#did-document)
 
 ## 
 
