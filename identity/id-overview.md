@@ -8,7 +8,7 @@ Fission uses the _Networking and Cryptography library_ [\(`nacl`\) DID method](h
 
 ## Content Address
 
-Since a Fission DID does not change, it may be referenced at a stable CID.
+A Fission DID does not change, both the public key and the DID document may be referenced at stable CIDs.
 
 ## Elliptic Curve
 
