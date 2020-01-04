@@ -24,9 +24,9 @@
 ## Identity
 
 * [Overview](identity/id-overview.md)
-* [DID Document](identity/did-doc.md)
+* [DID Document](identity/identity.md)
 * [Authentication](identity/authentication.md)
-* [Authorization](identity/authorization.md)
+* [Verifiable Authorization](identity/authorization.md)
 * [Token-Based Delegate Auth](identity/token-based-delegate-auth.md)
 
 ## Global

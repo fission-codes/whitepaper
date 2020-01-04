@@ -30,9 +30,6 @@ Authentication method will be extensible in the future, ideally converging to th
 SIGNATURE
 
 
-
-
-
 {
   header: { 
     typ: 'JWT',
