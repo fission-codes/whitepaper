@@ -20,30 +20,15 @@ Authentication method will be extensible in the future, ideally converging to th
   "typ": "JWT"
 }
 { 
-  "iss": "AAAAC3NzaC1lZDI1NTE5AAAAICpuH/fqCFLbAConChyVH6rZzSaxlnHSwQk6qvtPsf5E",
+  "iss": "did:nacl:Md8JiMIwsapml_FtQ2ngnGftNP5UmVCAUuhnLyAsPxI",
   "aud": "https://runfission.com",
   "sub": "/ipfs/Qm12345"
   "iat": 1529496683,
   "exp": 1575606941,
-  "nonce": 12345
+  "nonce": 12345,
+  "digest": "a0Bc2De3Fg4Hi5Jh6"
 }
 SIGNATURE
-
-
-{
-  header: { 
-    typ: 'JWT',
-    alg: 'EdDSA'
-  },
-  payload: {
-    iat: 1571692233,
-    exp: 1957463421,
-    aud:  'did:nacl:Md8JiMIwsapml_FtQ2ngnGftNP5UmVCAUuhnLyAsPxI',
-    iss:  'did:nacl:Md8JiMIwsapml_FtQ2ngnGftNP5UmVCAUuhnLyAsPxI'
-  },
-  signature: 'kkSmdNE9Xbiql_KCg3IptuJotm08pSEeCOICBCN_4YcgyzFc4wIfBdDQcz76eE-z7xUR3IBb6-r-lRfSJcHMiAA',
-  data: 'eyJ0eXAiOiJKV1bQiLCJhbGciOiJFUzI1NkstUiJ9.eyJpYXQiOjE1NzE2OTIyMzMsImV4cCI6MTk1NzQ2MzQyMSwiYXVkIjoiZGlkOmV0aHI6MHhmM2JlYWMzMGM0OThkOWUyNjg2NWYzNGZjYWE1N2RiYjkzNWIwZDc0IiwibmFtZSI6InVQb3J0IERldmVsb3BlciIsImlzcyI6ImRpZDpldGhyOjB4ZjNiZWFjMzBjNDk4ZDllMjY4NjVmMzRmY2FhNTdkYmI5MzViMGQ3NCJ9'
-}
 ```
 
 ### Request Fields
