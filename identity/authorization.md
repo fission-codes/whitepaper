@@ -1,4 +1,4 @@
-# Verifiable Authorization
+# Authorization
 
 ## Capability-Based Authorization
 
