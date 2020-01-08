@@ -24,6 +24,7 @@
 ## Identity
 
 * [Overview](identity/id-overview.md)
+* [Keys](identity/keys.md)
 * [DID Document](identity/identity.md)
 * [Authentication](identity/authentication.md)
 * [Verifiable Authorization](identity/authorization.md)
