@@ -4,6 +4,8 @@ Since our DID method is a single, public key, always on the Edwards curve, the D
 
 ## Complete Example Document
 
+DID documents of this type always follow this exact format:
+
 ```javascript
 {
   "@context": "https://w3id.org/did/v1",
@@ -71,7 +73,7 @@ Example
   "type": "Ed25519VerificationKey2018",
   "controller": "did:key:z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH",
   "publicKeyBase58": "B12NYF8RrR3h41TDCTJojY59usg3mbtbjnFs7Eud1Y6u"
-}],
+}]
 ```
 
 {% hint style="warning" %}
@@ -86,19 +88,17 @@ Unlike other DID methods, a Fission Identity MUST contain _exactly one_ key. Fis
 
 Our motivation is focused primarily on universality. Rather than updating a document over time, the DID is minimal, immutable, and may be reconstructed from a key pair at any time.
 
-#### `authentication`
+## `authentication`
 
 The `authentication` array MUST:
 
 * Contain EXACTLY one key record
-* The key MUST be identical to `#key1`
-* Specify the `ED25519SigningAuthentication` type
+* The key MUST be identical to `#pubkey`
 
 ```javascript
-{
-  type: 'ED25519SigningAuthentication',
-  publicKey: `did:nacl:myPublicKey#key1`
-}
+"authentication": [ 
+  "did:key:z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH#pubkey"
+]
 ```
 
 ## 
