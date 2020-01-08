@@ -4,7 +4,9 @@
 
 User authentication is provided by signing messages with an asymmetric key pair. For maximum comparability, this is then wrapped in a [W3C-specified DID document](https://www.w3.org/TR/did-core/).
 
-Fission uses the _Networking and Cryptography library_ [\(`nacl`\) DID method](https://github.com/uport-project/nacl-did).
+Fission uses the [DID `key` method](https://digitalbazaar.github.io/did-method-key/). These can be though of as immutable DID documents, or simply as cryptographic key pairs.
+
+Fisison makes a strict distinction between authentication and authorization. An identity has implicit right associated with it: it has "super user" access to things that it owns. It can delegate various forms of access to other keys.
 
 ## Content Address
 
