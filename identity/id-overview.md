@@ -10,6 +10,8 @@ Fission makes a strict distinction between authentication and authorization. An 
 
 Our platform does not currently need to know that two keys are the same underlying user, and is focused on correct-by-construction access regulated by having access to keys.
 
+Given that these keys are so simple and immutible, they can be composed by more complex DID methods at a later time.
+
 ## Content Address
 
 A Fission DID does not change, both the public key and the DID document may be referenced at stable CIDs.
