@@ -1,6 +1,6 @@
 # Authentication
 
-To guard against replay attacks, all authenticated requests to and from Fission are one-time use only.
+To guard against replay attacks, all authenticated requests to and from Fission are one-time use only, and feature a unique nonce inside a sliding time window. Authenticated encryption is used to ensure that the data was intended by the sender, has not been subject to HTTP parameter pollution, and so on.
 
 ## JWT Authentication
 
@@ -19,12 +19,14 @@ Authentication method will be extensible in the future, ideally converging to th
 }
 { 
   "iss": "did:key:Md8JiMIwsapml_FtQ2ngnGftNP5UmVCAUuhnLyAsPxI#pubkey",
-  "sub": "expede.fission.name",
-  "aud": "runfission.com",
-  "sub": "/ipfs/Qm12345"
+  "sub": "_did.snak.fission.name",
+  "aud": "_did.runfission.com",
   "nbf": 1529496683,
-  "exp": 1575606941, -- overloaded
-  "digest": "X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE="
+  "exp": 1575606941,
+  "method": "GET"
+  "path": "/users/snak"
+  "query": "fname=satoshi&lname=nakamoto",
+  "bodyDigest": "0a7c05d1b06a76f7e76fcc74d8606518e6a916368b92f1f622db3a8c824c9f1f",
 }
 SIGNATURE
 ```
@@ -55,11 +57,78 @@ The following claims MUST be included: `"iss"`, `"sub"`, `"aud"`, `"sub"`, `"nbf
 
 ### `iss`
 
-Since Fission JWTs are self-signed, so the the "issuer claim" \(`iss`\) MUST specify the DID public key used to sign the token. This key MUST be formatted in the `key` DID scheme. The key MUST be prefixed with `did:key`, and end in `#pubkey`.
+Since Fission JWTs are self-signed, so the the "issuer claim" \(`iss`\) MUST specify the DID public key used to sign the token. This key MUST be formatted in the `key` DID scheme. The key MUST be prefixed with `did:key:`, and end in `#pubkey`.
+
+#### Example
 
 ```javascript
 "iss": "did:key:Md8JiMIwsapml_FtQ2ngnGftNP5UmVCAUuhnLyAsPxI#pubkey"
 ```
+
+### `sub`
+
+The JWT subject claim \(`sub`\) MUST specify the the subject that the JWT is acting on behalf of. This MUST be either:
+
+1. DID \(including method, index, and so on\)
+2. Fully-qualified [TXT record DID name](https://tools.ietf.org/html/draft-mayrhofer-did-dns)
+
+This is typically the same as the `iss`, but MAY be different — for instance in cases of delegated authorization.
+
+#### Key Example
+
+```javascript
+  "sub": "did:key:Md8JiMIwsapml_FtQ2ngnGftNP5UmVCAUuhnLyAsPxI#pubkey",
+```
+
+#### DNS Example
+
+```javascript
+  "sub": "_did.expede.fission.name",
+```
+
+### `aud`
+
+The JWT audience \(`aud`\) MUST be one of:
+
+1. The DID of the intended recipient
+2. [TXT-record based DID name](https://tools.ietf.org/html/draft-mayrhofer-did-dns)
+3. In the case of an HTTP service: the domain name unprefixed by HTTP scheme
+
+#### DID Example
+
+```javascript
+"aud": "did:key:u49kIt8edfomL3FtQ2ngnGZtNE4UmVCABuhnLyAsYDi#pubkey"
+```
+
+#### DNS Example
+
+```javascript
+"aud": "_did.fission.codes"
+```
+
+#### HTTP Service Example
+
+```javascript
+"aud": "runfission.com"
+```
+
+### `sub`
+
+The JWT subject \(sub\)
+
+
+
+
+
+
+
+
+
+```javascript
+  "sub": "/ipfs/Qm12345"
+```
+
+
 
 One acceptable approach is to use the current timestamp represented in nanoseconds. This provides an easily accessible reference that doesn't need to be persisted between devices or sessions.
 
