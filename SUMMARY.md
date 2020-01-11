@@ -25,11 +25,12 @@
 
 * [Overview](identity/id-overview.md)
 * [Keys](identity/keys.md)
-* [Base DID Document](identity/identity.md)
+* [Base DID Document](identity/did-doc.md)
 * [Authentication](identity/authentication.md)
 * [Verifiable Authorization](identity/authorization.md)
 * [Token-Based Delegate Auth](identity/token-based-delegate-auth.md)
 * [Verifiable Claims](identity/verifiable-claims.md)
+* [Self-Signed Tokens](identity/self-signed-tokens.md)
 
 ## Global
 

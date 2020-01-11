@@ -6,9 +6,9 @@ Content addressing focuses on data rather than physical location.
 
 ## Files
 
-Static files are very straigtforwardly added to IPFS, and may be additionally labelled with metadata, linked, and so on. The only constraint is that it is impractically difficult to create a loop; we are limited to a directed acyclic graph \(DAG\).
+Static files are very straightforwardly added to IPFS, and may be additionally labelled with metadata, linked, and so on. The only constraint is that it is impractically difficult to create a loop; we are limited to a directed acyclic graph \(DAG\).
 
-This includes all sorts of assets asnd links, not limited to images, static websites, packages, &c
+This includes all sorts of assets and links, not limited to images, static websites, packages, &c
 
 ## Database
 
