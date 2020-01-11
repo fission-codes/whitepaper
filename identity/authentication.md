@@ -1,6 +1,6 @@
 # Authentication
 
-To guard against replay attacks, all authenticated requests to and from Fission are one-time use only, and feature a unique nonce inside a sliding time window. Authenticated encryption is used to ensure that the data was intended by the sender, has not been subject to HTTP parameter pollution, and so on.
+To guard against replay attacks, all authenticated requests to and from Fission are one-time use only, and feature a unique nonce inside a sliding time window.
 
 ## JWT Authentication
 
@@ -26,7 +26,7 @@ Authentication method will be extensible in the future, ideally converging to th
   "method": "GET"
   "path": "/users/snak"
   "query": "fname=satoshi&lname=nakamoto",
-  "bodyDigest": "0a7c05d1b06a76f7e76fcc74d8606518e6a916368b92f1f622db3a8c824c9f1f",
+  "bodyDigest": "0a7c05d1b06a76f7e76fcc74d8606518e6a916368b92f1f622db3a8c824c9f1f"
 }
 SIGNATURE
 ```
@@ -53,7 +53,11 @@ The `alg` filed MUST specify the Ed25519 [EdDSA](https://tools.ietf.org/html/rfc
 
 ## Claims
 
-The following claims MUST be included: `"iss"`, `"sub"`, `"aud"`, `"sub"`, `"nbf"`, `"exp"`, and `"digest"`. The JWT MAY contain additional claims.
+The following claims MUST be included: `"iss"`, `"sub"`, `"aud"`, `"sub"`, `"nbf"`, `"exp"`, and `"bodyDigest"`.
+
+The JWT can also OPTIONALLY include `"method"`, `"path"`, `"params"`, and/or `"paramDigest"`. 
+
+Additional claims MAY be included, as required by an application.
 
 ### `iss`
 
@@ -69,10 +73,10 @@ Since Fission JWTs are self-signed, so the the "issuer claim" \(`iss`\) MUST spe
 
 The JWT subject claim \(`sub`\) MUST specify the the subject that the JWT is acting on behalf of. This MUST be either:
 
-1. DID \(including method, index, and so on\)
+1. Recommended: the subject's DID
 2. Fully-qualified [TXT record DID name](https://tools.ietf.org/html/draft-mayrhofer-did-dns)
 
-This is typically the same as the `iss`, but MAY be different — for instance in cases of delegated authorization.
+This is typically the same as the `iss`, but MAY be different — for instance in cases of delegated authorization. The direct DID is preferred as it does not rely on any external systems.
 
 #### Key Example
 
@@ -90,9 +94,11 @@ This is typically the same as the `iss`, but MAY be different — for instance 
 
 The JWT audience \(`aud`\) MUST be one of:
 
-1. The DID of the intended recipient
+1. Recommended: the DID of the intended recipient
 2. [TXT-record based DID name](https://tools.ietf.org/html/draft-mayrhofer-did-dns)
 3. In the case of an HTTP service: the domain name unprefixed by HTTP scheme
+
+The DID is preferred as it does not rely on any external systems.
 
 #### DID Example
 
@@ -112,49 +118,29 @@ The JWT audience \(`aud`\) MUST be one of:
 "aud": "runfission.com"
 ```
 
-### `sub`
+### `nbf`
 
-The JWT subject \(sub\)
+The Unix time at which the token becomes valid, expressed in milliseconds. This is typically the time it was issued, but may also be in the future.
 
-
-
-
-
-
-
-
+#### Example
 
 ```javascript
-  "sub": "/ipfs/Qm12345"
+"nbf": 1529496683
 ```
 
+### `exp`
 
+The Unix time at which the token is no longer valid. 
 
-One acceptable approach is to use the current timestamp represented in nanoseconds. This provides an easily accessible reference that doesn't need to be persisted between devices or sessions.
-
-Nanosecond resolution is more granular than available on some systems, but this keeps the magnitude consistent. The additional space in these cases may be filled arbitrarily; all the matters is that each value is strictly greater than the last. For instance, in JavaScript we may receive two equal time stamps, so an acceptable workaround is to use a session counter added to the timestamp to force ordering.
+#### Example
 
 ```javascript
-let sessionCounter = 1
-
-const now          = new Date() // e.g. 1578628940257
-const milliseconds = now.valueOf()
-const nanoseconds  = milliseconds * 1000000
-const final        = nanoseconds + sessionCounter * 1000
-
-sessionCounter++
-
-return final  // e.g. 1578628940257001000
+"exp": 1575606941
 ```
 
-Fission has a slides grace window for nonces, 
+## Additional Notes
 
-#### Timestamp
-
-A request SHOULD include JWT timestamps:
-
-* `iat`
-* `exp`
+The hash of a token may be taken as a nonce. As such, every request MUCT be unique. If there is reason to make the same request multiple times in a narrow time window, it is recommended to vary the `exp` field \("expiry-overloading"\), or add an explicit `nonce`.
 
 {% embed url="https://www.w3.org/TR/webauthn/" %}
 
