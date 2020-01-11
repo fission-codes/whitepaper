@@ -33,7 +33,7 @@ SIGNATURE
 
 ## Header
 
-The JOSE header MUST contain the following fields:
+The header MUST contain the following fields:
 
 ### `typ`
 
