@@ -69,7 +69,7 @@ The JWT can OPTIONALLY include any or all of the following:
 * `"paramDigest"`
 * `"bodyDigest"`
 
-Additional claims MAY be included, as required by an application.
+Additional claims MAY be included, as required by additional applications or ptorocols.
 
 ### `iss`
 
