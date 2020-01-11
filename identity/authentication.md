@@ -53,9 +53,21 @@ The `alg` filed MUST specify the Ed25519 [EdDSA](https://tools.ietf.org/html/rfc
 
 ## Claims
 
-The following claims MUST be included: `"iss"`, `"sub"`, `"aud"`, `"sub"`, `"nbf"`, `"exp"`, and `"bodyDigest"`.
+The following claims MUST be included: 
 
-The JWT can also OPTIONALLY include `"method"`, `"path"`, `"params"`, and/or `"paramDigest"`. 
+* `"iss"`
+* `"sub"`
+* `"aud"`
+* `"nbf"`,
+* `"exp"`
+
+The JWT can OPTIONALLY include any or all of the following:
+
+* `"method"`
+* `"path"`
+* `"params"`
+* `"paramDigest"`
+* `"bodyDigest"`
 
 Additional claims MAY be included, as required by an application.
 
