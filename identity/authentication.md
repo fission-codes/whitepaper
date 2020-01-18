@@ -1,4 +1,4 @@
-# JWT Authentication
+# Authentication
 
 To guard against replay attacks, all authenticated requests to and from Fission are one-time use only, and feature a unique nonce inside a sliding time window.
 
