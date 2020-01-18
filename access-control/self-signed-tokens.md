@@ -24,6 +24,7 @@ In a self-signed system, this flow shortened as follows:
 1. Application requests access from user
 2. User is redirected to a well-known \(potentially self-owned\) authorization webpage
    1. Ideally a cached page, well known, and outside the influence of the application
+   2. NOTE TO SELF: maybe wasm could be a good fit?
 3. User reviews and approves the appropriate permissions
 4. User signs a JSON object that includes the delegated rights and the recipient
 5. Browser redirects back to the application
