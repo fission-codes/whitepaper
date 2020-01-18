@@ -4,7 +4,7 @@ While Fission leverages self-sovereign identity, it still needs to be able to in
 
 ## Token Format
 
-Self-signed tokens are [macaroons](https://research.google/pubs/pub41892.pdf).
+Self-signed tokens are a JWT-implementation of [macaroons](https://research.google/pubs/pub41892.pdf).
 
 ## Subdelegation
 
