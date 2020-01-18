@@ -21,13 +21,13 @@
 * [Overview](identity/id-overview.md)
 * [Keys](identity/keys.md)
 * [DID Document](identity/did-doc.md)
-* [JWT Authentication](identity/authentication.md)
+* [JWT Authentication](identity/jwt-authentication.md)
 * [Verifiable Claims](identity/verifiable-claims.md)
 
 ## Access Control
 
 * [Self-Signed Tokens](access-control/self-signed-tokens.md)
-* [Capability-Based Authorization](identity/authorization.md)
+* [Capability-Based Authorization](access-control/cap-authz.md)
 * [Key Exchange](access-control/key-exchange.md)
 * [Immutable Access](access-control/read-access.md)
 * [Mutable Access](access-control/write-access.md)
@@ -46,7 +46,7 @@
 
 ## Dynamic FaaS
 
-* [Distributed & Edge FaaS](cross-cutting/distributed-functions-as-a-service.md)
+* [Distributed & Edge FaaS](dynamic-faas/distributed-functions-as-a-service.md)
 
 ## Global
 

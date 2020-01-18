@@ -1,8 +1,18 @@
 # Self-Signed Tokens
 
-While Fission is a platform that leverages self-sovereign identity, it still needs to be able to interact with existing systems with the minimum amount of reworking possible. Bridging delegated authorization such as tokens \(commonly used by web 2.0 systems\) is fairly straightforward, and only minor modifications for the service, and continues to make sense in a web3 context.
+While Fission leverages self-sovereign identity, it still needs to be able to interact with existing systems and flows with the minimum amount of reworking possible. Bridging delegated authorization such as tokens \(commonly used by web 2.0 systems\) is fairly straightforward, and only minor modifications for the service, and continues to make sense in a web3 context.
 
-A typical OAuth flow looks something like this:
+## Subdelegation
+
+ of the token to trusted third-parties with even more limited access.
+
+## Comparison to OAuth
+
+### Classic Token Authorization
+
+A typical OAuth flow today looks something like this:
+
+![](../.gitbook/assets/oauth-vs-macaroons-2x-3.png)
 
 1. Application requests access from user to access a resource server
 2. Browser redirects to an authorization server
@@ -19,12 +29,15 @@ A typical OAuth flow looks something like this:
 11. Resource service validates that the token is valid with the authorization server
 12. Resource server performs action
 
+### Self-Signed Token
+
 In a self-signed system, this flow shortened as follows:
+
+![](../.gitbook/assets/oauth-vs-macaroons-2x-2.png)
 
 1. Application requests access from user
 2. User is redirected to a well-known \(potentially self-owned\) authorization webpage
    1. Ideally a cached page, well known, and outside the influence of the application
-   2. NOTE TO SELF: maybe wasm could be a good fit?
 3. User reviews and approves the appropriate permissions
 4. User signs a JSON object that includes the delegated rights and the recipient
 5. Browser redirects back to the application
@@ -33,5 +46,7 @@ In a self-signed system, this flow shortened as follows:
 8. Resource server authenticates the application, user, and verifies authorization level
 9. Resource server performs the action
 
-This has several advantages, including fewer round trips, increased feasibility of short-lived or one-time use tokens, and even further delegation of the token to trusted third-parties.
+This has several advantages, including fewer round trips, increased feasibility of short-lived or single-use tokens, and even further delegation as described above.
+
+### 
 
