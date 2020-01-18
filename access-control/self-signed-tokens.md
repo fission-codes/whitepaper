@@ -4,15 +4,46 @@ While Fission leverages self-sovereign identity, it still needs to be able to in
 
 ## Token Format
 
-Self-signed tokens are macaroons.
+Self-signed tokens are [macaroons](https://research.google/pubs/pub41892.pdf).
 
 ## Subdelegation
 
  of the token to trusted third-parties with even more limited access.
 
-## Differences from OAuth
+## One-Time Tokens
 
-Token authorization is often associated with OAuth.
+There are times when tokens should be single use. This is generally in situations where multiple users need to atomically collaborate on some action via some aggresating service.
+
+### Additional Requirements
+
+* The token must include the recipient \(i.e. scoped to the receiver\)
+* Each token must be unique
+  * If a request needs to be made multiple times, adjust the nonce
+* Either
+  * Strictly enforce ordering with a monotonically-increasing nonce
+    * Version 1: If a require every token to be received before allowing the next
+    * Version 2: Accept any token, but invalidate any previous tokens
+  * Keep a rolling tally of used token by hash
+    * Drop expired tokens from this cache since they can no longer be replayed
+
+### Pros
+
+* Secure & authenticated
+* Self-sovereign
+* Can Pre-signable
+* Not susceptible to replay attacks
+* Can be used as an authenticated proof of intent
+
+### Cons
+
+* Require the user \(or an authorized delegate\) to be online to sign a token
+* The end-recipient maintain a token invalidation list for replay resistance to hold
+* Typically requires the entire payload to be signed
+  * i.e. requires all of the optional claims in the [JWT Authentication](https://app.gitbook.com/@runfission/s/whitepaper/~/-Lyqf_PlC7NGcLgfnH4p/identity/jwt-authentication#claims) section
+
+## Differences from OAuth 2
+
+Token authorization on the web is generally associated with OAuth.
 
 ### Classic Token Authorization
 
@@ -53,6 +84,4 @@ In a self-signed system, this flow shortened as follows:
 9. Resource server performs the action
 
 This has several advantages, including fewer round trips, increased feasibility of short-lived or single-use tokens, and even further delegation as described above.
-
-### 
 
