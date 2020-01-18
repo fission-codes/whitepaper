@@ -31,5 +31,5 @@ In a self-signed system, this flow shortened as follows:
 8. Resource server authenticates the application, user, and verifies authorization level
 9. Resource server performs the action
 
-This has several advantages, including fewer round trips, increased feasability of short-lived or one-time use tokens, and even further delegation of the token to trusted third-parties.
+This has several advantages, including fewer round trips, increased feasibility of short-lived or one-time use tokens, and even further delegation of the token to trusted third-parties.
 
