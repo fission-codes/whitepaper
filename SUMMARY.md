@@ -25,12 +25,15 @@
 
 * [Overview](identity/id-overview.md)
 * [Keys](identity/keys.md)
-* [Base DID Document](identity/did-doc.md)
-* [JWT Authentication](identity/authentication.md)
-* [Capability-Based Authorization](identity/cap-authz.md)
-* [Token-Based Delegate Auth](identity/token-based-delegate-auth.md)
+* [DID Document](identity/did-doc.md)
+* [JWT Authentication](identity/jwt-authentication.md)
 * [Verifiable Claims](identity/verifiable-claims.md)
-* [Self-Signed Tokens](identity/self-signed-tokens.md)
+
+## Access Control
+
+* [Capability-Based Authorization](access-control/cap-authz.md)
+* [Token-Based Delegate Auth](access-control/token-based-delegate-auth.md)
+* [Self-Signed Tokens](access-control/self-signed-tokens.md)
 
 ## Global
 
