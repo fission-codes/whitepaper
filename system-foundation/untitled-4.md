@@ -1,6 +1,6 @@
 # Unified Storage
 
-Storage is crutial to any application.
+Storage is crucial to any application.
 
 Content addressing focuses on data rather than physical location.
 
