@@ -26,7 +26,7 @@
 
 ## Access Control
 
-* [Capability-Based Authorization](identity/authorization.md)
+* [Capability-Based Authorization](access-control/cap-authz.md)
 * [Self-Signed Tokens](identity/self-signed-tokens.md)
 * [Key Exchange](access-control/key-exchange.md)
 * [Immutable Access](access-control/read-access.md)
