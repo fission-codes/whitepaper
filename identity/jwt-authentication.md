@@ -2,15 +2,9 @@
 
 To guard against replay attacks, all authenticated requests to and from Fission are one-time use only, and feature a unique nonce inside a sliding time window.
 
-## JWT Authentication
-
 Fission uses the familiar JWT format, plus a few additional keys.
 
-### Signature Authentication
-
-Authentication method will be extensible in the future, ideally converging to the IETF's Signature method as that becomes a more mature standard.
-
-### Complete Example
+## Complete Example
 
 ```javascript
 {
@@ -153,6 +147,10 @@ The Unix time at which the token is no longer valid.
 ## Additional Notes
 
 The hash of a token may be taken as a nonce. As such, every request MUCT be unique. If there is reason to make the same request multiple times in a narrow time window, it is recommended to vary the `exp` field \("expiry-overloading"\), or add an explicit `nonce`.
+
+### Signature Authentication
+
+Authentication method will be extensible in the future, ideally converging to the IETF's Signature method as that becomes a more mature standard.
 
 {% embed url="https://www.w3.org/TR/webauthn/" %}
 

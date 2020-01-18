@@ -2,7 +2,7 @@
 
 ## Abstract
 
-User authentication is provided by signing messages with an asymmetric key pair. For maximum compatability, this is then wrapped in a [W3C-specified DID document](https://www.w3.org/TR/did-core/).
+User authentication is provided by signing messages with an asymmetric key pair. For maximum compatibility, this is then wrapped in a [W3C-specified DID document](https://www.w3.org/TR/did-core/).
 
 Fission uses the [DID `key` method](https://digitalbazaar.github.io/did-method-key/). These can be though of as immutable DID documents, or simply as cryptographic key pairs.
 
