@@ -26,8 +26,8 @@
 
 ## Access Control
 
+* [Self-Signed Tokens](access-control/self-signed-tokens.md)
 * [Capability-Based Authorization](access-control/cap-authz.md)
-* [Self-Signed Tokens](identity/self-signed-tokens.md)
 * [Key Exchange](access-control/key-exchange.md)
 * [Immutable Access](access-control/read-access.md)
 * [Mutable Access](access-control/write-access.md)
