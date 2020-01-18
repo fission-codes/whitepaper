@@ -2,7 +2,7 @@
 
 While Fission is a platform that leverages self-sovereign identity, it still needs to be able to interact with existing systems with the minimum amount of reworking possible. Bridging delegated authorization such as tokens \(commonly used by web 2.0 systems\) is fairly straightforward, and only minor modifications for the service, and continues to make sense in a web3 context.
 
-An OAuth flow looks something like this:
+A typical OAuth flow looks something like this:
 
 1. Application requests access from user to access a resource server
 2. Browser redirects to an authorization server
