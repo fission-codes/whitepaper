@@ -16,11 +16,6 @@
 * [Digital Scarcity](system-foundation/untitled-5.md)
 * [Portable Compute](system-foundation/portable-compute.md)
 
-## Cross Cutting
-
-* [Encryption](cross-cutting/encryption.md)
-* [Distributed & Edge FaaS](cross-cutting/distributed-functions-as-a-service.md)
-
 ## Identity
 
 * [Overview](identity/id-overview.md)
@@ -34,6 +29,14 @@
 * [Capability-Based Authorization](access-control/cap-authz.md)
 * [Token-Based Delegate Auth](access-control/token-based-delegate-auth.md)
 * [Self-Signed Tokens](access-control/self-signed-tokens.md)
+
+## File System
+
+* [Cryptrees](file-system/cryptrees.md)
+
+## Dynamic FaaS
+
+* [Distributed & Edge FaaS](dynamic-faas/distributed-functions-as-a-service.md)
 
 ## Global
 
