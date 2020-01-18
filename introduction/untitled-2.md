@@ -57,5 +57,5 @@ Cutting across these are two second-order modules that rely on the 3 core areas:
 1. Encryption
 2. Functions-as-a-Service
 
-The vast majority of end users will not have cryptographically-backed routing available locally for some time. To bridge this gap, Asimov leverages public DNS infrastrcuctue as a backwards-compatibility bridge.
+The vast majority of end users will not have cryptographically-backed routing available locally for some time. To bridge this gap, Asimov leverages public DNS infrastructure as a backwards-compatibility bridge.
 
