@@ -21,16 +21,17 @@
 * [Overview](identity/id-overview.md)
 * [Keys](identity/keys.md)
 * [DID Document](identity/did-doc.md)
-* [JWT Authentication](identity/jwt-authentication.md)
+* [JWT Authentication](identity/authentication.md)
 * [Verifiable Claims](identity/verifiable-claims.md)
 
 ## Access Control
 
 * [Capability-Based Authorization](access-control/cap-authz.md)
-* [Self-Signed Tokens](access-control/self-signed-tokens.md)
+* [Self-Signed Tokens](identity/self-signed-tokens.md)
 * [Key Exchange](access-control/key-exchange.md)
-* [Read Access](access-control/read-access.md)
-* [Write Access](access-control/write-access.md)
+* [Immutable Access](access-control/read-access.md)
+* [Mutable Access](access-control/write-access.md)
+* [Threshold Writes](access-control/threshold-writes.md)
 * [Key Revocation](access-control/key-revocation.md)
 
 ## File System
@@ -39,7 +40,7 @@
 
 ## Dynamic FaaS
 
-* [Distributed & Edge FaaS](dynamic-faas/distributed-functions-as-a-service.md)
+* [Distributed & Edge FaaS](cross-cutting/distributed-functions-as-a-service.md)
 
 ## Global
 

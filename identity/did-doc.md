@@ -1,4 +1,4 @@
-# DID Document
+# Base DID Document
 
 Since our DID method is a single, public key, always on the Edwards curve, the DID document itself may be reconstructed from a public key at any time. This layer exists purely for compatibility purposes.
 

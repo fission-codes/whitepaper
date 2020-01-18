@@ -4,5 +4,7 @@ Access control has traditionally been managed by access control lists \(ACLs\): 
 
 Fission uses correct-by-construction \(AKA "capability-based"\) authorization. This is a trustless method suitable to centralized, decentralized, and local applications. In essence, this means using cryptography to control who has access to what. Rather than have a centralized application handle access control, the rights are baked directly into keys, usable everywhere, with any application, online and offline.
 
+Fission does not currently link identities, but rather grants shared access control over resources.
+
 
 
