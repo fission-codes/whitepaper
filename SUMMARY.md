@@ -31,8 +31,8 @@
 * [Key Exchange](access-control/key-exchange.md)
 * [Immutable Access](access-control/read-access.md)
 * [Mutable Access](access-control/write-access.md)
-* [Threshold Access](access-control/threshold-writes.md)
 * [Session Keys](access-control/session-keys.md)
+* [Threshold Access](access-control/threshold-writes.md)
 * [Key Revocation](access-control/key-revocation.md)
 
 ## File System
