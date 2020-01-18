@@ -2,11 +2,17 @@
 
 While Fission leverages self-sovereign identity, it still needs to be able to interact with existing systems and flows with the minimum amount of reworking possible. Bridging delegated authorization such as tokens \(commonly used by web 2.0 systems\) is fairly straightforward, and only minor modifications for the service, and continues to make sense in a web3 context.
 
+## Token Format
+
+Self-signed tokens are macaroons.
+
 ## Subdelegation
 
  of the token to trusted third-parties with even more limited access.
 
-## Comparison to OAuth
+## Differences from OAuth
+
+Token authorization is often associated with OAuth.
 
 ### Classic Token Authorization
 
