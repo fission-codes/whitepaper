@@ -1,2 +1,0 @@
-# Token-Based Delegate Auth
-

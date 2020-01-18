@@ -27,8 +27,11 @@
 ## Access Control
 
 * [Capability-Based Authorization](access-control/cap-authz.md)
-* [Token-Based Delegate Auth](access-control/token-based-delegate-auth.md)
 * [Self-Signed Tokens](access-control/self-signed-tokens.md)
+* [Key Exchange](access-control/key-exchange.md)
+* [Read Access](access-control/read-access.md)
+* [Write Access](access-control/write-access.md)
+* [Key Revocation](access-control/key-revocation.md)
 
 ## File System
 
