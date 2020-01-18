@@ -36,7 +36,12 @@
 
 ## File System
 
-* [Cryptrees](file-system/cryptrees.md)
+* [Layout](file-system/layout.md)
+* [Security](file-system/cryptrees.md)
+* [Public Directory](file-system/public-directory.md)
+* [Private Directories](file-system/private-directories.md)
+* [Unlisted Directories](file-system/unlisted-directories.md)
+* [Shared Mutable Access](file-system/shared-mutable-access.md)
 
 ## Dynamic FaaS
 
