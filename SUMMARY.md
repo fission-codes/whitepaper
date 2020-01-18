@@ -26,12 +26,12 @@
 
 ## Access Control
 
-* [Capability-Based Authorization](access-control/cap-authz.md)
+* [Capability-Based Authorization](identity/authorization.md)
 * [Self-Signed Tokens](identity/self-signed-tokens.md)
 * [Key Exchange](access-control/key-exchange.md)
 * [Immutable Access](access-control/read-access.md)
 * [Mutable Access](access-control/write-access.md)
-* [Threshold Writes](access-control/threshold-writes.md)
+* [Threshold Access](access-control/threshold-writes.md)
 * [Key Revocation](access-control/key-revocation.md)
 
 ## File System

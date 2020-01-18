@@ -1,2 +1,4 @@
-# Threshold Writes
+# Threshold Access
+
+Shamir or Smart Contract
 
