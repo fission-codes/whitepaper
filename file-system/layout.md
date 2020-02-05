@@ -30,8 +30,8 @@ Type Directory = Directory
   }
 
 type Content =
-  = FileContent File
-  | Subdirectory Directory
+  = FileContent  (Maybe AES) File
+  | Subdirectory (Maybe AES) Directory
 
 type MetaData
   = OrderedList MetaData
