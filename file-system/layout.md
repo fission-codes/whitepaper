@@ -19,11 +19,10 @@ The public and private subtrees have an identical API:
 root
   - tags
     - important
-      - 
+      - Kansai Tip # Directory pointer
+      - Harlem Shake # File pointer
     - todo
       - Workout 2020
-      - 
-      - 
   - collections
     - playlists
       - Workout 2020
@@ -35,7 +34,7 @@ root
         - IMG_1234.png
         - IMG_5678.png
         - IMG_9ABC.png
-  - formats
+  - formats # indices primarily for lookup
     - music
       - 3gp
       - aac
@@ -51,8 +50,13 @@ root
     - filesystem
       - [FFS events]
   - workspace # unstructured userland
-    - inbox # AKA `saved` or`downloads
-      - 
+    - inbox # AKA saved or downloads
+      - foo.pdf
+      - bar.png
+    - work
+      - My Cool Project
+        - README.md
+        - app.js
 ```
 
 Standard FFS are named in the plural and snake case. All names MUST be [URL safe](https://www.ietf.org/rfc/rfc3986.txt)\(!\)
