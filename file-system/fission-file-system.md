@@ -7,5 +7,8 @@ The Fission File System \(FFS\) is an versioned, evented, security-forward file 
 * Event stream
 * File metadata
 * Tags & collections
+* Searchable
+* Automatic structured 
+* Unstructured userspace
 * Programmable
 
