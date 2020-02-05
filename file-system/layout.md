@@ -13,6 +13,54 @@ The top level of FFS has 3 branches:
 
 ## Common Structure
 
+The public and private subtrees have an identical API:
+
+```yaml
+root
+  - tags
+    - important
+      - 
+    - todo
+      - Workout 2020
+      - 
+      - 
+  - collections
+    - playlists
+      - Workout 2020
+        - Born To Be Wild
+        - Harlem Shake
+        - You Shook Me All Night Long
+    - albums
+      - Kansai Trip
+        - IMG_1234.png
+        - IMG_5678.png
+        - IMG_9ABC.png
+  - formats
+    - music
+      - 3gp
+      - aac
+      - mp3
+      # and so on
+    - images
+      - tiff
+      - jpg
+      - gif
+      - raw
+      - png
+  - event_streams
+    - filesystem
+      - [FFS events]
+  - workspace # unstructured userland
+    - inbox # AKA `saved` or`downloads
+      - 
+```
+
+Standard FFS are named in the plural and snake case. All names MUST be [URL safe](https://www.ietf.org/rfc/rfc3986.txt)\(!\)
+
+
+
+Files do not have a canonical path. This is a DAG, not a tree. They DO have a canonical hash \(content addressing\).
+
 ## Internal Structure
 
 ```haskell
