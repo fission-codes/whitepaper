@@ -49,6 +49,9 @@ root
   - event_streams
     - filesystem
       - [FFS events]
+  - app
+    - diffuse
+      - preferences
   - workspace # unstructured userland
     - inbox # AKA saved or downloads
       - foo.pdf
