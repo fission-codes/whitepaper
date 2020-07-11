@@ -86,7 +86,7 @@ The information stored in the header segment is _descriptive._ It is structural 
 
 #### Content
 
-The actual information storage and linking to other nodes. Links to the actual raw contents of a file. This is an internal detail, and generally hidden from end users. It is useful for implementers, however.
+The actual information storage and linking to other nodes. Links to the actual raw contents of a file. This is an internal detail, and that this is a separate segment is generally hidden from end users. It is useful for implementers, however.
 
 {% hint style="info" %}
 The information stored in the content segment is primarily _operational._ It contains the primary semantic links that get exposed to the end user.
