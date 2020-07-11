@@ -37,11 +37,14 @@
 
 ## File System
 
-* [File System](file-system/file-system.md)
-* [Root Layout](file-system/layout.md)
-* [Public Directory](file-system/public-directory.md)
+* [File System](file-system/file-system/README.md)
+  * [Concepts](file-system/file-system/concepts.md)
+  * [Versioning](file-system/file-system/versioning.md)
+  * [Journal](file-system/file-system/journal.md)
+* [Layout](file-system/layout/README.md)
+  * [Public Directory](file-system/layout/public-directory.md)
+  * [Private Directories](file-system/layout/private-directories.md)
 * [Security](file-system/cryptrees.md)
-* [Private Directories](file-system/private-directories.md)
 * [Unlisted Directories](file-system/unlisted-directories.md)
 * [Shared Mutable Access](file-system/shared-mutable-access.md)
 
