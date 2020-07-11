@@ -64,12 +64,14 @@ read :: AES256 -> Encrypted VirtualNode -> Either Failure VirtualNode
 A node is broken into two segments: header and content. There are a number of reasons for this layout, not least of which is keeping the content \(userland\) in a strictly separated namespace from the header \(system managed\).
 
 ```text
-+-------------------------+
-|        VirtualNode      |
-|  +--------+ +---------+ |
-|  | Header | | Content | |
-|  +--------+ +---------+ |
-+-------------------------+
++---------------------------+
+|        VirtualNode        |
+|                           |
+|  +--------+  +---------+  |
+|  | Header |  | Content |  |
+|  +--------+  +---------+  |
+|                           |
++---------------------------+
 ```
 
 #### Header
