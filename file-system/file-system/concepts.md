@@ -61,35 +61,34 @@ read :: AES256 -> Encrypted VirtualNode -> Either Failure VirtualNode
 
 ### Node Segments
 
-A node is broken into two segments:
+A node is broken into two segments: header and content. There are a number of reasons for this layout, not least of which is keeping the content \(userland\) in a strictly separated namespace from the header \(system managed\).
 
 ```text
-+---------+
-| Header  |
-+---------+
-| Content |
-+---------+
++-------------------------+
+|        VirtualNode      |
+|  +--------+ +---------+ |
+|  | Header | | Content | |
+|  +--------+ +---------+ |
++-------------------------+
 ```
 
 #### Header
 
 Contains information _about_ the node and its contents. This includes information such as node size, tags, caches, indexes, and pointers to previous versions. This segment _does_ cause changes in structure at the protocol layer with elements like previous version pointers.
 
+The header is primarily system \(SDK\) managed, but may be influenced by the user \(e.g. adding tags\).
+
 {% hint style="info" %}
-The information stored in the header segment is _descriptive._ It is strutural at the protocol layer, but not at the application layer.
+The information stored in the header segment is _descriptive._ It is structural at the protocol layer, but not at the application layer.
 {% endhint %}
 
 #### Content
 
-The actual information storage and linking to other nodes. The inform
+The actual information storage and linking to other nodes. Links to the actual raw contents of a file. This is an internal detail, and generally hidden from end users. It is useful for implementers, however.
 
 {% hint style="info" %}
-The information stored in the content segment is primarily _operational_
+The information stored in the content segment is primarily _operational._ It contains the primary semantic links that get exposed to the end user.
 {% endhint %}
-
-### Raw Content
-
-The actual raw contents of a file. This is an internal detail, and generally hidden from end users. It is useful for implementers, however.
 
 ## Reduction Index
 
