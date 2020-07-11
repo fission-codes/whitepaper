@@ -4,7 +4,7 @@ description: "FLOOFS Logged Online/Offline File System \U0001F415"
 
 # File System
 
-FLOOFS is an versioned, evented, security-forward file system
+FLOOFS is a file system written for the web. It’s versioned, logged, programmable, has strong security, and is fully controlled by the user. Service providers can validate writes without reading the contents of the file system.
 
 Features at a high level:
 
@@ -23,4 +23,5 @@ Features at a high level:
 * Efficient — replicated, compressed, cached
 * POSIX-style interface
 * Programmable
+* Deterministic
 
