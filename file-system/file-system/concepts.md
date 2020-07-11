@@ -18,13 +18,52 @@ The application layer is an abstraction over models. Having the full power of co
 
 FLOOFS has several well defined sections defined at the root of the DAG. These include \(but are not limited to\) the public, private, and shared sections.
 
-## VNode
+## Node 
+
+### Virtual Node
 
 A virtual node \("vnode"\) is an abstraction over files and directories. It describes some basic structure that all nodes in the graph conform to:
 
-```text
-data 
+{% tabs %}
+{% tab title="TypeScript" %}
+```typescript
+type VirtualNode = File | Directory | Symlink
 ```
+{% endtab %}
+
+{% tab title="Haskell" %}
+```haskell
+data VirtualNode
+  = FileNode      File
+  | DirectoryNode Directory
+  | Symlink       DNSLink
+```
+{% endtab %}
+{% endtabs %}
+
+### Encrypted Node
+
+An encrypted node is a virtual node \(or subtype\) which has been encrypted. An external key is required to read this node.
+
+{% tabs %}
+{% tab title="TypeScript" %}
+```typescript
+read(eNode: Encrypted<VNode>, key: AES256): Result<Failure, VNode>
+```
+{% endtab %}
+
+{% tab title="Haskell" %}
+```haskell
+read :: Encrypted VirtualNode -> AES256 -> Either Failure VirtualNode
+```
+{% endtab %}
+{% endtabs %}
+
+### Node Contents
+
+### Raw
+
+The actual raw contents of a file. This is an internal detail, and generally hidden from end users. It is useful for implementers, however.
 
 ## Reduction Index
 
