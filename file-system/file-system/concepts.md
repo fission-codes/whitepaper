@@ -6,11 +6,11 @@ FLOOFS is a DAG where the terminal nodes are _either_ empty directories or files
 
 The term "layer" refers exclusively to the stack. FLOOFS is built up from Merkle linked structures, and needs to operate at several layers within the stack. At time of writing, FLOOFS runs on top of IPFS, but that may not always be the case. As such, we use slightly different abstractions from that project.
 
-### Protocol Data Layer
+### Protocol Layer
 
 This layer describes how we need to concretely represent our data to the network. This is a data layer to be consumed by whichever substrate FLOOFS is running on.
 
-### Application Schema Layer
+### Application Layer
 
 The application layer is an abstraction over models. Having the full power of computation at runtime means that we can subordinate extraneous detail, and provide a familiar model and clean interface to end users.
 
@@ -48,20 +48,46 @@ An encrypted node is a virtual node \(or subtype\) which has been encrypted. An 
 {% tabs %}
 {% tab title="TypeScript" %}
 ```typescript
-read(eNode: Encrypted<VNode>, key: AES256): Result<Failure, VNode>
+read(key: AES256, eNode: Encrypted<VNode>): Result<Failure, VNode>
 ```
 {% endtab %}
 
 {% tab title="Haskell" %}
 ```haskell
-read :: Encrypted VirtualNode -> AES256 -> Either Failure VirtualNode
+read :: AES256 -> Encrypted VirtualNode -> Either Failure VirtualNode
 ```
 {% endtab %}
 {% endtabs %}
 
-### Node Contents
+### Node Segments
 
-### Raw
+A node is broken into two segments:
+
+```text
++---------+
+| Header  |
++---------+
+| Content |
++---------+
+```
+
+#### Header
+
+Contains information _about_ the node and its contents. This includes information such as node size, tags, caches, indexes, and pointers to previous versions. This segment _does_ cause changes in structure at the protocol layer with elements like previous version pointers.
+
+{% hint style="info" %}
+The information stored in the header segment is _descriptive._ It is strutural at the protocol layer, but not at the application layer.
+{% endhint %}
+
+#### Content
+
+The actual information storage and linking to other nodes. The inform
+
+{% hint style="info" %}
+The information stored in the content segment is primarily _operational_
+{% endhint %}
+
+### Raw Content
 
 The actual raw contents of a file. This is an internal detail, and generally hidden from end users. It is useful for implementers, however.
 
