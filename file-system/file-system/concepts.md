@@ -43,7 +43,7 @@ data VirtualNode
 
 ### Encrypted Node
 
-An encrypted node is a virtual node \(or subtype\) which has been encrypted. An external key is required to read this node.
+An encrypted node is a virtual node \(or subtype\) which has been encrypted. An external key is required to read this node. See the section on the private tree for more detail of the architecture of this in practice.
 
 {% tabs %}
 {% tab title="TypeScript" %}
