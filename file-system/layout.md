@@ -1,15 +1,38 @@
-# Layout
+---
+description: FLOOFS required top-level links
+---
 
-## Branches
+# Root Layout
 
-The top level of FFS has 3 branches:
+## Base Layout
 
-* /Public
-  * Unencrypted data
-* /Private
+```text
+${username}.fission.codes
+  |
+  +——about
+  |
+  +——public
+  |
+  +——pretty
+  |
+  +——private
+  |
+  +——shared
+```
+
+* \`\`
+* /pretty
+  * A cached reduction of the `/public` tree
+  * Exists to make short, friendly _relative_ links
+    * Relative is relative to some root
+    * Permalinked if the root is a CID
+    * Latest link if the root is a mutable pointer such as DNSLink
+* `/private`
   * Encrypted data
-  * /Shared
-    * Pointers to other FFS trees that are owned by multiple users
+* `/shared_by_me`
+  * Sha
+* `/shared_with_me`
+  * Pointers to other FLOOFS trees that are owned by multiple users
 
 ## Common Structure
 

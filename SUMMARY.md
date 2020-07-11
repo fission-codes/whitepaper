@@ -38,9 +38,9 @@
 ## File System
 
 * [File System](file-system/file-system.md)
-* [Layout](file-system/layout.md)
-* [Security](file-system/cryptrees.md)
+* [Root Layout](file-system/layout.md)
 * [Public Directory](file-system/public-directory.md)
+* [Security](file-system/cryptrees.md)
 * [Private Directories](file-system/private-directories.md)
 * [Unlisted Directories](file-system/unlisted-directories.md)
 * [Shared Mutable Access](file-system/shared-mutable-access.md)
