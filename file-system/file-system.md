@@ -13,7 +13,7 @@ Features at a high level:
 * Secure file sharing
 * File & directory metadata
 * Decentralized access control
-* Versioned, nondestructive edits
+* Nondestructive edits / versioning
 * Logged / evented
 * Searchable
 * Tags & collections
