@@ -37,7 +37,7 @@
 
 ## File System
 
-* [Fission File System](file-system/fission-file-system.md)
+* [File System](file-system/file-system.md)
 * [Layout](file-system/layout.md)
 * [Security](file-system/cryptrees.md)
 * [Public Directory](file-system/public-directory.md)
