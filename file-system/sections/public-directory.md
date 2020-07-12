@@ -99,7 +99,7 @@ Note that links are NOT flattened into a single node. FLOOFS maintains a sepacia
        /     |     \
     Prev     |    Userland
      /       |       \
-    /    meta.cbor    \ 
+    /    cache.cbor   \ 
 <——*         |         \
              |          \
        +——————————+   +——————————————+
