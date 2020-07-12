@@ -87,12 +87,31 @@ data Userland = Either [(Text, IPFSLink)] IPFSNode
 Note that links are NOT flattened into a single node. FLOOFS maintains a sepacial separate namespace for userland. This is a 2-layer approach:
 
 ```text
-           NodeRoot
-          /    |   \ 
-         /     |    \
-    Previous   |   UserLand
-       /   meta.cbor  |  \
-      /               |   \
-<————*                V    V
+   +———————————————————+
+   |                   |
+   |     IPFSNode      |
+   |                   |
+   |     +———————+     |
+   |     | Links |     |
+   |     +———————+     |
+   |     /   |   \     |
+   +————/————|————\————+
+       /     |     \
+    Prev     |    Userland
+     /       |       \
+    /    meta.cbor    \ 
+<——*         |         \
+             |          \
+       +——————————+   +——————————————+
+       |          |   |              |
+       |   Data   |   |   IPFSNode   |
+       |          |   |              |
+       +——————————+   |   +———————+  |
+                      |   | Links |  |
+                      |   +———————+  |
+                      |    /  |  \   |
+                      +———/———|———\——+
+                         /    |    \
+                       ...   ...   ...
 ```
 
