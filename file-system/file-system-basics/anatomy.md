@@ -18,7 +18,7 @@ The application layer is an abstraction over models. Having the full power of co
 
 ## Section
 
-FLOOFS has several well defined sections defined at the root of the DAG. These include \(but are not limited to\) the public, private, and shared sections.
+FLOOFS has several well defined sections defined at the root of the DAG. These include \(but are not limited to\) the public, private, and shared sections. There is a strict separation between these sections, for many reasons, but importantly access control — both for users an a separation between userland and kernelspace.
 
 ## Node 
 
