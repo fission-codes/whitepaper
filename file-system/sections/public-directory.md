@@ -19,6 +19,7 @@ data VirtualNode
   = DirectoryNode Directory
   | FileNode      File
   | Symlink       DNSLink
+  | RawProtocol   Raw
   
 data File = File
   { metadata   :: Metadata
@@ -45,14 +46,27 @@ data History = History
 data UnixMeta = UnixMeta
   { mtime :: UTCTime
   , ctime :: UTCTime
-  , ...and so on
+  , mode  :: UnixFileMode
+  , type_ :: UnixNodeType
   }
 
+data RawProtocol = RawProtocol
+  { links :: [(Text, RawProtocol)]
+  , data_ :: Maybe ByteString
+  }
+  
+data IPFSLink = IPFSLink
+  { name :: Text
+  , hash :: CID
+  , size :: Quantity Bytes
+  }
 ```
 
 ## Protocol Layer
 
 ```haskell
+WIP WIP WIP
+
 data Node = Node
   { metadata :: Metadata
   , 
@@ -85,7 +99,12 @@ data UnixMeta = UnixMeta
   , ctime :: UTCTime
   , ...and so on
   }
+
 ```
+
+
+
+## Raw Protocol Node
 
 
 
