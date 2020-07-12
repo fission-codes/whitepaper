@@ -6,10 +6,6 @@ description: Globally visible and addressable plaintext
 
 The public directory contains regular, unencrypted, structured data. Each VNode contains more This includes previous versions, metadata, symlinks, and so on. This lives in the top-level `/public` directory. All of the content is publicly viewable, including previous versions.
 
-## 
-
-As mentioned in Anatomy, virtual nodes are an abstraction over files and 
-
 ## Application Layer
 
 At the application layer, a public virtual node has the following shape:
@@ -107,7 +103,7 @@ Note that links are NOT flattened into a single node. FLOOFS maintains a sepacia
        |   Data   |   |   IPFSNode    |
        |          |   |               |
        +——————————+   |   +———————+   |
-                      |   | Links |   |
+                      |   | Links | <———— the directory index
                       |   +———————+   |
                       |    /  |  \    |
                       +———/———|———\———+
