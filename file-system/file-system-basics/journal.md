@@ -15,11 +15,14 @@ The exact format of the event isstill under deveopment, but will look something 
 {% tabs %}
 {% tab title="Haskell" %}
 ```haskell
-data FSEvent = FSEvent
+data Event appAction = Event
   { writer    :: DID
   , action    :: FSAction
   , signature :: Signature
+  , appAction  :: appAction
   }
+  
+type FSEvent = Event ()
 
 data FSAction
   = FileUpdate
