@@ -74,5 +74,18 @@ Please refer to the private section docs for more.
 
 ## Rewind ⏪
 
-It is also possible to link further back more quickly. If users find that they’re paging back far into the past, skip lists are also possible \(though more time consuming to verify\).
+It is also possible to link further back more quickly with skip lists \(though more time consuming to verify\). This would likely look something like links back in time in powers of 2 \(which is weighted towards more recent versions\). The first 10 would be:
+
+* 1 back \(previous version\)
+* 2 back
+* 4 back
+* 8 back
+* 16 back
+* 32 back
+* 64 back
+* 128 back
+* 256 back
+* 512 back
+
+So for instance, 502 back would be achieved in 7 operations, 728 in 5. \(Calculation is: express the number in binary, and count the 1 bits\)
 
