@@ -153,5 +153,9 @@ Why not only keep this cache at the file system root? Deep linking performance i
 
 ## Write Access
 
+Write access may be granted via UCAN. In this case, the application-layer \(pretty\) path to the node is updatable arbitraily, as are its nested contents. However, this necessitates updating the links in the merkle structure above, as well as portions of metadata \(such as size of contents\). This is a rote mechanical procedure, and will be checked by the verifier.
 
+{% hint style="warning" %}
+It bears repeating that while this does create updated parent nodes, it wil lbe handled mecanically by the FLOOFS client. The verifier is able to easily and mechanically confirm these updates, and will reject them if submitted incorrectly.
+{% endhint %}
 
