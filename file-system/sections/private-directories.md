@@ -48,11 +48,25 @@ data EncryptedLink = EncryptedLink
   }
 ```
 
+## Storage Layout
+
+Encrypted virtual nodes are kept in a Merkle Patricia tree \(MPT\), organized by a blinded file name \(see more in the naming section below\).
+
+The probabilistic nature of XOR filter filenames does mean that related files are more likely to be placed near each other in the MPT, while not giving away why they are placed in that part of the tree. Some direct descendants or siblings will be in far other parts of the tree, depending on the position of the first different bit. The filter is fixed-size, which further simplifies this layout.
+
+This layout greatly improves write access verification time, while eliminating the plaintext tree structure. An authorized user reconstructs the semantically relevant DAG at runtime by following links in decrypted nodes. The links point to entries in the MPT, giving `O(1) ~ o(log n | n < 10)` access \(where `n` is the number of bits, which is constant in an XOR filter\). Organizing as a BST/Patricia tree is a very common approach for implementing hash tables like this one.
+
+## Read Access
+
+FLOOFS has a recursive read access model known as a cryptree \(technically a cryptDAG in our case\).
+
+
+
 ## Node Naming
 
 A lot can be gleaned from a node’s name, or a tree structure.
 
-Cryptographically secure methods do exist for this, but are quite new and currently perform much worse. FLOOFS opts to hide as much information as possible while remaining reasable on arbitrary hardware.
+Fully zero knowledge methods do exist for this, but are quite new and do not \(yet\) perform fast enough to be practical for this use case. FLOOFS opts to hide as much information as possible while remaining reasable on a low-end smartphone.
 
 ### Probabilistic Filter Names
 
@@ -70,11 +84,11 @@ child_filter = hash_reduction(
 
 > A previous design used the file path plus a nonce and its index. If the path changed, this would break any write certificates. The current design requires that you only know only the AES key used to encrypt a node \(we assume read access as a prerequisite to write  access\). The latest revision number can be found by scanning the store \(more on this later\), but is also stored on in node.
 
-#### Hash Reduction
+#### Recursive Hash Accumulation
 
-With the naiive approach, it is easy to tell which nodes are higher in the DAG: ther filters are sparser. To further obsfucate the path without invalidating write tokens, we use a deterministic method to produce a consistently-sized filter \(to some depth\) via hash reduction.
+With the naive approach, it is easy to tell which nodes are higher in the DAG: ther filters are sparser. To further obsfucate the path without invalidating write tokens, we use a deterministic method to produce a consistently-sized filter \(to some depth\) via hash reduction.
 
-Hash reduction works by recursively `AND`ing the hash of the previous filter with the current filter, to some depth. As a simple example:
+Hash acculumation works by recursively `AND`ing the hash of the previous filter with the current filter, to some depth. As a simple example:
 
 ```yaml
 parent_base:   1100100101011001
@@ -106,11 +120,15 @@ base+1+2:      1100101111011011
 
 In this way, we can deterministically generate very different looking filters for the same node, varying over the version number. The base filter stays inside the longer structure, . With an appropriately configured filter, this provides multiple features:
 
-* Privacy \(not fully zero knowledge, but pretty good\)
+* Privacy
+  * File names are never exposed
+  * Statistical methods may be able to reveal probable DAG structures
 * Deterministic pointers to the future
   * O\(log n\) search for updated nodes
-* Path verification can be done with zero knowledge outside of the base path of the highest node the user has access to
-* 
+* Minimal knowledge write access verification 
+  * A UCAN + a hash of the read key to the highest node the user can write to
+  * Match on cryptographically blind set membership
+
 
 
 
