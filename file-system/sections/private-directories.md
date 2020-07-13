@@ -33,7 +33,7 @@ data DecryptedNode
   = DDirectory DecryptedDirectory
   | DFile      DecryptedFile
   | DSymlink   DecryptedSymlink
-  | MovedTo    Path -- Must maintain the same key
+  | DMovedTo   Path -- Must maintain the same key
 
 data DecryptedDirectory = DecryptedDirectory
   { metadata :: Metadata
@@ -48,8 +48,6 @@ data EncryptedLink = EncryptedLink
   }
 ```
 
-NOTE TO SELF: when creating a new node, plz check for exiting items at that path. Hmm or hash in the key. Yeah, probably that.
-
 ## Node Naming
 
 A lot can be gleaned from a node’s name, or a tree structure.
@@ -63,19 +61,56 @@ To facilitate a determinist-but-obsfucated naming scheme, as well as give a veri
 Ths is achieved with XOR Filters \(a more efficient Bloom Filter\). These structures allow validation that an element is in some compressed/obfuscated set.
 
 ```text
-child_filter = iterate(parent_filter AND hash(revision <> aes_key))
+child_filter = hash_reduction(
+      parent_base
+  AND hash(aes_key) 
+  AND hash(revision ++ aes_key)
+)
 ```
 
-A previous design used the file path plus a nonce and its index. 
+> A previous design used the file path plus a nonce and its index. If the path changed, this would break any write certificates. The current design requires that you only know only the AES key used to encrypt a node \(we assume read access as a prerequisite to write  access\). The latest revision number can be found by scanning the store \(more on this later\), but is also stored on in node.
 
-If the path changed, this would break any write certificates. The current design requires that you only know only the AES key used to encrypt a node \(we assume read access as a prerequestite to write  access\). The latest revision number can be found by scanning the store \(more on this later\), but is also stored on in node.
+#### Hash Reduction
 
+With the naiive approach, it is easy to tell which nodes are higher in the DAG: ther filters are sparser. To further obsfucate the path without invalidating write tokens, we use a deterministic method to produce a consistently-sized filter \(to some depth\) via hash reduction.
 
+Hash reduction works by recursively `AND`ing the hash of the previous filter with the current filter, to some depth. As a simple example:
 
+```yaml
+parent_base:   1100100101011001
 
+key:           “abcdef”
+hash(key):     0000000110000000
+hash(version): 0000000100000001
 
+base:          1100100101011001
+               0000000110000000
+           AND 0000000100000001
+           ====================
+               1100100111011001
+               
+hash(base):    0100001000000010
 
+base+1:        1100100111011001
+           AND 0100001000000010
+           ====================
+               1100101111011011
+               
+hash(base+1):  0010000010001000
 
+base+1+2:      1100101111011011
+           AND 0010000010001000
+           ====================
+               1110101111011011
+```
+
+In this way, we can deterministically generate very different looking filters for the same node, varying over the version number. The base filter stays inside the longer structure, . With an appropriately configured filter, this provides multiple features:
+
+* Privacy \(not fully zero knowledge, but pretty good\)
+* Deterministic pointers to the future
+  * O\(log n\) search for updated nodes
+* Path verification can be done with zero knowledge outside of the base path of the highest node the user has access to
+* 
 
 
 
