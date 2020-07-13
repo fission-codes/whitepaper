@@ -115,13 +115,17 @@ Note that links are NOT flattened into a single node. FLOOFS maintains a sepacia
 Note that the prev link SHOULD be reified in a protocol link rather than in the cache to ensure that the link is real, the file will never be dropped \(if the root user breaks a layer\), and make it faster to verify.
 {% endhint %}
 
-## Protocol-Layer Cache
+## DAG Cache
 
-The protocol layer is the source of truth for linked data. However, to improve performance, FLOOFS keeps a \(recursive\) cache of the entire sub-DAG. We are told that this optimization is being worked on at the protocol layer, but this is our performance optimization in the meantime. We name this cache `dag.cbor`
+The protocol layer is the source of truth for linked data. However, to improve performance, FLOOFS keeps a \(recursive\) cache of the entire sub-DAG in the protocol layer. We are told that this optimization is being worked on at the protocol layer, but this is our performance optimization in the meantime. We name this cache `dag.cbor`
 
 The insight is that describing even a very large DAG in JSON or CBOR is more efficient over the network than is following a series of links in ”pass the bucket” linear traversal \(where each iteration may be a network request\).
 
-This cache records a single generation only. It does not include references to previous versions. Temporal operations aways occur on the protocol-level DAG, or abstractly accessed through the FLOOFS application layer. The DAG cache should be kept as thin as possible, as this may become quite large. Users do not expect history to be a  lightening fast operation. It is still accessible by looking at the concrete \(uncached\) vnode.
+### Interaction with Versioning
+
+This cache records a single generation only. It does not include references to previous versions. Temporal operations aways occur on the protocol-level DAG, or abstractly accessed through the FLOOFS application layer. The DAG cache should be kept as thin as possible, as this may become quite large. Users do not expect history to be a  lightening fast operation. It is still accessible by looking at the concrete \(uncached\) virtual node.
+
+### FAQ
 
 Why not only keep this cache at the file system root? Deep linking performance is greatly improved by being able to pull a single file off the network, and inspecting it locally.
 
