@@ -87,5 +87,5 @@ It is also possible to link further back more quickly with skip lists \(though m
 * 256 back
 * 512 back
 
-Because every version has links back, this setup gives `O(log n)` history access up to 512 versions back, and O\(n / 512\) beyond that. So for instance, 502 back would be achieved in 7 operations, 728 in 5, and 10k back in 21 operations. \(Calculation is: express the number in binary, and count the 1 bits until 512\).
+Because every version has links back, this setup gives `O(log n)` history access up to 512 versions back, and O\(n / 512\) beyond that. So for instance, 502 back would be achieved in 7 operations, 728 in 5, and 1M in 7. \(Calculation is: express the number in binary, and count the 1 bits\).
 
