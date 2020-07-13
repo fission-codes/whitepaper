@@ -8,7 +8,7 @@ This is versioning at the file system level only. Subfile versioning can be impl
 
 Versioning is quite simple at present: properties such as confluence are being left in favour of easy comprehension for less technical users. A single linear history is wel understood to most people. Advanced merging and split histories are possible down the road. Collaboration is also being pushed to another layer that looks more like system memory as opposed to the FLOOFS ”disk.”
 
-## Diffs and Generations
+## Diffs, Versions, and Generations
 
 Let’s consider an illustrative example: there is a simple tree of depth 2.
 
@@ -22,7 +22,7 @@ B   C
   D   E
 ```
 
-This DAG has no diffs, and one generation. Since the content changes, so does the CID and thus the pointers to it i the graph. So if we update node `E` to `E’`, the pointers above it need to be updated as well. This then changes `C` to `C’`, and thus `A` to `A’`. All other links can be copied over \(`B` and `D`\).
+This DAG has no diffs, one revision, and one generation. Since the content changes, so does the CID and thus the pointers to it i the graph. If we update node `E` to `E’`, the pointers above it need to be updated as well. This then changes `C` to `C’`, and thus `A` to `A’`\(“A version 1”\). All other links can be copied over \(`B` and `D` remain at their previous version 0\).
 
 ```text
 Gen 1
@@ -33,6 +33,8 @@ B   C’ <- Update link for E’
    / \
   D   E’ <- Change file
 ```
+
+As a rule, the highest node in a \(sub\)graph will have the highest version number, potentially beyond the highest version leaf node. This is because the parent is aggregating changes across multiple independent subgraphs.
 
 This is a new generation, which we can name after the sequence \(”generation 1”\), or by the name of the root node \(”A-prime”\). In practice, referencing the root node would be done by CID.
 

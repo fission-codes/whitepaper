@@ -1,5 +1,59 @@
 # Private
 
+The private section is an extension of the functionality in the public section. The additional goals of the private tree are to maximize privacy, security, flexibility, and autonomy for users.
+
+{% hint style="danger" %}
+Write access in FLOOFS is a semi-trusted setup. The root user delegates write access to subgraph. FLOOFS has aimed to be correct-by-construction where possible. However, since service verifiers cannot validate the inner contents of a write beyond access to a \(hidden\) file path, the submitter/writer may fill that node with anything.
+
+Validating the contents homomorphically or with some zero knowledge setup is technically possible, but the technology is still early. At minimum the efficiency need to improve greatly before that’s viable on deep DAG writes on a low-powered smartphone.
+{% endhint %}
+
+* MOVE POINTER AS A KIND OF NODE!
+* Runtime binary search lazy lookup
+
+## Secure Recursive Read Access
+
+The private section is recursively protected with AES-256 encryption. This is to say that each vnode is encrypted with an AES key, and each of its children are encrypted separately wit their own randomly derived AES keys. A node holds the keys to each of its children. In this way, having a key for a node also grants read access to that entire subgraph.
+
+## Encrypted Virtual Nodes “ENodes”
+
+A vnode that has been secured in this way is called an ”encrypted virtual node”. The contents of these nodes is largely the same as their plaintext counterparts, plus a key table for their children.
+
+The core difference is the encrypted storage \(protocol layer\), and secrecy of the key used to start the decryption process. The key is always external to the ENode, and its not aware of whch key was used to create it.
+
+### Encrypted Node Schemata
+
+```haskell
+data EncryptedNode = EncryptedNode CID -- simple!
+
+read :: AES256 -> EncryptedNode -> DecryptedNode
+
+data DecryptedNode
+  = DDirectory DecryptedDirectory
+  | DFile      File
+  | DSymlink   Symlink
+  | DMoved     
+  | DKeyRotation
+
+data DecryptedDirectory = DecryptedDirectory
+  { metadata :: Metadata
+  , previous :: EncryptedLink
+  , revision :: Natural 
+  , children :: Map Text EncryptedLink
+  }
+  
+data EncryptedLink = EncryptedLink
+  { key     :: AES256
+  , pointer :: EncryptedNode
+  }
+```
+
+
+
+-—-
+
+—
+
 Private files and directories are encrypted symmetrically.
 
 We specify a format for an encrypted file tree, inspired by Cryptrees as described by [Grolimund et al](https://ieeexplore.ieee.org/document/4032481).
