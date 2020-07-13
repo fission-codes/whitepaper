@@ -123,11 +123,13 @@ The insight is that describing even a very large DAG in JSON or CBOR is more eff
 
 ### Trees Not DAGs
 
+Th purpose of the cache is to help improve perfomance of deep link lookups. While the structure is fundamentally a DAG, the encoding of non-trees is less streamlined in CBOR or JSON. There are very simple path methods available for there formats if they’re represented directly as trees. Theo ther opion requires much jumping around lookup tables, rather than simply following a nested path.
 
+This is a minor space/time tradeoff: inthe cache all DAGs are converted to trees, with duplication in place of shared pointers. Since the structure is Merkelized, we don’t run the risk of mistaking disparate nodes for each other, and representing the structure as a tree is equally correct \(if more verbose\).
 
 ### Schema
 
-The cache describes the applicaion layer, not the protocol layer. This means that it is not constrained by the needs of the Merkle DAG.
+The cache describes the application layer, not the protocol layer. This means that it is not constrained by the needs of the Merkle DAG.
 
 ```haskell
 data 
