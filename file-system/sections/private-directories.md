@@ -9,7 +9,8 @@ Validating the contents homomorphically or with some zero knowledge setup is tec
 {% endhint %}
 
 * MOVE POINTER AS A KIND OF NODE!
-* Runtime binary search lazy lookup
+* Runtime  \*eager\* binary search lookup \(eventual progress\)
+* Global counter
 
 ## Secure Recursive Read Access
 
@@ -21,7 +22,7 @@ A vnode that has been secured in this way is called an ”encrypted virtual node
 
 The core difference is the encrypted storage \(protocol layer\), and secrecy of the key used to start the decryption process. The key is always external to the ENode, and its not aware of whch key was used to create it.
 
-### Encrypted Node Schemata
+### Encrypted Node Schemata \(Application Layer\)
 
 ```haskell
 data EncryptedNode = EncryptedNode CID -- simple!
@@ -30,15 +31,14 @@ read :: AES256 -> EncryptedNode -> DecryptedNode
 
 data DecryptedNode
   = DDirectory DecryptedDirectory
-  | DFile      File
-  | DSymlink   Symlink
-  | DMoved     
-  | DKeyRotation
+  | DFile      DecryptedFile
+  | DSymlink   DecryptedSymlink
+  | MovedTo    Path -- Must maintain the same key
 
 data DecryptedDirectory = DecryptedDirectory
   { metadata :: Metadata
   , previous :: EncryptedLink
-  , revision :: Natural 
+  , revision :: Natural -- Counter for this exact path
   , children :: Map Text EncryptedLink
   }
   
@@ -48,11 +48,43 @@ data EncryptedLink = EncryptedLink
   }
 ```
 
+NOTE TO SELF: when creating a new node, plz check for exiting items at that path. Hmm or hash in the key. Yeah, probably that.
+
+## Node Naming
+
+A lot can be gleaned from a node’s name, or a tree structure.
+
+Cryptographically secure methods do exist for this, but are quite new and currently perform much worse. FLOOFS opts to hide as much information as possible while remaining reasable on arbitrary hardware.
+
+### Probabilistic Filter Names
+
+To facilitate a determinist-but-obsfucated naming scheme, as well as give a verifier that doesn’t have read access the ability to check that the writer can submit updates to that path.
+
+Ths is achieved with XOR Filters \(a more efficient Bloom Filter\). These structures allow validation that an element is in some compressed/obfuscated set.
+
+```text
+child_filter = iterate(parent_filter AND hash(revision <> aes_key))
+```
+
+A previous design used the file path plus a nonce and its index. 
+
+If the path changed, this would break any write certificates. The current design requires that you only know only the AES key used to encrypt a node \(we assume read access as a prerequestite to write  access\). The latest revision number can be found by scanning the store \(more on this later\), but is also stored on in node.
 
 
--—-
 
-—
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Private files and directories are encrypted symmetrically.
 
