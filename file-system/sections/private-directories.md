@@ -9,7 +9,7 @@ Validating the contents homomorphically or with some zero knowledge setup is tec
 {% endhint %}
 
 * MOVE POINTER AS A KIND OF NODE!
-* Runtime  \*eager\* binary search lookup \(eventual progress\)
+* Runtime  \*lazy\* binary search lookup \(eventual progress\)
 * Global counter
 
 ## Secure Recursive Read Access
@@ -28,6 +28,18 @@ The core difference is the encrypted storage \(protocol layer\), and secrecy of 
 data EncryptedNode = EncryptedNode CID -- simple!
 
 read :: AES256 -> EncryptedNode -> DecryptedNode
+
+data ETree 
+  = ETreeNode 
+  | ETreeLeaf
+
+data ETreeLeaf 
+  = ETreeLeaf CID
+
+data ETreeNode = ETreeNode
+  { zero :: (Binary, ETree) -- NOTEThese are *sides*, and may terminate directly
+  , one  :: (Binary, ETree)
+  }  
 
 data DecryptedNode
   = DDirectory DecryptedDirectory
@@ -48,6 +60,12 @@ data EncryptedLink = EncryptedLink
   }
 ```
 
+### Decrypted Nodes
+
+Since the structure of a cryptDAG is hidden completely from the outside world, there is a very strict separation between the application layer, and how things are organized at the protocol layer. There are still two layers, but the protocol layer is more closely relied on by the application layer.
+
+The protocol layer describes encrypted nodes, with a special naming scheme and organized in a Merkle Patricia Tree \(more below in Storage Layout\). These can be converted to a decrypted virtual node via an _external_ symmetric key.
+
 ## Storage Layout
 
 Encrypted virtual nodes are kept in a Merkle Patricia tree \(MPT\), organized by a blinded file name \(see more in the naming section below\).
@@ -58,7 +76,19 @@ This layout greatly improves write access verification time, while eliminating t
 
 ## Read Access
 
-FLOOFS has a recursive read access model known as a cryptree \(technically a cryptDAG in our case\).
+FLOOFS has a recursive read access model known as a cryptree \(technically a cryptDAG in our case\). Each Decrypted Virtual Node contains the keys 
+
+
+
+```text
++—————————————+
+| 
+|   EncryptedNode 
+|
+|   +———————————————————+
+|   |                   |
+|   |   DecryptedNode   |
+```
 
 
 
