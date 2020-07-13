@@ -132,7 +132,15 @@ This is a minor space/time tradeoff: inthe cache all DAGs are converted to trees
 The cache describes the application layer, not the protocol layer. This means that it is not constrained by the needs of the Merkle DAG.
 
 ```haskell
-data 
+data CacheNode
+  = CacheFile CID
+  | Directory CacheDirectory
+  | Symlink   DNSLink
+
+data CacheDirectory = CacheDiectory
+  { cid      :: CID
+  , contents :: Map Text CacheNode
+  }
 ```
 
 ### Interaction with Versioning
