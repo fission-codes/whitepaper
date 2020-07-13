@@ -121,11 +121,21 @@ The protocol layer is the source of truth for linked data. However, to improve p
 
 The insight is that describing even a very large DAG in JSON or CBOR is more efficient over the network than is following a series of links in ”pass the bucket” linear traversal \(where each iteration may be a network request\).
 
+### Trees Not DAGs
+
+
+
+### Schema
+
+The cache describes the applicaion layer, not the protocol layer. This means that it is not constrained by the needs of the Merkle DAG.
+
+```haskell
+data 
+```
+
 ### Interaction with Versioning
 
 This cache records a single generation only. It does not include references to previous versions. Temporal operations aways occur on the protocol-level DAG, or abstractly accessed through the FLOOFS application layer. The DAG cache should be kept as thin as possible, as this may become quite large. Users do not expect history to be a  lightening fast operation. It is still accessible by looking at the concrete \(uncached\) virtual node.
-
-### Trees Not DAGs
 
 ### FAQ
 
