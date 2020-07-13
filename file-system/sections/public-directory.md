@@ -117,13 +117,11 @@ Note that the prev link SHOULD be reified in a protocol link rather than in the 
 
 ## Protocol-Layer Cache
 
-The protocol layer is the source of truth for linked data. However, to improve performance, FLOOFS keeps a \(recursive\) cache of the entire sub-DAG. We are told that this optimization is being worked on at the protocol layer, but this is our performance optimization in the meantime.
+The protocol layer is the source of truth for linked data. However, to improve performance, FLOOFS keeps a \(recursive\) cache of the entire sub-DAG. We are told that this optimization is being worked on at the protocol layer, but this is our performance optimization in the meantime. We name this cache `dag.cbor`
 
 The insight is that describing even a very large DAG in JSON or CBOR is more efficient over the network than is following a series of links in ”pass the bucket” linear traversal \(where each iteration may be a network request\).
 
-Since we’re already generating a description of the entire subDAG in a file, we also merge any metadata into the same file.
-
-Single generation, wit a pointer
+This cache records a single generation only. It does not include references to previous versions. Temporal operations aways occur on the protocol-level DAG, or abstractly accessed through the FLOOFS application layer.
 
 Why not only keep this cache at the file system root? Deep linking performance is greatly improved by being able to pull a single file off the network, and inspecting it locally.
 
