@@ -29,7 +29,7 @@ A pun in the layout of the `pretty` section is to view the prefix “pretty” a
         |
         +—— meta
         |     |
-        |     +—— prev
+        |     +—— prev 
         |
         +—— public
               |
