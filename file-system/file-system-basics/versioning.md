@@ -41,6 +41,18 @@ There is one diff here: `<A’, C’, E’>`. The rest is shared structurally. T
 Given that FLOOFS is nondestructive, we can easily gain history by simply adding an edge named `previous` to the older version of the vnode. This also makes validation that the DAG has been nondestructively appended with a Merkle proof that `A` exists inside `A’`.
 
 ```text
+==========
+= LEGEND =
+==========
+
+..... Identity relation
+
+<———— Previous version
+
+===========
+= DIAGRAM =
+===========
+
 Gen 0          Gen 1
 
   A<—————————————A’
@@ -59,4 +71,8 @@ This matter is somewhat complicated by the additional abstraction of an Encrypte
 
 Please refer to the private section docs for more.
 {% endhint %}
+
+## Rewind ⏪
+
+It is also possible to link further back more quickly. If users find that they’re paging back far into the past, skip lists are also possible \(though more time consuming to verify\).
 

@@ -1,4 +1,4 @@
-# Private Directories
+# Private
 
 Private files and directories are encrypted symmetrically.
 
