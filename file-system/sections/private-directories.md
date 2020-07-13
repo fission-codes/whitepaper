@@ -40,7 +40,31 @@ data ETreeNode = ETreeNode
   { zero :: (Binary, ETree) -- NOTEThese are *sides*, and may terminate directly
   , one  :: (Binary, ETree)
   }  
+```
 
+### Decrypted Nodes
+
+Since the structure of a cryptDAG is hidden completely from the outside world, there is a very strict separation between the application layer, and how things are organized at the protocol layer. There are still two layers, but the protocol layer is more closely relied on by the application layer.
+
+The protocol layer describes encrypted nodes, with a special naming scheme and organized in a Merkle Patricia Tree \(more below in Storage Layout\). These can be converted to a decrypted virtual node via an _external_ symmetric key.
+
+## Storage Layout
+
+Encrypted virtual nodes are kept in a Merkle Patricia tree \(MPT\), organized by a blinded file name \(see more in the naming section below\).
+
+The probabilistic nature of XOR filter filenames does mean that related files are more likely to be placed near each other in the MPT, while not giving away why they are placed in that part of the tree. Some direct descendants or siblings will be in far other parts of the tree, depending on the position of the first different bit. The filter is fixed-size, which further simplifies this layout.
+
+This layout greatly improves write access verification time, while eliminating the plaintext tree structure. An authorized user reconstructs the semantically relevant DAG at runtime by following links in decrypted nodes. The links point to entries in the MPT, giving `O(1) ~ o(log n | n < 10)` access \(where `n` is the number of bits, which is constant in an XOR filter\). Organizing as a BST/Patricia tree is a very common approach for implementing hash tables like this one.
+
+## Read Access
+
+FLOOFS has a recursive read access model known as a cryptree \(technically a cryptDAG in our case\). Each Decrypted Virtual Node contains the keys to its children nodes. It also includes the human-readable path name, and the of the revision that it’s aware of \(more below\).
+
+```haskell
+data DecryptedNode = DecryptedNode
+  {
+  }
+  
 data DecryptedNode
   = DDirectory DecryptedDirectory
   | DFile      DecryptedFile
@@ -60,37 +84,7 @@ data EncryptedLink = EncryptedLink
   }
 ```
 
-### Decrypted Nodes
-
-Since the structure of a cryptDAG is hidden completely from the outside world, there is a very strict separation between the application layer, and how things are organized at the protocol layer. There are still two layers, but the protocol layer is more closely relied on by the application layer.
-
-The protocol layer describes encrypted nodes, with a special naming scheme and organized in a Merkle Patricia Tree \(more below in Storage Layout\). These can be converted to a decrypted virtual node via an _external_ symmetric key.
-
-## Storage Layout
-
-Encrypted virtual nodes are kept in a Merkle Patricia tree \(MPT\), organized by a blinded file name \(see more in the naming section below\).
-
-The probabilistic nature of XOR filter filenames does mean that related files are more likely to be placed near each other in the MPT, while not giving away why they are placed in that part of the tree. Some direct descendants or siblings will be in far other parts of the tree, depending on the position of the first different bit. The filter is fixed-size, which further simplifies this layout.
-
-This layout greatly improves write access verification time, while eliminating the plaintext tree structure. An authorized user reconstructs the semantically relevant DAG at runtime by following links in decrypted nodes. The links point to entries in the MPT, giving `O(1) ~ o(log n | n < 10)` access \(where `n` is the number of bits, which is constant in an XOR filter\). Organizing as a BST/Patricia tree is a very common approach for implementing hash tables like this one.
-
-## Read Access
-
-FLOOFS has a recursive read access model known as a cryptree \(technically a cryptDAG in our case\). Each Decrypted Virtual Node contains the keys 
-
-
-
-```text
-+—————————————+
-| 
-|   EncryptedNode 
-|
-|   +———————————————————+
-|   |                   |
-|   |   DecryptedNode   |
-```
-
-
+### Deterministic Seek Ahead
 
 ## Node Naming
 
