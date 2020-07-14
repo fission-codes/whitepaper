@@ -16,19 +16,19 @@ The protocol layer for the private section is filled exclusively with encrypted 
 
 An append-only namespace with unique names has a number of nice properties. For one, it can be represented as a simple sorted array.
 
-The filenames space is larger than we could ever use. It includes many redundant bits to aid in oblivious access control \(more below\), but need not exist in this lookup table. Instead we use a standard SHA256 to reduce the size by nearly half in the hash table. Between the hash and CID, each record occupies ~64 bytes \(depending on generation of CID\). This table can store ~15k entries / MB. Most of the underlying blocks will stay the same size 
+The filenames space is larger than we could ever use. It includes many redundant bits to aid in oblivious access control \(more below\), but need not exist in this lookup table. Instead we use a standard SHA256 to reduce the size by nearly half in the hash table. Between the hash and CID, each record occupies ~64 bytes \(depending on generation of CID\). This table can store ~15k entries / MB. Most of the underlying blocks will stay the same size, so syncing updates is very efficient in the normal case.
 
 ```text
-sha(name)cid
+sha256(name)cid
 ```
 
-There is additionally a compact cache, stored as a simple DSV file. As an example, with smaller file names for legibility, separated by newlines:
+There is additionally a compact cache, stored as a simple DSV file. As an example, separated by newlines:
 
 ```text
-0100QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ
-0101QmetjBvK1M7STBSgauk1WaLHhzRG6mZpMeWZpEjYJXZcBi
-0111QmfYStuhL72tdXoQWzicdzEehYaeXvhUNCrawBEWNP7DYX
-1010QmXvdZoqpPbsN6UQHomFtMiCm8C4VZZb8KBBUBapEB8LHP
+9EHKSbWZQfgRtCowkNtQosmC6CeQajvpvUTK4zJixjEKQmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ
+33UrmA5tdPd4m97gB8FxRnwrErd3z2iKnU1W87zJqkMCQmetjBvK1M7STBSgauk1WaLHhzRG6mZpMeWZpEjYJXZcBi
+2fFhPSYcgauRHumcQJqLvTxALipgmRLrAyYMDgmDVHU9QmfYStuhL72tdXoQWzicdzEehYaeXvhUNCrawBEWNP7DYX
+7jRXo2LwMyUpgUuzkiKdNzFV4ZSZCbg5hjd3Ka7zsap5QmXvdZoqpPbsN6UQHomFtMiCm8C4VZZb8KBBUBapEB8LHP
 ```
 
 An update to this is simply adding an entry at the correct \(ordered\) position in the file:
