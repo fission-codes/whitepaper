@@ -10,7 +10,7 @@ Validating the contents homomorphically or with some zero knowledge setup is tec
 
 ## Protocol Layer Memory Layout
 
-The protocol layer for the private section is filled exclusively with encrypted nodes. They have 512-bit \(64 byte\) names arranged in a Merkle Patricia tree \(MPT\). The names are deterministic \(as seen below\) and 
+The protocol layer for the private section is filled exclusively with encrypted nodes. They have 512-bit \(64 byte\) names arranged in a Merkle Patricia tree \(MPT\). The names are deterministic \(as seen below\), and collisions extrememly unlikely in the 2^512 \(10^77\) namespace.
 
 ### Single-File Cache
 
@@ -25,22 +25,21 @@ sha256(name)cid
 There is additionally a compact cache, stored as a simple DSV file. As an example, separated by newlines:
 
 ```text
-9EHKSbWZQfgRtCowkNtQosmC6CeQajvpvUTK4zJixjEKQmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ
-33UrmA5tdPd4m97gB8FxRnwrErd3z2iKnU1W87zJqkMCQmetjBvK1M7STBSgauk1WaLHhzRG6mZpMeWZpEjYJXZcBi
 2fFhPSYcgauRHumcQJqLvTxALipgmRLrAyYMDgmDVHU9QmfYStuhL72tdXoQWzicdzEehYaeXvhUNCrawBEWNP7DYX
+33UrmA5tdPd4m97gB8FxRnwrErd3z2iKnU1W87zJqkMCQmetjBvK1M7STBSgauk1WaLHhzRG6mZpMeWZpEjYJXZcBi
 7jRXo2LwMyUpgUuzkiKdNzFV4ZSZCbg5hjd3Ka7zsap5QmXvdZoqpPbsN6UQHomFtMiCm8C4VZZb8KBBUBapEB8LHP
+9EHKSbWZQfgRtCowkNtQosmC6CeQajvpvUTK4zJixjEKQmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ
 ```
 
 An update to this is simply adding an entry at the correct \(ordered\) position in the file:
 
 ```bash
-0100QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ
-0101QmetjBvK1M7STBSgauk1WaLHhzRG6mZpMeWZpEjYJXZcBi
-0111QmfYStuhL72tdXoQWzicdzEehYaeXvhUNCrawBEWNP7DYX # New!
-1010QmXvdZoqpPbsN6UQHomFtMiCm8C4VZZb8KBBUBapEB8LHP
+2fFhPSYcgauRHumcQJqLvTxALipgmRLrAyYMDgmDVHU9QmfYStuhL72tdXoQWzicdzEehYaeXvhUNCrawBEWNP7DYX
+33UrmA5tdPd4m97gB8FxRnwrErd3z2iKnU1W87zJqkMCQmetjBvK1M7STBSgauk1WaLHhzRG6mZpMeWZpEjYJXZcBi
+7jRXo2LwMyUpgUuzkiKdNzFV4ZSZCbg5hjd3Ka7zsap5QmXvdZoqpPbsN6UQHomFtMiCm8C4VZZb8KBBUBapEB8LHP
+7B275X26t46NXcgxxBQc1x5QQHx9rULSn6aBb7yrc9b5QmfYStuhL72tdXoQWzicdzEehYaeXvhUNCrawBEWNP7DYX # New!
+9EHKSbWZQfgRtCowkNtQosmC6CeQajvpvUTK4zJixjEKQmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ
 ```
-
-The layout with CIDv0 
 
 ## Secure Recursive Read Access
 
