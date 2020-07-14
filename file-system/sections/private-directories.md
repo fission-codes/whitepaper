@@ -8,9 +8,39 @@ Write access in FLOOFS is a semi-trusted setup. The root user delegates write ac
 Validating the contents homomorphically or with some zero knowledge setup is technically possible, but the technology is still early. At minimum the efficiency need to improve greatly before that’s viable on deep DAG writes on a low-powered smartphone.
 {% endhint %}
 
-* MOVE POINTER AS A KIND OF NODE!
-* Runtime  \*lazy\* binary search lookup \(eventual progress\)
-* Global counter
+## Protocol Layer Memory Layout
+
+The protocol layer for the private section is filled exclusively with encrypted nodes. They have 512-bit \(64 byte\) names arranged in a Merkle Patricia tree \(MPT\). The names are deterministic \(as seen below\) and 
+
+### Single-File Cache
+
+An append-only namespace with unique names has a number of nice properties. For one, it can be represented as a simple sorted array.
+
+The filenames space is larger than we could ever use. It includes many redundant bits to aid in oblivious access control \(more below\), but need not exist in this lookup table. Instead we use a standard SHA256 to reduce the size by nearly half in the hash table. Between the hash and CID, each record occupies ~64 bytes \(depending on generation of CID\). This table can store ~15k entries / MB. Most of the underlying blocks will stay the same size 
+
+```text
+sha(name)cid
+```
+
+There is additionally a compact cache, stored as a simple DSV file. As an example, with smaller file names for legibility, separated by newlines:
+
+```text
+0100QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ
+0101QmetjBvK1M7STBSgauk1WaLHhzRG6mZpMeWZpEjYJXZcBi
+0111QmfYStuhL72tdXoQWzicdzEehYaeXvhUNCrawBEWNP7DYX
+1010QmXvdZoqpPbsN6UQHomFtMiCm8C4VZZb8KBBUBapEB8LHP
+```
+
+An update to this is simply adding an entry at the correct \(ordered\) position in the file:
+
+```bash
+0100QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ
+0101QmetjBvK1M7STBSgauk1WaLHhzRG6mZpMeWZpEjYJXZcBi
+0111QmfYStuhL72tdXoQWzicdzEehYaeXvhUNCrawBEWNP7DYX # New!
+1010QmXvdZoqpPbsN6UQHomFtMiCm8C4VZZb8KBBUBapEB8LHP
+```
+
+The layout with CIDv0 
 
 ## Secure Recursive Read Access
 
