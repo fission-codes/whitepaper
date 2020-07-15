@@ -120,26 +120,22 @@ read :: AES256 -> EncryptedNode -> DecryptedNode
 data DecryptedDirectory = DecryptedDirectory
   { metadata     :: Metadata
   , parentFilter :: MinimalFilter
-  , previous     :: EncryptedLink
   , revision     :: Natural -- Counter for this exact path
+  , previous     :: EncryptedLink
   , children     :: Map Text EncryptedLink
+  , dagCache :: JSON
   }
   
 data EncryptedLink = EncryptedLink
-  { key     :: AES256
-  , path    :: Text
+  { path    :: Text
+  , key     :: AES256
   , pointer :: EncryptedNode
   }
   
-  data File = File
+data DecryptedFile = DecryptedFile
   { metadata   :: Metadata
+  , key        :: AES256
   , rawContent :: CID
-  }
-  
-data Directory protocol = Directory
-  { metadata :: Metadata
-  , index    :: Map Text VirtualNode
-  , dagCache :: JSON
   }
 ```
 
