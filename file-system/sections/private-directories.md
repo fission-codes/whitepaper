@@ -200,15 +200,24 @@ This is achieved with XOR Filters \(a more efficient Bloom Filter\). These struc
 
 #### Bare Name Filters
 
-A bare name filter includes the smallest amount of information. It can be revealed to a a user that has read access to child nodes to help them build their own filters. They can be constructed by adding the current AES key and all of the keys above this node into an XOR filter. Since this is a associative process, equipping the node with its  own name filter is sufficient.
+A bare name filter includes the smallest amount of information. It can be revealed to a a user that has read access to child nodes to help them build their own filters. They can be constructed by adding the current AES key and all of the keys above this node into an XOR filter. Since this is associative, equipping the node with its  own name filter is sufficient.
 
-Bare filters do not include the version number, or fill out the filter to a particular level.
+In FLOOFS, bare filters are generated for child nodes by adding the hash of the AES key to the existing filter, and storing that directly on the child for its further use. Bare filters are used in constructing names in the MPT, in the node cache, as well as by UCANs to authorize writing new nodes to a to a subgraph.
 
-Bare filters are used in consructing names in the MPT and node cache, as well as used by UCANs to authorize writing to a subgraph.
+Bare filters do not include the version number, or fill out the filter to a particular level. We can see each filter entry as a path segment. The need not be ordered since each is entry is unique and randomly generated.
 
 ### Saturated Name Filters
 
-To futher obscure the information in a name filter, we want to deterinistically fill the space to a predetermined amount. This obscures the depth of this node.
+To futher obscure the information in a name filter, we want to deterinistically fill the space to a predetermined amount. This obscures the position of the node in the DAG. The bare filter \(above\) is of varying length, so we want to saturate it equally.
+
+All name filters must be unique \(since storage is append-only\). We gain uniqueness by including the revision number in XOR filter. However, we only want to reveal revision numbers to authorized users. We use the AES key itself as a cryptographic pepper, and append to the version, and add that hash to the XOR filter.
+
+```haskell
+pepperedRevision = hash (revision <> aesKey)
+versionedNameFilter = bareFilter .&. peppredRevision
+```
+
+
 
 ```text
 child_filter = hash_reduction(bare_filter AND hash(revision ++ aes_key))
