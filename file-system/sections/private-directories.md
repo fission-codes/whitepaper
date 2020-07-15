@@ -124,12 +124,12 @@ data PrivateFile = PrivateFile
   }
 
 data PrivateDirectory = PrivateDirectory
-  { metadata     :: Metadata
-  , parentFilter :: MinimalFilter
-  , revision     :: Natural -- Version counter for this exact AES key
-  , previous     :: EncryptedLink
-  , children     :: Map Text PrivateLink
-  , dagCache     :: DAGCache
+  { metadata       :: Metadata
+  , bareNameFilter :: BareNameFilter
+  , revision       :: Natural -- Version counter for this exact AES key
+  , previous       :: EncryptedLink
+  , children       :: Map Text PrivateLink
+  , dagCache       :: DAGCache
   }
 
 data DAGCache 
@@ -179,28 +179,34 @@ Since name filters are deterministic, we can look up a version in constant time 
 
 If you have a pointer to a particular file, there is no way of knowing that you have been linked to the latest version of a node. The information that you do have includes everything that you need to construct a name filter.
 
-* The current node’s AES key \(you decrypted it\)
-* The revision number of the current node \(stored on the node\)
-* The parent‘s bare name filter \(stored on the node\)
-
-
+* The current node’s AES key
+  * Needed to decrypt this node
+* The revision number of the current node
+  * Stored on the node
+* The parent‘s bare name filter
+  * Stored on the node
+  * Reverse-engineerable if you have the current node’s name filter
 
 ### Secret Names
 
-A lot can be gleaned from a node’s name, or a tree structure.
+Structural information can be analyzed probabilistically from a node’s name, or a tree structure. Ergo we go to some effort to hide this information from users that should not know this information.
 
 Fully zero knowledge methods do exist for this, but are quite new and do not \(yet\) perform fast enough to be practical for this use case. FLOOFS opts to hide as much information as possible while remaining reasable on a low-end smartphone.
 
-### Path Filters
+### Name Filters
 
 To facilitate a determinist-but-highly-obsfucated naming scheme, as well as give a verifier that doesn’t have read access the ability to check that the writer can submit updates to that path.
 
-Ths is achieved with XOR Filters \(a more efficient Bloom Filter\). These structures allow validation that an element is in some compressed/obfuscated set.
+This is achieved with XOR Filters \(a more efficient Bloom Filter\). These structures allow validation that an element is in some compressed/obfuscated set.
+
+#### Bare Name Filters
+
+A bare name filter includes the smallest amount of information. It can be revealed to a a user that has read access to child nodes to help them build their own filters.
 
 ```text
 child_filter = hash_reduction(
-      parent_filter
-  AND hash(aes_key) 
+      parent_bare_filter
+  AND hash(aes_key)
   AND hash(revision ++ aes_key)
 )
 ```
