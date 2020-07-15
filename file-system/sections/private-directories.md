@@ -114,7 +114,7 @@ read :: AES256 -> EncryptedNode -> DecryptedNode
 data DecryptedNode
   = DecryptedDirectory PrivateDirectory
   | DecryptedFile      PrivateFile
-  | DecryptedSymlink   PrivateSymlink
+  | DecryptedSymlink   Symlink
   | DecryptedMovedTo   PathFilter -- Must maintain the same key to work
 
 data PrivateFile = PrivateFile
@@ -133,7 +133,7 @@ data PrivateDirectory = PrivateDirectory
   }
 
 data DAGCache 
-  = Leaf PathFilter
+  = Leaf CID
   | Branch (Map TextPath DAGCache)
   
 data PrivateLink = PrivateLink
@@ -149,7 +149,11 @@ The private section is recursively protected with AES-256 encryption. This is to
 
 ### Revocation
 
-Read access revocation is achieved by changing the AES key and linking to a higher node. A node with no valid key pointing at it is said to be orphaned, since it has no parents that are capable of acessing the data locked in the node.
+Read access revocation is achieved by changing the AES key and linking to a higher node. As such, it is not recommended for a user with write permissions to rotate the key of the root of ther subgraph, unless they’re able to redistribute that key somehow. For example, the root user is able to update the key for the root of the graph, and distributet that key to their other user instances by the `shared_by_me`mechanism.
+
+{% hint style="danger" %}
+A node with no valid key pointing at it is said to be orphaned, since it has no parents that are capable of acessing the data locked in the node. It may be marked for garbase collection by the root user.
+{% endhint %}
 
 ### Decrypted Nodes
 
