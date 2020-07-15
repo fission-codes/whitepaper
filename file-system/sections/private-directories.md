@@ -183,9 +183,8 @@ If you have a pointer to a particular file, there is no way of knowing that you 
   * Needed to decrypt this node
 * The revision number of the current node
   * Stored on the node
-* The parent‘s bare name filter
+* This node‘s bare name filter
   * Stored on the node
-  * Reverse-engineerable if you have the current node’s name filter
 
 ### Secret Names
 
@@ -201,14 +200,18 @@ This is achieved with XOR Filters \(a more efficient Bloom Filter\). These struc
 
 #### Bare Name Filters
 
-A bare name filter includes the smallest amount of information. It can be revealed to a a user that has read access to child nodes to help them build their own filters.
+A bare name filter includes the smallest amount of information. It can be revealed to a a user that has read access to child nodes to help them build their own filters. They can be constructed by adding the current AES key and all of the keys above this node into an XOR filter. Since this is a associative process, equipping the node with its  own name filter is sufficient.
+
+Bare filters do not include the version number, or fill out the filter to a particular level.
+
+Bare filters are used in consructing names in the MPT and node cache, as well as used by UCANs to authorize writing to a subgraph.
+
+### Saturated Name Filters
+
+To futher obscure the information in a name filter, we want to deterinistically fill the space to a predetermined amount. This obscures the depth of this node.
 
 ```text
-child_filter = hash_reduction(
-      parent_bare_filter
-  AND hash(aes_key)
-  AND hash(revision ++ aes_key)
-)
+child_filter = hash_reduction(bare_filter AND hash(revision ++ aes_key))
 ```
 
 > A previous design used the file path plus a nonce and its index. If the path changed, this would break any write certificates. The current design requires that you only know only the AES key used to encrypt a node \(we assume read access as a prerequisite to write  access\). The latest revision number can be found by scanning the store \(more on this later\), but is also stored on in node.
