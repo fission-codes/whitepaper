@@ -137,7 +137,7 @@ data DAGCache
   | Branch (Map TextPath DAGCache)
   
 data PrivateLink = PrivateLink
-  { path    :: Text
+  { path    :: Text -- Just the last segment in the chain
   , key     :: AES256
   , pointer :: CID
   }
@@ -146,6 +146,10 @@ data PrivateLink = PrivateLink
 ### Secure Recursive Read Access
 
 The private section is recursively protected with AES-256 encryption. This is to say that each vnode is encrypted with an AES key, and each of its children are encrypted separately with their own randomly derived AES keys. A node holds the keys to each of its children. In this way, having a key for a node also grants read access to that entire subgraph.
+
+### Revocation
+
+Read access revocation is achieved by changing the AES key and linking to a higher node. A node with no valid key pointing at it is said to be orphaned, since it has no parents that are capable of acessing the data locked in the node.
 
 ### Decrypted Nodes
 
