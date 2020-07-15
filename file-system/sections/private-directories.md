@@ -161,7 +161,28 @@ Encrypted virtual nodes are kept in a Merkle Patricia tree \(MPT\), organized by
 
 The probabilistic nature of XOR filter filenames does mean that related files are more likely to be placed near each other in the MPT, while not giving away why they are placed in that part of the tree. Some direct descendants or siblings will be in far other parts of the tree, depending on the position of the first different bit. The filter is fixed-size, which further simplifies this layout.
 
-This layout greatly improves write access verification time, while eliminating the plaintext tree structure. An authorized user reconstructs the semantically relevant DAG at runtime by following links in decrypted nodes. The links point to entries in the MPT, giving `O(1) ~ o(log n | n < 10)` access \(where `n` is the number of bits, which is constant in an XOR filter\). Organizing as a BST/Patricia tree is a very common approach for implementing hash tables like this one.
+This layout greatly improves write access verification time, while eliminating the plaintext tree structure. An authorized user reconstructs the human-readable DAG at runtime by following links in decrypted nodes. Their links point to files in the MPT \(or faster via the cache\). The low-level flow is always pointing back to the table.
+
+```text
+Raw CIDs    Hash Table      Node A   Locked[Node B]      Node B
+    |            |             |          |                |
+    |            | hash(foo)?  |          |                |
+    |            |<————————————|          |                |
+    |            |             |          |                |
+    |            |————————————>|          |                |
+    |            |  Qm124356!  |          |                |
+    |            |             |          |                |
+    |   Qm12345? |             |          |                |
+    |<—————————————————————————|          |                |
+    |            |             |          |                |
+    |————————————————————————————————————>|                |
+    | Raw Chunks |             |          |                |
+    |            |             |  AES256  |                |
+    |            |             |—————————>|                |
+    |            |             |          |    Decrypt     |
+    |            |             |          |———————————————>|
+    |            |             |          |                |
+```
 
 ## Read Access
 
