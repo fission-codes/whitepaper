@@ -111,27 +111,35 @@ read :: AES256 -> EncryptedNode -> DecryptedNode
 ### Unlocked Private Node Schema
 
 ```haskell
-data DecryptedNode = DecryptedNode
-  { metadata :: Metadata
-  , 
-  }
-  
-data DecryptedNode
+  data DecryptedNode
   = DDirectory DecryptedDirectory
   | DFile      DecryptedFile
   | DSymlink   DecryptedSymlink
   | DMovedTo   Path -- Must maintain the same key
 
 data DecryptedDirectory = DecryptedDirectory
-  { metadata :: Metadata
-  , previous :: EncryptedLink
-  , revision :: Natural -- Counter for this exact path
-  , children :: Map Text EncryptedLink
+  { metadata     :: Metadata
+  , parentFilter :: MinimalFilter
+  , previous     :: EncryptedLink
+  , revision     :: Natural -- Counter for this exact path
+  , children     :: Map Text EncryptedLink
   }
   
 data EncryptedLink = EncryptedLink
   { key     :: AES256
+  , path    :: Text
   , pointer :: EncryptedNode
+  }
+  
+  data File = File
+  { metadata   :: Metadata
+  , rawContent :: CID
+  }
+  
+data Directory protocol = Directory
+  { metadata :: Metadata
+  , index    :: Map Text VirtualNode
+  , dagCache :: JSON
   }
 ```
 
