@@ -14,7 +14,7 @@ Validating the contents homomorphically or with some zero knowledge setup is tec
 
 The protocol layer for the private section is filled exclusively with “locked“ /encrypted private virtual nodes \(“ENode”s\). They have 512-bit \(64 byte\) names arranged in a Merkle Patricia tree \(MPT\). The names are deterministic, and collisions extrememly unlikely in the 2^512 \(10^77\) namespace. More detail on the naming system is available in its own section.
 
-The MPT layout allows for efficient validation that an update is append-only and thus nondestructive.
+The MPT layout allows for efficient validation that an update is append-only \(and thus nondestructive\).
 
 ### ENode Content
 
@@ -49,7 +49,7 @@ yP4cqy7jmaRDzC2bmcGNZkuQb3VdftMk6YH7ynQ2Qw4zktKsyA9fk52xghNQNAdkpF9iFmFkKh2bNVG4
 
 The method of generating these names is explained in the decrypted node section.
 
-### Hash Table Cache
+### Node Cache
 
 {% hint style="info" %}
 It’s concievable that this structure could be implemented ”natively” in IPFS by using the `Links` array, but would require investigating the bounds and performance characteristics of the protocol itself.
@@ -175,6 +175,16 @@ FLOOFS has a recursive read access model known as a cryptree \(technically a cry
 
 ### Deterministic Seek Ahead
 
+Since name filters are deterministic, we can look up a version in constant time from the node cache. Below we go into greater detail about how progress is ensured, but is relevant to lookup.
+
+If you have a pointer to a particular file, there is no way of knowing that you have been linked to the latest version of a node. The information that you do have includes everything that you need to construct a name filter.
+
+* The current node’s AES key \(you decrypted it\)
+* The revision number of the current node \(stored on the node\)
+* The parent‘s bare name filter \(stored on the node\)
+
+
+
 ### Secret Names
 
 A lot can be gleaned from a node’s name, or a tree structure.
@@ -244,6 +254,8 @@ constantSized aesKey bits =
      then bits
      else constantSize (bits .&. toEntry (awsKey <> show bits))
 ```
+
+NOTE write up bare filters vs full ones.
 
 In this way, we can deterministically generate very different looking filters for the same node, varying over the version number. The base filter stays inside the longer structure, . With an appropriately configured filter, this provides multiple features:
 
