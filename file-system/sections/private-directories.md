@@ -12,11 +12,11 @@ Validating the contents homomorphically or with some zero knowledge setup is tec
 
 ### Storage Layout
 
-The protocol layer for the private section is filled exclusively with encrypted virtual nodes \(“ENode”s\). They have 512-bit \(64 byte\) names arranged in a Merkle Patricia tree \(MPT\). The names are deterministic, and collisions extrememly unlikely in the 2^512 \(10^77\) namespace. More detail on the naming system is available in its own section.
+The protocol layer for the private section is filled exclusively with “locked“ /encrypted private virtual nodes \(“ENode”s\). They have 512-bit \(64 byte\) names arranged in a Merkle Patricia tree \(MPT\). The names are deterministic, and collisions extrememly unlikely in the 2^512 \(10^77\) namespace. More detail on the naming system is available in its own section.
 
 The MPT layout allows for efficient validation that an update is append-only and thus nondestructive.
 
-### ENodes Content
+### ENode Content
 
 A vnode that has been secured in this way is called an ”encrypted virtual node”. The contents of these nodes is largely the same as their plaintext counterparts, plus a key table for their children.
 
@@ -53,9 +53,15 @@ The method of generating these names is explained in the decrypted node section.
 
 {% hint style="info" %}
 It’s concievable that this structure could be implemented ”natively” in IPFS by using the `Links` array, but would require investigating the bounds and performance characteristics of the protocol itself.
+
+Another, option would be to store these as records in a SQLite database written to FLOOFS. This will probaby has better performance characteristics, even if it only has one table. It will also likely be able to do very efficient substring matching on keys \(file names\). Also:
+
+> SQLite Is Public Domain
+
+If SQLite works for our use case, we can ignore the hashing and whatnot below to better facilitate lookups by string match.
 {% endhint %}
 
-Currently traversing an MPT over the network of depth 512 can take a while. Following paths in a decrypted node \(see below\) requires doing a large number of lookups, and having an in-memory structure to do this with speeds things up significantly.
+Currently traversing an MPT over the network of \(max\) depth 512 can take a while. Following paths in a decrypted node \(see below\) requires doing a large number of lookups, and having an in-memory structure to do this with speeds things up significantly.
 
 A totally flat, append-only namespace with unique names has a number of nice properties. For one, it can be represented as a simple sorted array, which we do here.
 
@@ -69,7 +75,7 @@ The file namespace is larger than we could ever use. It includes many redundant 
 sha256(name)cid
 ```
 
-There is additionally a compact cache, stored as a simple DSV file. Since the filenames are a consistent length, we don’t need a delimiter between the name and CID. As an example, with entriesseparated by newlines:
+There is additionally a compact cache, stored as a simple DSV file. Since the filenames are a consistent length, we don’t need a delimiter between the name and CID. As an example, with entries separated by newlines.
 
 ```text
 2fFhPSYcgauRHumcQJqLvTxALipgmRLrAyYMDgmDVHU9QmfYStuhL72tdXoQWzicdzEehYaeXvhUNCrawBEWNP7DYX
@@ -88,33 +94,26 @@ An update to this is simply adding an entry at the correct \(ordered\) position 
 9EHKSbWZQfgRtCowkNtQosmC6CeQajvpvUTK4zJixjEKQmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ
 ```
 
-## Secure Recursive Read Access
+## Application Layer
 
-The private section is recursively protected with AES-256 encryption. This is to say that each vnode is encrypted with an AES key, and each of its children are encrypted separately wit their own randomly derived AES keys. A node holds the keys to each of its children. In this way, having a key for a node also grants read access to that entire subgraph.
+The application layer has decypted \(or ”unlocked”\) access to private vnodes.
 
-### Decrypted Nodes
+### Unlocking
 
-Since the structure of a cryptDAG is hidden completely from the outside world, there is a very strict separation between the application layer, and how things are organized at the protocol layer. There are still two layers, but the protocol layer is more closely relied on by the application layer.
+ To read a node, the user needs to have the key either available from another noe which they have access to, in the `shared_with_me` or `shared_by_me` sections, or stored on their system directly.
 
-The protocol layer describes encrypted nodes, with a special naming scheme and organized in a Merkle Patricia Tree \(more below in Storage Layout\). These can be converted to a decrypted virtual node via an _external_ symmetric key.
-
-## Storage Layout
-
-Encrypted virtual nodes are kept in a Merkle Patricia tree \(MPT\), organized by a blinded file name \(see more in the naming section below\).
-
-The probabilistic nature of XOR filter filenames does mean that related files are more likely to be placed near each other in the MPT, while not giving away why they are placed in that part of the tree. Some direct descendants or siblings will be in far other parts of the tree, depending on the position of the first different bit. The filter is fixed-size, which further simplifies this layout.
-
-This layout greatly improves write access verification time, while eliminating the plaintext tree structure. An authorized user reconstructs the semantically relevant DAG at runtime by following links in decrypted nodes. The links point to entries in the MPT, giving `O(1) ~ o(log n | n < 10)` access \(where `n` is the number of bits, which is constant in an XOR filter\). Organizing as a BST/Patricia tree is a very common approach for implementing hash tables like this one.
-
-## Read Access
-
-FLOOFS has a recursive read access model known as a cryptree \(technically a cryptDAG in our case\). Each Decrypted Virtual Node contains the keys to its children nodes. It also includes the human-readable path name, and the of the revision that it’s aware of \(more below\).
+To read or ”unlock“ private node, you need the node and its key:
 
 ```haskell
 read :: AES256 -> EncryptedNode -> DecryptedNode
+```
 
+### Unlocked Private Node Schema
+
+```haskell
 data DecryptedNode = DecryptedNode
-  {
+  { metadata :: Metadata
+  , 
   }
   
 data DecryptedNode
@@ -135,6 +134,30 @@ data EncryptedLink = EncryptedLink
   , pointer :: EncryptedNode
   }
 ```
+
+
+
+## Secure Recursive Read Access
+
+The private section is recursively protected with AES-256 encryption. This is to say that each vnode is encrypted with an AES key, and each of its children are encrypted separately with their own randomly derived AES keys. A node holds the keys to each of its children. In this way, having a key for a node also grants read access to that entire subgraph.
+
+### Decrypted Nodes
+
+Since the structure of a cryptDAG is hidden completely from the outside world, there is a very strict separation between the application layer, and how things are organized at the protocol layer. There are still two layers, but the protocol layer is more closely relied on by the application layer.
+
+The protocol layer describes encrypted nodes, with a special naming scheme and organized in a Merkle Patricia Tree \(more below in Storage Layout\). These can be converted to a decrypted virtual node via an _external_ symmetric key.
+
+## Storage Layout
+
+Encrypted virtual nodes are kept in a Merkle Patricia tree \(MPT\), organized by a blinded file name \(see more in the naming section below\).
+
+The probabilistic nature of XOR filter filenames does mean that related files are more likely to be placed near each other in the MPT, while not giving away why they are placed in that part of the tree. Some direct descendants or siblings will be in far other parts of the tree, depending on the position of the first different bit. The filter is fixed-size, which further simplifies this layout.
+
+This layout greatly improves write access verification time, while eliminating the plaintext tree structure. An authorized user reconstructs the semantically relevant DAG at runtime by following links in decrypted nodes. The links point to entries in the MPT, giving `O(1) ~ o(log n | n < 10)` access \(where `n` is the number of bits, which is constant in an XOR filter\). Organizing as a BST/Patricia tree is a very common approach for implementing hash tables like this one.
+
+## Read Access
+
+FLOOFS has a recursive read access model known as a cryptree \(technically a cryptDAG in our case\). Each Decrypted Virtual Node contains the keys to its children nodes. It also includes the human-readable path name, and the of the revision that it’s aware of \(more below\).
 
 ### Deterministic Seek Ahead
 
