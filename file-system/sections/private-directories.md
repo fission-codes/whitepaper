@@ -167,30 +167,7 @@ Encrypted virtual nodes are kept in a Merkle Patricia tree \(MPT\), organized by
 
 The probabilistic nature of XOR filter filenames does mean that related files are more likely to be placed near each other in the MPT, while not giving away why they are placed in that part of the tree. Some direct descendants or siblings will be in far other parts of the tree, depending on the position of the first different bit. The filter is fixed-size, which further simplifies this layout.
 
-This layout greatly improves write access verification time, while eliminating the plaintext tree structure. An authorized user reconstructs the human-readable DAG at runtime by following links in decrypted nodes. Their links point to files in the MPT \(or faster via the cache\). The low-level flow is always pointing back to the table.
-
-A sequence diagram isn’t _perfect_ for this use case, but gets the job done. Here’s an example flow to the next node:
-
-```text
-Raw CIDs    Hash Table      Node A   Locked[Node B]      Node B
-    |            |             |          |                |
-    |            | hash(foo@N)?|          |                |
-    |            |<————————————|          |                |
-    |            |             |          |                |
-    |            |————————————>|          |                |
-    |            |  Qm124356!  |          |                |
-    |            |             |          |                |
-    |   Qm12345? |             |          |                |
-    |<—————————————————————————|          |                |
-    |            |             |          |                |
-    |————————————————————————————————————>|                |
-    | Raw Chunks |             |          |                |
-    |            |             |  AES256  |                |
-    |            |             |—————————>|                |
-    |            |             |          |    Decrypt     |
-    |            |             |          |———————————————>|
-    |            |             |          |                |
-```
+This layout greatly improves write access verification time, while eliminating the plaintext tree structure. An authorized user reconstructs the human-readable DAG at runtime by following links in decrypted nodes. Their links point to files in the MPT \(or faster via the cache\).
 
 ## Read Access
 
