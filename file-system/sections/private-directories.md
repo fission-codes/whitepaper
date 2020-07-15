@@ -8,21 +8,64 @@ Write access in FLOOFS is a semi-trusted setup. The root user delegates write ac
 Validating the contents homomorphically or with some zero knowledge setup is technically possible, but the technology is still early. At minimum the efficiency need to improve greatly before that’s viable on deep DAG writes on a low-powered smartphone.
 {% endhint %}
 
-## Protocol Layer Memory Layout
+## Protocol Layer
 
-The protocol layer for the private section is filled exclusively with encrypted nodes. They have 512-bit \(64 byte\) names arranged in a Merkle Patricia tree \(MPT\). The names are deterministic \(as seen below\), and collisions extrememly unlikely in the 2^512 \(10^77\) namespace.
+### Storage Layout
 
-### Single-File Cache
+The protocol layer for the private section is filled exclusively with encrypted virtual nodes \(“ENode”s\). They have 512-bit \(64 byte\) names arranged in a Merkle Patricia tree \(MPT\). The names are deterministic, and collisions extrememly unlikely in the 2^512 \(10^77\) namespace. More detail on the naming system is available in its own section.
 
-An append-only namespace with unique names has a number of nice properties. For one, it can be represented as a simple sorted array.
+The MPT layout allows for efficient validation that an update is append-only and thus nondestructive.
 
-The filenames space is larger than we could ever use. It includes many redundant bits to aid in oblivious access control \(more below\), but need not exist in this lookup table. Instead we use a standard SHA256 to reduce the size by nearly half in the hash table. Between the hash and CID, each record occupies ~64 bytes \(depending on generation of CID\). This table can store ~15k entries / MB. Most of the underlying blocks will stay the same size, so syncing updates is very efficient in the normal case.
+### ENodes Content
+
+A vnode that has been secured in this way is called an ”encrypted virtual node”. The contents of these nodes is largely the same as their plaintext counterparts, plus a key table for their children.
+
+The core difference is the encrypted storage \(protocol layer\), and secrecy of the key used to start the decryption process. The key is always external to the ENode, and its not aware of whch key was used to create it. Here at the protocol layer, we are not directly concerned with the contents.
+
+```haskell
+data EncryptedNode 
+  = EncryptedNode CID -- simple!
+
+data ETree 
+  = ETreeNode 
+  | ETreeLeaf
+
+data ETreeLeaf 
+  = ETreeLeaf CID
+
+data ETreeNode = ETreeNode
+  { zero :: (HashFilter512, ETree) -- NOTEThese are *sides*, and may terminate directly
+  , one  :: (HashFilter512, ETree)
+  }
+```
+
+### ENode Naming
+
+Files names are a consistent legth: 512-bits. They are XOR filters, and have a consistent number of bits flipped \(e.g. 320\). For instance \(expressed in base58\):
+
+```text
+yP4cqy7jmaRDzC2bmcGNZkuQb3VdftMk6YH7ynQ2Qw4zktKsyA9fk52xghNQNAdkpF9iFmFkKh2bNVG4kDWhsok
+```
+
+The method of generating these names is explained in the decrypted node section.
+
+### Hash Table Cache
+
+{% hint style="info" %}
+It’s concievable that this structure could be implemented ”natively” in IPFS by using the `Links` array, but would require investigating the bounds and performance characteristics of the protocol itself.
+{% endhint %}
+
+Currently traversing an MPT over the network of depth 512 can take a while. Following paths in a decrypted node \(see below\) requires doing a large number of lookups, and having an in-memory structure to do this with speeds things up significantly.
+
+A totally flat, append-only namespace with unique names has a number of nice properties. For one, it can be represented as a simple sorted array, which we do here.
+
+The file namespace is larger than we could ever use. It includes many redundant bits to aid in oblivious access control \(more below\), but need not exist in this lookup table. Instead we use a standard SHA-256 to reduce the size by nearly half in the hash table. Between the hash and CID, each record occupies ~64 bytes \(depending on generation of CID\). This table can store ~15k entries / MB. Most of the underlying blocks will stay the same size, so syncing updates is very efficient in the normal case.
 
 ```text
 sha256(name)cid
 ```
 
-There is additionally a compact cache, stored as a simple DSV file. As an example, separated by newlines:
+There is additionally a compact cache, stored as a simple DSV file. Since the filenames are a consistent length, we don’t need a delimiter between the name and CID. As an example, with entriesseparated by newlines:
 
 ```text
 2fFhPSYcgauRHumcQJqLvTxALipgmRLrAyYMDgmDVHU9QmfYStuhL72tdXoQWzicdzEehYaeXvhUNCrawBEWNP7DYX
@@ -45,31 +88,7 @@ An update to this is simply adding an entry at the correct \(ordered\) position 
 
 The private section is recursively protected with AES-256 encryption. This is to say that each vnode is encrypted with an AES key, and each of its children are encrypted separately wit their own randomly derived AES keys. A node holds the keys to each of its children. In this way, having a key for a node also grants read access to that entire subgraph.
 
-## Encrypted Virtual Nodes “ENodes”
 
-A vnode that has been secured in this way is called an ”encrypted virtual node”. The contents of these nodes is largely the same as their plaintext counterparts, plus a key table for their children.
-
-The core difference is the encrypted storage \(protocol layer\), and secrecy of the key used to start the decryption process. The key is always external to the ENode, and its not aware of whch key was used to create it.
-
-### Encrypted Node Schemata \(Application Layer\)
-
-```haskell
-data EncryptedNode = EncryptedNode CID -- simple!
-
-read :: AES256 -> EncryptedNode -> DecryptedNode
-
-data ETree 
-  = ETreeNode 
-  | ETreeLeaf
-
-data ETreeLeaf 
-  = ETreeLeaf CID
-
-data ETreeNode = ETreeNode
-  { zero :: (Binary, ETree) -- NOTEThese are *sides*, and may terminate directly
-  , one  :: (Binary, ETree)
-  }  
-```
 
 ### Decrypted Nodes
 
@@ -90,6 +109,8 @@ This layout greatly improves write access verification time, while eliminating t
 FLOOFS has a recursive read access model known as a cryptree \(technically a cryptDAG in our case\). Each Decrypted Virtual Node contains the keys to its children nodes. It also includes the human-readable path name, and the of the revision that it’s aware of \(more below\).
 
 ```haskell
+read :: AES256 -> EncryptedNode -> DecryptedNode
+
 data DecryptedNode = DecryptedNode
   {
   }
