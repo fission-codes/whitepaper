@@ -123,10 +123,14 @@ data DecryptedDirectory = DecryptedDirectory
   , revision     :: Natural -- Counter for this exact path
   , previous     :: EncryptedLink
   , children     :: Map Text EncryptedLink
-  , dagCache :: JSON
+  , dagCache     :: DAGCache
   }
+
+data DAGCache 
+  = Leaf BloomFilter
+  | Branch (Map TextPath DAGCache)
   
-data EncryptedLink = EncryptedLink
+data DecryptedLink = DecryptedLink
   { path    :: Text
   , key     :: AES256
   , pointer :: EncryptedNode
@@ -135,7 +139,7 @@ data EncryptedLink = EncryptedLink
 data DecryptedFile = DecryptedFile
   { metadata   :: Metadata
   , key        :: AES256
-  , rawContent :: CID
+  , rawContent :: CID  -- can be split across many sections if we want to obscure files
   }
 ```
 
