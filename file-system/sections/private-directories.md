@@ -92,8 +92,6 @@ An update to this is simply adding an entry at the correct \(ordered\) position 
 
 The private section is recursively protected with AES-256 encryption. This is to say that each vnode is encrypted with an AES key, and each of its children are encrypted separately wit their own randomly derived AES keys. A node holds the keys to each of its children. In this way, having a key for a node also grants read access to that entire subgraph.
 
-
-
 ### Decrypted Nodes
 
 Since the structure of a cryptDAG is hidden completely from the outside world, there is a very strict separation between the application layer, and how things are organized at the protocol layer. There are still two layers, but the protocol layer is more closely relied on by the application layer.
@@ -140,7 +138,7 @@ data EncryptedLink = EncryptedLink
 
 ### Deterministic Seek Ahead
 
-## Node Naming
+## Encrypted Node Naming
 
 A lot can be gleaned from a node’s name, or a tree structure.
 
@@ -148,13 +146,13 @@ Fully zero knowledge methods do exist for this, but are quite new and do not \(y
 
 ### Probabilistic Filter Names
 
-To facilitate a determinist-but-obsfucated naming scheme, as well as give a verifier that doesn’t have read access the ability to check that the writer can submit updates to that path.
+To facilitate a determinist-but-highly-obsfucated naming scheme, as well as give a verifier that doesn’t have read access the ability to check that the writer can submit updates to that path.
 
 Ths is achieved with XOR Filters \(a more efficient Bloom Filter\). These structures allow validation that an element is in some compressed/obfuscated set.
 
 ```text
 child_filter = hash_reduction(
-      parent_base
+      parent_filter
   AND hash(aes_key) 
   AND hash(revision ++ aes_key)
 )
@@ -194,6 +192,20 @@ base+1+2:      1100101111011011
            AND 0010000010001000
            ====================
                1110101111011011
+```
+
+```haskell
+-- PSEUDOCODE
+
+toEntry = bloom . sha256
+
+hashReduction parent aesKey version =
+  constantSized aesKey (parent .&. toEntry (aesKey <> show version))
+  
+constantSized aesKey bits = 
+  if countOnes == 320
+     then bits
+     else constantSize (bits .&. toEntry (awsKey <> show bits))
 ```
 
 In this way, we can deterministically generate very different looking filters for the same node, varying over the version number. The base filter stays inside the longer structure, . With an appropriately configured filter, this provides multiple features:
