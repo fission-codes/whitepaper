@@ -217,63 +217,21 @@ pepperedRevision = hash (revision <> aesKey)
 versionedNameFilter = bareFilter .&. peppredRevision
 ```
 
-
-
-```text
-child_filter = hash_reduction(bare_filter AND hash(revision ++ aes_key))
-```
-
-> A previous design used the file path plus a nonce and its index. If the path changed, this would break any write certificates. The current design requires that you only know only the AES key used to encrypt a node \(we assume read access as a prerequisite to write  access\). The latest revision number can be found by scanning the store \(more on this later\), but is also stored on in node.
-
-#### Recursive Hash Accumulation
-
-With the naive approach, it is easy to tell which nodes are higher in the DAG: ther filters are sparser. To further obsfucate the path without invalidating write tokens, we use a deterministic method to produce a consistently-sized filter \(to some depth\) via hash reduction.
-
-Hash acculumation works by recursively `AND`ing the hash of the previous filter with the current filter, to some depth. As a simple example:
-
-```yaml
-parent_base:   1100100101011001
-
-key:           “abcdef”
-hash(key):     0000000110000000
-hash(version): 0000000100000001
-
-base:          1100100101011001
-               0000000110000000
-           AND 0000000100000001
-           ====================
-               1100100111011001
-               
-hash(base):    0100001000000010
-
-base+1:        1100100111011001
-           AND 0100001000000010
-           ====================
-               1100101111011011
-               
-hash(base+1):  0010000010001000
-
-base+1+2:      1100101111011011
-           AND 0010000010001000
-           ====================
-               1110101111011011
-```
+Saturation is then achieved by iteratively hashing the filter into its successor until a certain number of bits are set to 1.
 
 ```haskell
--- PSEUDOCODE
+makeNameFilter :: XORFilter
+makeNameFilter = saturate aesKey 320 (bareFilter .&. pepperedRevision)
 
-toEntry = bloom . sha256
-
-hashReduction parent aesKey version =
-  constantSized aesKey (parent .&. toEntry (aesKey <> show version))
-  
-constantSized aesKey bits = 
-  if countOnes == 320
-     then bits
-     else constantSize (bits .&. toEntry (awsKey <> show bits))
+saturate :: AES256 -> Natural -> XORFilter -> XORFilter
+saturate aesKey threshold xorFilter =
+  if Binary.sum xorFilter >= threshold
+    then xorFilter
+    else saturate aesKey threshold (xorFilter .&. step)
+    
+  where
+    step = hash (aesKey <> xorFilter)
 ```
-
-NOTE write up bare filters vs full ones.
 
 In this way, we can deterministically generate very different looking filters for the same node, varying over the version number. The base filter stays inside the longer structure, . With an appropriately configured filter, this provides multiple features:
 
