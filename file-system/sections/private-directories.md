@@ -59,7 +59,11 @@ Currently traversing an MPT over the network of depth 512 can take a while. Foll
 
 A totally flat, append-only namespace with unique names has a number of nice properties. For one, it can be represented as a simple sorted array, which we do here.
 
-The file namespace is larger than we could ever use. It includes many redundant bits to aid in oblivious access control \(more below\), but need not exist in this lookup table. Instead we use a standard SHA-256 to reduce the size by nearly half in the hash table. Between the hash and CID, each record occupies ~64 bytes \(depending on generation of CID\). This table can store ~15k entries / MB. Most of the underlying blocks will stay the same size, so syncing updates is very efficient in the normal case.
+{% hint style="warning" %}
+Please note that this cache is just that: a cache. It can be destroyed and reconstituded at any time \(for example if it were to become corrupted\). That said, given that it’s publicly viewable, a validator can check that it conforms to the updates in the MPT.
+{% endhint %}
+
+The file namespace is larger than we could ever use. It includes many redundant bits to aid in oblivious access control \(more below\), but need not exist in this lookup table. Instead we use a SHA-256 to reduce the size by nearly half in the hash table. Between the hash and CID, each record occupies ~64 bytes \(depending on generation of CID\). This table can store ~15k entries / MB. Most of the underlying blocks will stay the same size, so syncing updates is very efficient in the normal case.
 
 ```text
 sha256(name)cid
