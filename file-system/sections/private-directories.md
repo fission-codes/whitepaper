@@ -111,41 +111,39 @@ read :: AES256 -> EncryptedNode -> DecryptedNode
 ### Unlocked Private Node Schema
 
 ```haskell
-  data DecryptedNode
-  = DDirectory DecryptedDirectory
-  | DFile      DecryptedFile
-  | DSymlink   DecryptedSymlink
-  | DMovedTo   Path -- Must maintain the same key
+data DecryptedNode
+  = DecryptedDirectory PrivateDirectory
+  | DecryptedFile      PrivateFile
+  | DecryptedSymlink   PrivateSymlink
+  | DecryptedMovedTo   PathFilter -- Must maintain the same key to work
 
-data DecryptedDirectory = DecryptedDirectory
-  { metadata     :: Metadata
-  , parentFilter :: MinimalFilter
-  , revision     :: Natural -- Counter for this exact path
-  , previous     :: EncryptedLink
-  , children     :: Map Text EncryptedLink
-  , dagCache     :: DAGCache
-  }
-
-data DAGCache 
-  = Leaf BloomFilter
-  | Branch (Map TextPath DAGCache)
-  
-data DecryptedLink = DecryptedLink
-  { path    :: Text
-  , key     :: AES256
-  , pointer :: EncryptedNode
-  }
-  
-data DecryptedFile = DecryptedFile
+data PrivateFile = PrivateFile
   { metadata   :: Metadata
   , key        :: AES256
   , rawContent :: CID  -- can be split across many sections if we want to obscure files
   }
+
+data PrivateDirectory = PrivateDirectory
+  { metadata     :: Metadata
+  , parentFilter :: MinimalFilter
+  , revision     :: Natural -- Version counter for this exact AES key
+  , previous     :: EncryptedLink
+  , children     :: Map Text PrivateLink
+  , dagCache     :: DAGCache
+  }
+
+data DAGCache 
+  = Leaf PathFilter
+  | Branch (Map TextPath DAGCache)
+  
+data PrivateLink = PrivateLink
+  { path    :: Text
+  , key     :: AES256
+  , pointer :: CID
+  }
 ```
 
-
-
-## Secure Recursive Read Access
+### Secure Recursive Read Access
 
 The private section is recursively protected with AES-256 encryption. This is to say that each vnode is encrypted with an AES key, and each of its children are encrypted separately with their own randomly derived AES keys. A node holds the keys to each of its children. In this way, having a key for a node also grants read access to that entire subgraph.
 
@@ -163,10 +161,12 @@ The probabilistic nature of XOR filter filenames does mean that related files ar
 
 This layout greatly improves write access verification time, while eliminating the plaintext tree structure. An authorized user reconstructs the human-readable DAG at runtime by following links in decrypted nodes. Their links point to files in the MPT \(or faster via the cache\). The low-level flow is always pointing back to the table.
 
+A sequence diagram isn’t _perfect_ for this use case, but gets the job done. Here’s an example flow to the next node:
+
 ```text
 Raw CIDs    Hash Table      Node A   Locked[Node B]      Node B
     |            |             |          |                |
-    |            | hash(foo)?  |          |                |
+    |            | hash(foo@N)?|          |                |
     |            |<————————————|          |                |
     |            |             |          |                |
     |            |————————————>|          |                |
@@ -190,13 +190,13 @@ FLOOFS has a recursive read access model known as a cryptree \(technically a cry
 
 ### Deterministic Seek Ahead
 
-## Encrypted Node Naming
+### Secret Names
 
 A lot can be gleaned from a node’s name, or a tree structure.
 
 Fully zero knowledge methods do exist for this, but are quite new and do not \(yet\) perform fast enough to be practical for this use case. FLOOFS opts to hide as much information as possible while remaining reasable on a low-end smartphone.
 
-### Probabilistic Filter Names
+### Path Filters
 
 To facilitate a determinist-but-highly-obsfucated naming scheme, as well as give a verifier that doesn’t have read access the ability to check that the writer can submit updates to that path.
 
