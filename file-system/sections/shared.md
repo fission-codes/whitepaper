@@ -31,19 +31,25 @@ ${username}.fission.name
        |
        +——CPp5So2wUiJWn8hihZfy9HTp2dgq7HqJs8qauRCDpNFp
        |    |
-       |    +——Cn415bWgLmnCyVdY7S1EkBUhxmhbg5ogJCqbAzHoeZx6.dh
+       |    +——Cn415bWgLmnCyVdY7S1EkBUhxmhbg5ogJCqbAzHoeZx6.json.dh
        |    |
-       |    +——9HpgagjGnjdrBoEj4aCFJaZZCLQP78Fqk2JmzxHAS65B.dh
+       |    +——9HpgagjGnjdrBoEj4aCFJaZZCLQP78Fqk2JmzxHAS65B.json.dh
        |
        +——CxJWPa1ZnSFoGEYwKKQYGgTJ85LPR1oubHNExVgSzgib
             |
-            +——AkcF9bfxpK3zGhNNM8wdr7N9EApqSZ6xqRnBDHbkVSsv.dh
+            +——AkcF9bfxpK3zGhNNM8wdr7N9EApqSZ6xqRnBDHbkVSsv.json.dh
           
 ```
 
 Inside the directory are one or more encrypted files with the name of the sender’s public key which was used to encrypt it. When a recipient decrypts this file, they are expected to copy the information to their `shared_with_me` directory in their own FLOOFS, or at least cache the  information on their local system.
 
-The content of this file is one or more records described below.
+The content of these files is a very straightforward JSON array containing UCANs or read keys. UCANs are described elsewhere. Read keys look like this:
 
-### Read Key Exchange
+```typescript
+interface SharedKey {
+  cipher:  KeyType; // AES256
+  key:     Bytes;
+  pointer: NameFilter;
+}
+```
 
