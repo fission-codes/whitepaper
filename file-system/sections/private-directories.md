@@ -139,7 +139,7 @@ data DAGCache
 data PrivateLink = PrivateLink
   { path    :: Text -- Just the last segment in the chain
   , key     :: AES256
-  , pointer :: CID
+  , pointer :: NameFilter -- Small overhead for consistency
   }
 ```
 
@@ -171,7 +171,7 @@ This layout greatly improves write access verification time, while eliminating t
 
 ## Read Access
 
-FLOOFS has a recursive read access model known as a cryptree \(technically a cryptDAG in our case\). Each Decrypted Virtual Node contains the keys to its children nodes. It also includes the human-readable path name, and the of the revision that it’s aware of \(more below\).
+FLOOFS has a recursive read access model known as a cryptree \(technically a cryptgraph in our case\). Each Decrypted Virtual Node contains the keys to its children nodes. It also includes the human-readable path name, and the of the revision that it’s aware of \(more below\).
 
 ### Deterministic Seek Ahead
 
@@ -185,6 +185,38 @@ If you have a pointer to a particular file, there is no way of knowing that you 
   * Stored on the node
 * This node‘s bare name filter
   * Stored on the node
+
+The user must always ”look ahead” to see if there have been updates to the file since they last looked. The three most common scenarios are that:  
+
+
+1. No changes have been made
+2. There have been been a small number of changes
+3. There have substanial changes since
+
+To balance these scenarios, we progressivley check for files at revision `r + 2^n` , where `r` is the current revision, and `n` is the search index. First we check the next revision. If it does not exist, we know that we have the latest version. If it does exist, check `r + 2`, then `r+4`, `r+8` and so on. Once there’s a missing version, perform a binary search. For example, if looking at a node at revision 42 that has been updated 123 times since your last recorded pointer, it takes 14 checks \(roughly `O(2 * log2 n)`\).
+
+| Revision Number | Exists |
+| :--- | :--- |
+| 42 + 1 = 43 | Yes |
+| 42 + 2 = 44 | Yes |
+| 42 + 4 = 46 | Yes |
+| 42 + 8 = 50 | Yes |
+| 42 + 16 = 58 | Yes |
+| 42 + 32 = 74 | Yes |
+| 42 + 64 = 106 | Yes |
+| 42 + 128 = 170 | No |
+| 42 + 96 = 138 | Yes |
+| 42 + 112 = 154 | Yes |
+| 42 + 120 = 162 | Yes |
+| 42 + 124 = 166 | No |
+| 42 + 122 = 164 | Yes |
+| 42 + 123 = 165 | Yes — No more search space, so found! |
+
+### Lazy Progress
+
+Anyone that can update a pointer can make permanent revision progress for themselves, or others if they have write access to this file system.
+
+As the user traverses the private section \(down the Y-axis, across the X-axis\), they attempt to make progress in time \(forwards in the Z-axis\). If they find a 
 
 ### Secret Names
 
@@ -223,14 +255,14 @@ Saturation is then achieved by iteratively hashing the filter into its successor
 makeNameFilter :: XORFilter
 makeNameFilter = saturate aesKey 320 (bareFilter .&. pepperedRevision)
 
-saturate :: AES256 -> Natural -> XORFilter -> XORFilter
-saturate aesKey threshold xorFilter =
-  if Binary.sum xorFilter >= threshold
+saturateTo :: Natural -> AES256 -> XORFilter -> XORFilter
+saturateTo threshold key xorFilter =
+  if Binary.sum xorFilter >= threashold
     then xorFilter
     else saturate aesKey threshold (xorFilter .&. step)
     
   where
-    step = hash (aesKey <> xorFilter)
+    step = hash (key <> xorFilter)
 ```
 
 In this way, we can deterministically generate very different looking filters for the same node, varying over the version number. The base filter stays inside the longer structure, . With an appropriately configured filter, this provides multiple features:
@@ -246,49 +278,7 @@ In this way, we can deterministically generate very different looking filters fo
 
 
 
-
-
-
-
-
-
-
-
-Private files and directories are encrypted symmetrically.
-
 We specify a format for an encrypted file tree, inspired by Cryptrees as described by [Grolimund et al](https://ieeexplore.ieee.org/document/4032481).
 
-Our Cryptree is a recursive data structure where each "folder" or node in the tree contains:
 
-* the name of a symmetric encryption algorithm
-* a symmetric key
-* an array of links to other nodes, each of which is encrypted by the symmetric key.
-
-These nodes form a Directed Acyclic Graph \(DAG\), similar in form to an IPFS merkle-DAG.
-
-These nodes are described as such:
-
-```typescript
-type EncryptedDAGNode = {
-  alg: string // symmetric encryption algorithm
-  key: Buffer // symmetric key
-  links: Link[]
-}
-
-type Link = {
-  name: string
-  cid: CID // IPFS-compatible multihash (CIDv0/CIDv1)
-  size?: number // the size of all children
-}
-```
-
-In the context of the node, The key is stored as plain bytes. Therefore, any time an `EncryptedNode` is uploaded to the IPFS network, it must be encrypted itself.
-
-DAG nodes should be CBOR-encoded prior to being encrypted.
-
-This forms a structure such that access to a given node allow access to any of its children, but none of its parents.
-
-Any node in the DAG can be shared by sharing the CID of the node as well as the key to decrypt it.
-
-The private directory of the Fission File System uses AES keys with the `AES-CTR` algorithm.
 
