@@ -298,5 +298,5 @@ Since nodes are not aware of the paths to them \(aside from their bare name filt
 
 Instead of a simple removal of a link and additon to the latest generation elsewhere, the writer has the option to signpost this change with a redirection node \(again, like the public section\).
 
-The wrinkle is that the moved node now needs to be reencrypted with a new key, and given a new bare name filter.
+The wrinkle is that the moved node now MUST be encrypted with a new key, and given a new bare name filter. The signposting if for users that have access to both portions of the DAG, either through a shared parent, or with multiple read keys. The new name filter is obvious both for simple consistency, and to ensure that only users authorized for this part of the DAG can write to its children \(which may have a very different semantic meaning in the new position\).
 
