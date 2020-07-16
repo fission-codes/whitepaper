@@ -290,7 +290,13 @@ Append \(or ”write”\) access is handled via UCANs. FLOOFS uses path-based pe
 
 Paths are completely obscured in the private section. UCANs reference some bare name filter \(described above\) that must be be a match \(binary OR\) for the filter being suggested. This does leak how much of the graph a user is allowed to write to, since the higher in the DAG they have access to, the fewer bits are set in the bare filter. However, and astute 
 
-This check is extremely 
+This check is extremely quick for anyone the verifier, who may need to check a large number of updates submitted in addition to Merkle proofs that nothing else has altered besides these additions.
 
 ### Moved Nodes
+
+Since nodes are not aware of the paths to them \(aside from their bare name filter\), a user with append access may move a node to another part of the DAG that they have append access to \(much like in the public section\).
+
+Instead of a simple removal of a link and additon to the latest generation elsewhere, the writer has the option to signpost this change with a redirection node \(again, like the public section\).
+
+The wrinkle is that the moved node now needs to be reencrypted with a new key, and given a new bare name filter.
 

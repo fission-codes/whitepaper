@@ -13,8 +13,9 @@ At the application layer, a public virtual node has the following shape:
 ```haskell
 data VirtualNode -- could be paramaterized over protocol type later
   = DirectoryNode Directory
-  | FileNode      File
+  | FileNode      File 
   | Symlink       DNSLink
+  | MovedNode     Path
   | RawProtocol   IPFSNode
   
 data File = File
