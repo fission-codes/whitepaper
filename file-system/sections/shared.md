@@ -19,10 +19,27 @@ This is a one-to-many exchange. Because of how account linking works, any given 
 In the `shared_by_me` directory, there exists a flat space of directories. To make these addressable but not easily precomputable, these are named as as follows: 
 
 ```javascript
-SHA(sender_did ++ reciever_exchange_pk)
+base58(SHA(sender_did ++ reciever_exchange_pk))
 ```
 
 This means that there will be multiple directories for every account — one per share key.
+
+```text
+${username}.fission.name
+  |
+  +——shared_by_me
+       |
+       +——CPp5So2wUiJWn8hihZfy9HTp2dgq7HqJs8qauRCDpNFp
+       |    |
+       |    +——Cn415bWgLmnCyVdY7S1EkBUhxmhbg5ogJCqbAzHoeZx6.dh
+       |    |
+       |    +——9HpgagjGnjdrBoEj4aCFJaZZCLQP78Fqk2JmzxHAS65B.dh
+       |
+       +——CxJWPa1ZnSFoGEYwKKQYGgTJ85LPR1oubHNExVgSzgib
+            |
+            +——AkcF9bfxpK3zGhNNM8wdr7N9EApqSZ6xqRnBDHbkVSsv.dh
+          
+```
 
 Inside the directory are one or more encrypted files with the name of the sender’s public key which was used to encrypt it. When a recipient decrypts this file, they are expected to copy the information to their `shared_with_me` directory in their own FLOOFS, or at least cache the  information on their local system.
 
