@@ -37,11 +37,12 @@ ${username}.fission.name
        |
        +——CxJWPa1ZnSFoGEYwKKQYGgTJ85LPR1oubHNExVgSzgib
             |
-            +——AkcF9bfxpK3zGhNNM8wdr7N9EApqSZ6xqRnBDHbkVSsv.json.dh
-          
+            +——AkcF9bfxpK3zGhNNM8wdr7N9EApqSZ6xqRnBDHbkVSsv.json.dh          
 ```
 
 Inside the directory are one or more encrypted files with the name of the sender’s public key which was used to encrypt it. When a recipient decrypts this file, they are expected to copy the information to their `shared_with_me` directory in their own FLOOFS, or at least cache the  information on their local system.
+
+### Content
 
 The content of these files is a very straightforward JSON array containing UCANs or read keys. UCANs are described elsewhere. Read keys look like this:
 
@@ -51,5 +52,29 @@ interface SharedKey {
   key:     Bytes;
   pointer: NameFilter;
 }
+```
+
+## Shared With Me
+
+The inverse of `shared_by_me` is `shared_with_me`, where the FLOOFS root user is the recipient. This is their cache of keys, credentials, and encrypted pointers that have been shared with them.
+
+This is important to have in case a local cache is cleared, they link another machine, or the original copy in a remote `shared_by_me` is removed. The mechanism is straightforward: information is kept in a single file, encrypted with an AES256 key.
+
+This AES key is distributed to all linked instances. This key can be rotated at any time \(e.g. if comprimised\). As such, a copy is also shared with all ofthe user’s exchange keys. The sender is signaled by the name of the directory \(a hashed value for space reasons\).
+
+```text
+${username}.fission.name
+  |
+  +——shared_with_me
+       |
+       +——shared.json.secret
+       |
+       +——G9N5KiVYLKbQLpTsnaTgr5E8kt95F56G7oLMhPryVz1m
+            |
+            +——4GVjkeLXt1h3xnay5dVF6Ekdjw9RqYFKYH3rUjk9CHHy.aes256.dh
+            |
+            +——7ZXatFQWw3tJsDHhozotH6V4D8vKqjenTGf2sz3XfFzA.aes256.dh
+            |
+            +——FkBvWMAy14HpwBtN9wFMmEYDErgzp5KiBragAQPsib1Z.aes256.dh
 ```
 
