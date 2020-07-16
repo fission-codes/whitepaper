@@ -74,6 +74,7 @@ Here is an intermedate abstraction to help describe the layout:
 ```haskell
 data IPFSSerialized = IPFSSerialized
   { metadata :: CBOR
+  , dagCache :: CBOR
   , previous :: CID
   , userland :: Userland
   }
