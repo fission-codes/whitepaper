@@ -67,7 +67,7 @@ ${username}.fission.name
   |
   +——shared_with_me
        |
-       +——shared.json.secret
+       +——shared.json.crypt
        |
        +——G9N5KiVYLKbQLpTsnaTgr5E8kt95F56G7oLMhPryVz1m
             |
