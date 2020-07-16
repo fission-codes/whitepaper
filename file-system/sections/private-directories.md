@@ -193,7 +193,7 @@ The user must always ”look ahead” to see if there have been updates to the f
 2. There have been been a small number of changes
 3. There have substanial changes since
 
-To balance these scenarios, we progressivley check for files at revision `r + 2^n` , where `r` is the current revision, and `n` is the search index. First we check the next revision. If it does not exist, we know that we have the latest version. If it does exist, check `r + 2`, then `r+4`, `r+8` and so on. Once there’s a missing version, perform a binary search. For example, if looking at a node at revision 42 that has been updated 123 times since your last recorded pointer, it takes 14 checks \(roughly `O(2 * log2 n)`\) to find the latest revision.
+To balance these scenarios, we progressivley check for files at revision `r + 2^n` , where `r` is the current revision, and `n` is the search index. First we check the next revision. If it does not exist, we know that we have the latest version. If it does exist, check `r + 2`, then `r+4`, `r+8` and so on. Once there’s a missing version, perform a binary search. For example, if looking at a node at revision 42 that has been updated 123 times since your last recorded pointer, it takes 14 checks \(roughly `O(2 * log n)`\) to find the latest revision.
 
 | Revision Number | Exists |
 | :--- | :--- |
@@ -204,7 +204,7 @@ To balance these scenarios, we progressivley check for files at revision `r + 2^
 | 42 + 16 = 58 | Yes |
 | 42 + 32 = 74 | Yes |
 | 42 + 64 = 106 | Yes |
-| 42 + 128 = 170 | No |
+| 42 + 128 = 170 | No — First overshot! We now have an upper bound |
 | 42 + 96 = 138 | Yes |
 | 42 + 112 = 154 | Yes |
 | 42 + 120 = 162 | Yes |
@@ -282,9 +282,15 @@ In this way, we can deterministically generate very different looking filters fo
   * A UCAN + a hash of the read key to the highest node the user can write to
   * Match on cryptographically blind set membership
 
+## Append Access
 
+FLOOFS is \(normally\) nondestructive. The one exception is that the root user has the ability to overwrite the entire fil system by updating the root anchor for their entire FLOOFS \(e.g. the DNSLink for `${username}.fission.name`\). Under normal operation, FLOOFS ony allows appending to the public, private, and pretty sections. Being append-only, all private nodes have unique names that prevent overwriting.
 
-We specify a format for an encrypted file tree, inspired by Cryptrees as described by [Grolimund et al](https://ieeexplore.ieee.org/document/4032481).
+Append \(or ”write”\) access is handled via UCANs. FLOOFS uses path-based permissions, so if a user has write permissions to `/photos/vacation`, they also have write permissions to `/photos/vacaction/beach`. In the public section, this is done by checking that the path being written is prefixed with a path.
 
+Paths are completely obscured in the private section. UCANs reference some bare name filter \(described above\) that must be be a match \(binary OR\) for the filter being suggested. This does leak how much of the graph a user is allowed to write to, since the higher in the DAG they have access to, the fewer bits are set in the bare filter. However, and astute 
 
+This check is extremely 
+
+### Moved Nodes
 
