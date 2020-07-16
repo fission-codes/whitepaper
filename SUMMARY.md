@@ -45,6 +45,7 @@
   * [Public](file-system/sections/public-directory.md)
   * [Pretty](file-system/sections/pretty.md)
   * [Private](file-system/sections/private-directories.md)
+  * [Share](file-system/sections/shared.md)
 * [Security](file-system/cryptrees.md)
 * [Unlisted Directories](file-system/unlisted-directories.md)
 * [Shared Mutable Access](file-system/shared-mutable-access.md)
