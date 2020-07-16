@@ -214,9 +214,15 @@ To balance these scenarios, we progressivley check for files at revision `r + 2^
 
 ### Lazy Progress
 
-Anyone that can update a pointer can make permanent revision progress for themselves, or others if they have write access to this file system.
+Anyone that can update a pointer can make permanent revision progress for themselves \(in localStorage or as a symlink in their FS\), or others if they have write access to this file system.
 
-As the user traverses the private section \(down the Y-axis, across the X-axis\), they attempt to make progress in time \(forwards in the Z-axis\). If they find a 
+As the user traverses the private section \(down the Y-axis, across the X-axis\), they attempt to make progress in time \(forwards in the Z-axis\). If they find a node that’s ahead of a link, it updates that one link in memory. At the end of their search in 3-dimensions \(with potentially multiple updates\), they write the new paths to FLOOFS.
+
+Note that they only need to do this with the paths that they actually follow! Progress in revision history does not need to be in lock step, and will converge over time.
+
+Not all users with write access have the ability to write to the entire DAG. Writing to a subgraph is actually completely fine. Each traversal down a path will reach the most recently written node. The search space for that node is always smaller than its previous revisions, and can be further updated with oter links or newer child nodes.
+
+This contributes back collaboratively to the overall performance of the system for all usres. If a malicious user writes a bad node, they can be overwritten with a newer revision by a user with equal or higher priviledges. Nothing is ever lost in FLOOFS, so reconstructing all links in a file system from scratch is _possible_ \(though compute intensive\).
 
 ### Secret Names
 
