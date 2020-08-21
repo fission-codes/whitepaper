@@ -3,7 +3,7 @@
 The private section is an extension of the functionality in the public section. The additional goals of the private tree are to maximize privacy, security, flexibility, and autonomy for users.
 
 {% hint style="danger" %}
-Write access in FLOOFS is a semi-trusted setup. The root user delegates write access to subgraph. FLOOFS has aimed to be correct-by-construction where possible. However, since service verifiers cannot validate the inner contents of a write beyond access to a \(hidden\) file path, the submitter/writer may fill that node with anything.
+Write access in the WNFS is a semi-trusted setup. The root user delegates write access to subgraph. WNFS has aimed to be correct-by-construction where possible. However, since service verifiers cannot validate the inner contents of a write beyond access to a \(hidden\) file path, the submitter/writer may fill that node with anything.
 
 Validating the contents homomorphically or with some zero knowledge setup is technically possible, but the technology is still early. At minimum the efficiency need to improve greatly before that’s viable on deep DAG writes on a low-powered smartphone.
 {% endhint %}
@@ -54,7 +54,7 @@ The method of generating these names is explained in the decrypted node section.
 {% hint style="info" %}
 It’s concievable that this structure could be implemented ”natively” in IPFS by using the `Links` array, but would require investigating the bounds and performance characteristics of the protocol itself.
 
-Another, option would be to store these as records in a SQLite database written to FLOOFS. This will probaby has better performance characteristics, even if it only has one table. It will also likely be able to do very efficient substring matching on keys \(file names\). Also:
+Another, option would be to store these as records in a SQLite database written to WNFS. This will probaby has better performance characteristics, even if it only has one table. It will also likely be able to do very efficient substring matching on keys \(file names\). Also:
 
 > SQLite Is Public Domain
 
@@ -171,7 +171,7 @@ This layout greatly improves write access verification time, while eliminating t
 
 ## Read Access
 
-FLOOFS has a recursive read access model known as a cryptree \(technically a cryptgraph in our case\). Each Decrypted Virtual Node contains the keys to its children nodes. It also includes the human-readable path name, and the of the revision that it’s aware of \(more below\).
+WNFS has a recursive read access model known as a cryptree \(technically a cryptgraph in our case\). Each Decrypted Virtual Node contains the keys to its children nodes. It also includes the human-readable path name, and the of the revision that it’s aware of \(more below\).
 
 ### Deterministic Seek Ahead
 
@@ -216,19 +216,19 @@ To balance these scenarios, we progressivley check for files at revision `r + 2^
 
 Anyone that can update a pointer can make permanent revision progress for themselves \(in localStorage or as a symlink in their FS\), or others if they have write access to this file system.
 
-As the user traverses the private section \(down the Y-axis, across the X-axis\), they attempt to make progress in time \(forwards in the Z-axis\). If they find a node that’s ahead of a link, it updates that one link in memory. At the end of their search in 3-dimensions \(with potentially multiple updates\), they write the new paths to FLOOFS.
+As the user traverses the private section \(down the Y-axis, across the X-axis\), they attempt to make progress in time \(forwards in the Z-axis\). If they find a node that’s ahead of a link, it updates that one link in memory. At the end of their search in 3-dimensions \(with potentially multiple updates\), they write the new paths to WNFS.
 
 Note that they only need to do this with the paths that they actually follow! Progress in revision history does not need to be in lock step, and will converge over time.
 
 Not all users with write access have the ability to write to the entire DAG. Writing to a subgraph is actually completely fine. Each traversal down a path will reach the most recently written node. The search space for that node is always smaller than its previous revisions, and can be further updated with oter links or newer child nodes.
 
-This contributes back collaboratively to the overall performance of the system for all usres. If a malicious user writes a bad node, they can be overwritten with a newer revision by a user with equal or higher priviledges. Nothing is ever lost in FLOOFS, so reconstructing all links in a file system from scratch is _possible_ \(though compute intensive\).
+This contributes back collaboratively to the overall performance of the system for all usres. If a malicious user writes a bad node, they can be overwritten with a newer revision by a user with equal or higher priviledges. Nothing is ever lost in WNFS, so reconstructing all links in a file system from scratch is _possible_ \(though compute intensive\).
 
 ### Secret Names
 
 Structural information can be analyzed probabilistically from a node’s name, or a tree structure. Ergo we go to some effort to hide this information from users that should not know this information.
 
-Fully zero knowledge methods do exist for this, but are quite new and do not \(yet\) perform fast enough to be practical for this use case. FLOOFS opts to hide as much information as possible while remaining reasable on a low-end smartphone.
+Fully zero knowledge methods do exist for this, but are quite new and do not \(yet\) perform fast enough to be practical for this use case. WNFS opts to hide as much information as possible while remaining reasable on a low-end smartphone.
 
 ### Name Filters
 
@@ -240,7 +240,7 @@ This is achieved with XOR Filters \(a more efficient Bloom Filter\). These struc
 
 A bare name filter includes the smallest amount of information. It can be revealed to a a user that has read access to child nodes to help them build their own filters. They can be constructed by adding the current AES key and all of the keys above this node into an XOR filter. Since this is associative, equipping the node with its  own name filter is sufficient.
 
-In FLOOFS, bare filters are generated for child nodes by adding the hash of the AES key to the existing filter, and storing that directly on the child for its further use. Bare filters are used in constructing names in the MPT, in the node cache, as well as by UCANs to authorize writing new nodes to a to a subgraph.
+In WNFS, bare filters are generated for child nodes by adding the hash of the AES key to the existing filter, and storing that directly on the child for its further use. Bare filters are used in constructing names in the MPT, in the node cache, as well as by UCANs to authorize writing new nodes to a to a subgraph.
 
 Bare filters do not include the version number, or fill out the filter to a particular level. We can see each filter entry as a path segment. The need not be ordered since each is entry is unique and randomly generated.
 
@@ -284,9 +284,9 @@ In this way, we can deterministically generate very different looking filters fo
 
 ## Append Access
 
-FLOOFS is \(normally\) nondestructive. The one exception is that the root user has the ability to overwrite the entire fil system by updating the root anchor for their entire FLOOFS \(e.g. the DNSLink for `${username}.fission.name`\). Under normal operation, FLOOFS ony allows appending to the public, private, and pretty sections. Being append-only, all private nodes have unique names that prevent overwriting.
+WNFS is \(normally\) nondestructive. The one exception is that the root user has the ability to overwrite the entire fil system by updating the root anchor for their entire WNFS \(e.g. the DNSLink for `${username}.fission.name`\). Under normal operation, WNFS ony allows appending to the public, private, and pretty sections. Being append-only, all private nodes have unique names that prevent overwriting.
 
-Append \(or ”write”\) access is handled via UCANs. FLOOFS uses path-based permissions, so if a user has write permissions to `/photos/vacation`, they also have write permissions to `/photos/vacaction/beach`. In the public section, this is done by checking that the path being written is prefixed with a path.
+Append \(or ”write”\) access is handled via UCANs. WNFS uses path-based permissions, so if a user has write permissions to `/photos/vacation`, they also have write permissions to `/photos/vacaction/beach`. In the public section, this is done by checking that the path being written is prefixed with a path.
 
 Paths are completely obscured in the private section. UCANs reference some bare name filter \(described above\) that must be be a match \(binary OR\) for the filter being suggested. This does leak how much of the graph a user is allowed to write to, since the higher in the DAG they have access to, the fewer bits are set in the bare filter. However, and astute 
 
