@@ -6,9 +6,9 @@ description: Globally visible and addressable plaintext
 
 The public directory contains regular, unencrypted, structured data. Each VNode contains more This includes previous versions, metadata, symlinks, and so on. This lives in the top-level `/public` directory. All of the content is publicly viewable, including previous versions.
 
-## Application Layer
+## Platform Layer
 
-At the application layer, a public virtual node has the following shape:
+At the platform layer, a public virtual node has the following shape:
 
 ```haskell
 data VirtualNode -- could be paramaterized over protocol type later
@@ -131,7 +131,7 @@ This is a minor space/time tradeoff: inthe cache all DAGs are converted to trees
 
 ### Schema
 
-The cache describes the application layer, not the protocol layer. This means that it is not constrained by the needs of the Merkle DAG.
+The cache describes the platform layer, not the protocol layer. This means that it is not constrained by the needs of the Merkle DAG.
 
 ```haskell
 data CacheNode
@@ -147,7 +147,7 @@ data CacheDirectory = CacheDiectory
 
 ### Interaction with Versioning
 
-This cache records a single generation only. It does not include references to previous versions. Temporal operations aways occur on the protocol-level DAG, or abstractly accessed through the FLOOFS application layer. The DAG cache should be kept as thin as possible, as this may become quite large. Users do not expect history to be a  lightening fast operation. It is still accessible by looking at the concrete \(uncached\) virtual node.
+This cache records a single generation only. It does not include references to previous versions. Temporal operations aways occur on the protocol-level DAG, or abstractly accessed through the WNFS platform layer. The DAG cache should be kept as thin as possible, as this may become quite large. Users do not expect history to be a  lightening fast operation. It is still accessible by looking at the concrete \(uncached\) virtual node.
 
 ### FAQ
 
@@ -155,7 +155,7 @@ Why not only keep this cache at the file system root? Deep linking performance i
 
 ## Write Access
 
-Write access may be granted via UCAN. In this case, the application-layer \(pretty\) path to the node is updatable arbitraily, as are its nested contents. However, this necessitates updating the links in the merkle structure above, as well as portions of metadata \(such as size of contents\). This is a rote mechanical procedure, and will be checked by the verifier.
+Write access may be granted via UCAN. In this case, the platform-layer \(pretty\) path to the node is updatable arbitraily, as are its nested contents. However, this necessitates updating the links in the merkle structure above, as well as portions of metadata \(such as size of contents\). This is a rote mechanical procedure, and will be checked by the verifier.
 
 {% hint style="warning" %}
 It bears repeating that while this does create updated parent nodes, it wil lbe handled mecanically by the FLOOFS client. The verifier is able to easily and mechanically confirm these updates, and will reject them if submitted incorrectly.
