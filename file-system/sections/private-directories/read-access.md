@@ -61,7 +61,7 @@ Fully zero knowledge methods do exist for this, but are quite new and do not \(y
 
 ## Name Filters
 
-To facilitate a determinist-but-highly-obsfucated naming scheme, as well as give a verifier that doesn’t have read access the ability to check that the writer can submit updates to that path.
+To facilitate a deterministic-but-highly-obsfucated naming scheme, as well as give a verifier that doesn’t have read access the ability to check that the writer can submit updates to that path.
 
 This is achieved with Bloom Filters. These structures allow validation that an element is in some compressed/obfuscated set.
 
