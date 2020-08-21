@@ -32,9 +32,9 @@
   * [Key Exchange](access-control/query-and-read/key-exchange.md)
   * [Key Revocation](access-control/query-and-read/key-revocation.md)
 * [Command & Mutation](access-control/ucan/README.md)
-  * [Self-Signed Tokens](access-control/ucan/self-signed-tokens.md)
   * [Structure](access-control/ucan/structure.md)
-* [Threshold Access](access-control/threshold-writes.md)
+  * [Self-Signed Tokens](access-control/ucan/self-signed-tokens.md)
+  * [Threshold Write Permission](access-control/ucan/threshold-writes.md)
 
 ## File System
 
