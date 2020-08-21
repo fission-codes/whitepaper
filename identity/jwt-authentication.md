@@ -6,6 +6,8 @@ Fission uses the familiar JWT format, plus a few additional keys.
 
 ## Complete Example
 
+NOTE THIS SECTION IS OUT OF DATE AND BEING _HEAVILY REWORKED 👷‍♀️🚨_ 
+
 ```javascript
 {
   "alg": "Ed25519",
