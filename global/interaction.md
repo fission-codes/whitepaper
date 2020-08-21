@@ -1,2 +1,6 @@
-# Intra-Platform Interaction
+---
+description: Inter-platform operation
+---
+
+# Federation
 

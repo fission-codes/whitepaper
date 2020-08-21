@@ -62,7 +62,7 @@
 
 * [Applications](global/applications.md)
 * [Shared Mutable State](global/shared-mutable-state.md)
-* [Intra-Platform Interaction](global/interaction.md)
+* [Federation](global/interaction.md)
 
 ## Conclusion
 
