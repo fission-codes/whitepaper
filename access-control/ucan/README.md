@@ -1,6 +1,6 @@
 ---
-description: User Controlled Authorization Network
+description: 'UCAN: User Controlled Authorization Network'
 ---
 
-# UCAN
+# Command & Mutation
 

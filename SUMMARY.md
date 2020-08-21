@@ -27,9 +27,10 @@
 ## Access Control
 
 * [Self-Signed Tokens](access-control/self-signed-tokens.md)
-* [UCAN](access-control/ucan/README.md)
+* [Query & Read](access-control/query-and-read.md)
+* [Command & Mutation](access-control/ucan/README.md)
   * [Structure](access-control/ucan/structure.md)
-* [Capability-Based Authorization](access-control/cap-authz.md)
+* [Capability Based Auth](access-control/cap-authz.md)
 * [Key Exchange](access-control/key-exchange.md)
 * [Immutable Access](access-control/read-access.md)
 * [Mutable Access](access-control/write-access.md)
