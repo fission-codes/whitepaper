@@ -47,6 +47,7 @@
   * [Pretty](file-system/sections/pretty.md)
   * [Private](file-system/sections/private-directories/README.md)
     * [Protocol Layer](file-system/sections/private-directories/protocol-layer.md)
+    * [Platform Layer](file-system/sections/private-directories/platform-layer.md)
   * [Unlisted](file-system/sections/unlisted-directories.md)
   * [Share](file-system/sections/shared.md)
 * [Security](file-system/cryptrees.md)
