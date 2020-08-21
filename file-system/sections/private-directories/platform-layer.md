@@ -1,4 +1,4 @@
-# Platform Layer
+# Platform Structure
 
 The platform layer has decypted \(or ”unlocked”\) access to private vnodes.
 

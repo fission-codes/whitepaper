@@ -1,4 +1,4 @@
-# Protocol Layer
+# Protocol Structure
 
 ## Storage Layout
 
