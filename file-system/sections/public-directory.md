@@ -82,7 +82,7 @@ data IPFSSerialized = IPFSSerialized
 data Userland = Either [(Text, IPFSLink)] IPFSNode
 ```
 
-Note that links are NOT flattened into a single node. FLOOFS maintains a sepacial separate namespace for userland. This is a 2-layer approach:
+Note that links are NOT flattened into a single node. WNFS maintains a sepacial separate namespace for userland. This is a 2-layer approach:
 
 ```text
    +———————————————————+
