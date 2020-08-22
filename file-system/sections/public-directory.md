@@ -26,7 +26,7 @@ data File = File
 data Directory protocol = Directory
   { metadata :: Metadata
   , index    :: Map Text VirtualNode
-  , dagCache :: JSON
+  , skeleton :: JSON
   }
   
 data Metadata = Metadata
@@ -117,31 +117,34 @@ Note that links are NOT flattened into a single node. WNFS maintains a sepacial 
 Note that the prev link SHOULD be reified in a protocol link rather than in the cache to ensure that the link is real, the file will never be dropped \(if the root user breaks a layer\), and make it faster to verify.
 {% endhint %}
 
-## DAG Cache
+## DAG Cache \(Skeleton\)
 
-The protocol layer is the source of truth for linked data. However, to improve performance, FLOOFS keeps a \(recursive\) cache of the entire sub-DAG in the protocol layer. We are told that this optimization is being worked on at the protocol layer, but this is our performance optimization in the meantime. We name this cache `dag.cbor`
+The protocol layer is the source of truth for linked data. However, to improve performance, FLOOFS keeps a \(recursive\) cache of the entire sub-DAG in the protocol layer. We are told that this optimization is being worked on at the protocol layer, but this is our performance optimization in the meantime. We name this cache `skeleton`
 
 The insight is that describing even a very large DAG in JSON or CBOR is more efficient over the network than is following a series of links in ”pass the bucket” linear traversal \(where each iteration may be a network request\).
 
 ### Trees Not DAGs
 
-Th purpose of the cache is to help improve perfomance of deep link lookups. While the structure is fundamentally a DAG, the encoding of non-trees is less streamlined in CBOR or JSON. There are very simple path methods available for there formats if they’re represented directly as trees. Theo ther opion requires much jumping around lookup tables, rather than simply following a nested path.
+Th purpose of the cache is to help improve perfomance of deep link lookups. While the structure is fundamentally a DAG, the encoding of non-trees is less streamlined in CBOR or JSON. There are very simple path methods available for there formats if they’re represented directly as trees. The other option requires much jumping around lookup tables, rather than simply following a nested path.
 
-This is a minor space/time tradeoff: inthe cache all DAGs are converted to trees, with duplication in place of shared pointers. Since the structure is Merkelized, we don’t run the risk of mistaking disparate nodes for each other, and representing the structure as a tree is equally correct \(if more verbose\).
+This is a minor space/time tradeoff: in the cache all DAGs are converted to trees, with duplication in place of shared pointers. Since the structure is Merkelized, we don’t run the risk of mistaking disparate nodes for each other, and representing the structure as a tree is equally correct \(if more verbose\).
 
 ### Schema
 
 The cache describes the platform layer, not the protocol layer. This means that it is not constrained by the needs of the Merkle DAG.
 
 ```haskell
-data CacheNode
-  = CacheFile CID
-  | Directory CacheDirectory
+data Skeleton
+  = File CID
+  | Directory SkeletonDirectory
   | Symlink   DNSLink
 
-data CacheDirectory = CacheDiectory
-  { cid      :: CID
-  , contents :: Map Text CacheNode
+data SkeletonInfo = SkeletonDirectory
+  { cid         :: CID
+  , userland    :: CID
+  , metadata    :: CID
+  , isFile      :: Bool
+  , subSkeleton :: Map Text Skeleton
   }
 ```
 
