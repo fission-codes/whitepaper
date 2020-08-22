@@ -32,18 +32,25 @@ data PrivateDirectory = PrivateDirectory
   , bareNameFilter :: BareNameFilter
   , revision       :: Natural -- Version counter for this exact AES key
   , previous       :: EncryptedLink
-  , children       :: Map Text PrivateLink
-  , dagCache       :: DAGCache
+  , links          :: Map Text PrivateLink
+  , skeleton       :: Skeleton
   }
 
-data DAGCache 
-  = Leaf CID
-  | Branch (Map TextPath DAGCache)
+type Skeleton = Map TextPath SkeletonInfo
+
+data SkeletonInfo = SkeletonInfo 
+  { cid: CID
+  , key: AES256
+  , subSkeleton :: SkeletonInfo
+  }
   
 data PrivateLink = PrivateLink
-  { path    :: Text -- Just the last segment in the chain
+  { name    :: Text -- Just the last segment in the path
   , key     :: AES256
   , pointer :: NameFilter -- Small overhead for consistency
+  , size    :: Natural
+  , mtime   :: UTCTime
+  , isFile  :: Bool
   }
 ```
 
