@@ -10,5 +10,11 @@ If another user has a copy of the data being revoked, either by having it on the
 
 Note that removal of access via rotation is a very wide action. Subdeleation of read access of that data when not in a child relationship needs to be re-granted.
 
-Once a new key is used for the data, authorized users need to be alerted.
+Once a new key is used for the data, authorized users need to be granted the new key.
+
+### WNFS
+
+The Web Native File System handles this via the `shared_by_me` and `shared_with_me` segments. If there’s a ”cache miss” in your `shared_with_me`, you may check the target file system’s `shared_by_me` segment, and look up the new key.
+
+This extends to other resources as well. The WNFS happens to be an effective data-layer substrate for key exchange broadly.
 
