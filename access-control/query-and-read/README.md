@@ -4,8 +4,3 @@ Queries are correct-by-construction. This is to say that if the user has access 
 
 In the case of unencrypted data, you may think of the decryption key as being the identity function.
 
-### Elements
-
-1. Reference \(e.g. content address\)
-2. Decryption key \(e.g. AES-256 symmetric key\)
-
