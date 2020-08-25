@@ -1,4 +1,4 @@
-# Sharing Query Access
+# Sharing
 
 Granting another user, machine, or browser tab read/query access to some resource \(e.g. WNFS\) is as simple as handing them a copy of the key and a pointer to the relevant data.
 
