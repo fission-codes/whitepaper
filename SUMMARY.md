@@ -29,7 +29,7 @@
 * [Object Capability Model](access-control/cap-authz.md)
 * [Query Access](access-control/query-and-read/README.md)
   * [Keys & Pointers](access-control/query-and-read/keys-and-pointers.md)
-  * [Key Exchange](access-control/query-and-read/key-exchange.md)
+  * [Sharing Query Access](access-control/query-and-read/key-exchange.md)
   * [Key Rotation](access-control/query-and-read/key-revocation.md)
 * [Command & Mutation](access-control/ucan/README.md)
   * [Structure](access-control/ucan/structure.md)
