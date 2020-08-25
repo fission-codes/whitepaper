@@ -11,5 +11,5 @@ Query access is mediated entirely by references and cryptographic keys. Having b
 
 The Web Native File System \(AKA ”WNFS” — found in its own section of this whitepaper\) is built on top of this style of read access.
 
-In the private section, each directory contains pointers and keys for all of its children. As such, granting access to a directory also grants access to all of its children — an “endowment” relation.
+In the private section, each directory contains pointers and keys for all of its children. As such, granting access to a directory also grants access to all of its children. This is granted “merely” by the parent relation.
 
