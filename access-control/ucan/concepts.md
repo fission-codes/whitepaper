@@ -25,9 +25,13 @@ On the other hand, email has no such tiered relationship. You may `SEND` email, 
 
 An authorization scope is the tuple `resource x potency`. Scopes compose, so a list of scopes can be considered the union of all of the inner scopes.
 
+![](../../.gitbook/assets/img_0179.jpeg)
+
 You can think of this as ”scoping” the total rights of the authorization space down to the relevant volume of authorizations.
 
 Inside this content space, can draw a boundary around some resource\(s\) \(their type, identifiers, and paths or children\), and ther potencies.
+
+
 
 ## Proof
 
