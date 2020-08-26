@@ -57,12 +57,12 @@ EdDSA applied to JOSE \(including JWT\) exists as its own spec: [RFC 8037](https
   "iss": DID,
   "aud": DID,
 
-  "rsc": ScopedResource,
-  "ptc": Potency,
-  "prf": Proof,
-
   "exp": UTCTime,
-  "nbf": UTCTime
+  "nbf": UTCTime,
+  
+  "prf": [Proof],
+  "scp": [Scope],
+  "fct": [Fact],
 }
 ```
 
