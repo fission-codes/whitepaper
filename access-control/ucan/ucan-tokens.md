@@ -1,22 +1,6 @@
 # UCAN Tokens
 
-Fission‘s protocol for commands and mutations is called a User Controlled Authorization Network, or ”UCAN” \(pronounced ”you can”\). These are a way of doing authorization where users are fully in control. Whee OAuth is designed for a centralized world, UCAN is the distributed, user-controlled equivalent.
-
-![UCAN Sam](https://s3.fission.codes/2020/05/UCAN_SAM-1.png)
-
-### User Controlled
-
-Users control the data \(and other resources\) that they create. They also have the ability to delegate control to others.
-
-### Authorization Network
-
-“Network” here is meant in the sense of a graph.
-
-The UCAN format is designed as an _authenticated_ digraph in some larger _authorization_ space. The other way to view this is as a function from a set of authorizations \(“UCAN proofs“\) to a subset output \(“UCAN capabilities”\).
-
-## What & Why
-
-At a high level, UCANs are a way of doing authorization \("what _you can_ do"\) where users are fully in control. There's no all-powerful authorization server, or server of any kind required. Everything that a users is allowed to do is captured directly in a key or token, and can be sent to anyone that knows how to interpret this format.
+At a high level, UCANs \(“User Controlled Authorization Network”\) are a way of doing authorization \("what _you can_ do"\) where users are fully in control. There's no all-powerful authorization server, or server of any kind required. Everything that a users is allowed to do is captured directly in a key or token, and can be sent to anyone that knows how to interpret this format. Where OAuth is designed for a centralized world, UCAN is the distributed, user-controlled equivalent.
 
 Since all Fission accounts are equipped with a global ID and cryptographic keys, we were able to design a system that has very few assumptions and thus works in a huge number of situations.
 
@@ -40,4 +24,16 @@ There are some actions that a user needs the help of another user or service to 
 In a traditional OAuth based system, the "account" lives entirely on the server, and the user is granted access with a token_._ In Fission's design, the account is a key pair, and a UCAN is equivalent to an OAuth token. OAuth is designed for a centralized client/server world. UCANs are the distributed user controlled equivalent.
 
 UCANs are simply [JWT](https://blog.fission.codes/auth-without-backend/jwt.io)s that contain special keys.
+
+![UCAN Sam](https://s3.fission.codes/2020/05/UCAN_SAM-1.png)
+
+### User Controlled
+
+Users control the data \(and other resources\) that they create. They also have the ability to delegate control to others.
+
+### Authorization Network
+
+“Network” here is meant in the sense of a graph.
+
+The UCAN format is designed as an _authenticated_ digraph in some larger _authorization_ space. The other way to view this is as a function from a set of authorizations \(“UCAN proofs“\) to a subset output \(“UCAN capabilities”\).
 
