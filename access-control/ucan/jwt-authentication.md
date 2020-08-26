@@ -61,10 +61,27 @@ EdDSA applied to JOSE \(including JWT\) exists as its own spec: [RFC 8037](https
   "nbf": UTCTime,
   
   "prf": [Proof],
-  "scp": [Scope],
+  "cap": [Capability],
   "fct": [Fact]
 }
 ```
+
+### Sender/Receiver
+
+`iss` and `aud` stand for “issuer“ and “audience“ respectively. These are standard JWT fields_._
+
+| Field | Long Name | Role |
+| :--- | :--- | :--- |
+| `“iss“` | Issuer | Sender DID / signer |
+| `“aud“` | Audience | Receiver DID |
+
+{% hint style="success" %}
+Being self-signed, these are the DIDs of the sender and receiver. The token signature MUST be signed with the private key associated with the `“iss”` field
+{% endhint %}
+
+### Introduction rules
+
+
 
 ### Resource Values
 
@@ -111,24 +128,6 @@ As noted above, we do not want multiple resources in a single UCAN. The two opti
 | All resources | `"rsc": "*"` |
 | Everything of this type of resource | `"rsc": { "domain": "*" }` |
 | This specific resource | `"rsc": { "domain": "myawesomedomain.com" }` |
-
-There is no list of resources. If there were, then token delegation starts to reveal a bunch of information about which resources are available to someone higher in the chain. i.e. if I'm trying to delegate access to `A` , but two layers up it talks about `[A,B,C]` , then I'm revealing information about me having access to `B` and `C` . This information is irrelevant to the current case, takes up extra characters, and potentially awkward \("I don't want to reveal that Boris has access to X, but my access to Y has that listed sooooo"\)
-
-Saying just "everything" solves for our delegation case, is compact, and doesn't actually transmit _information_
-
-But maybe I'm wrong and we want to list multiple resources?
-
-This design also means that you'll need to hold onto multiple UCANs. This was already the case, but as a concrete case: if we're in a team and working on 5 apps together, you'll have 5 UCANs. If you link machines, you'll have one UCAN for "everything".
-
-My biggest open question in this design is if we need the layer of nesting under `rsc` , or if it should just be directly in the top level \(merged directly into the claims\). They're isomorophic, but this to me feels clearer about the intent \(human factors\)
-
-
-
-This was going in a post for Imperial College, but writing out the problem lead to a series of solutions. Sooo moving here.
-
-To guard against replay attacks, all authenticated requests to and from Fission are one-time use only, and feature a unique nonce inside a sliding time window.
-
-
 
  Much of this will look familiar if you've done web auth in the past decade or so. Here's an example:
 
