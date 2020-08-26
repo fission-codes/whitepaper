@@ -64,3 +64,13 @@ SHA256(”hello world”) = 0xa948904f2f0f479b8f8197694b30184b0d2ed1c1cd2a1ec0fb
 
 Perhaps nonintuitively, signing a challenge string also constitutes a fact: that you know the private key associated with some public key, despite not giving away the actual private key.
 
+## Delegation
+
+UCANs allow agents to delegate some \(or all\) of their rights to other agents — i.e. to act on their behalf. These form chains going all the way back to the resource originator/owner. Delegation \(output\) is _always_ a subset of the proofs \(inputs\).
+
+As mentioned earlier, scopes can be merged \(set union\). If merging the inputs \(proofs\), the output scope is a subset of the proof union. While this relationship commutes, it needs to be emphasized that if _any_ proof of a certain input scope is given, it may be included in the output authorization scope.
+
+## Revocation
+
+There is no way to provide a proof that negates another _inside_ a UCAN. UCANs can be negated at the whole-UCAN level only. Please see the revelant section for more.
+
