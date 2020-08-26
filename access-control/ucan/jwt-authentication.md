@@ -50,13 +50,7 @@ EdDSA applied to JOSE \(including JWT\) exists as its own spec: [RFC 8037](https
 }
 ```
 
-### Body
-
-dsahjjkl
-
-### Signature
-
-fdsjkadjla
+## Payload
 
 ```typescript
 { 
@@ -210,16 +204,6 @@ EDRWAhoRLXPQ
 
 The same, as a bearer token \(for an HTTP `Authorization` header\)
 
-Let's break that down:
-
-### Header 📋 <a id="header-"></a>
-
-This is a standard JWT header, plus a `uav` field.
-
-* `alg` — type of signature
-* `typ` — state that this is a JWT
-* `uav` — "UCAN version" \(so we can track the format of when it was issued\)
-
 ### Body 💪 <a id="body-"></a>
 
 * `aud` "Audience" — the ID of who it's intended for \(the "to" field\)
@@ -330,45 +314,7 @@ NOTE THIS SECTION IS OUT OF DATE AND BEING _HEAVILY REWORKED 👷‍♀️🚨_
 SIGNATURE
 ```
 
-## Header
 
-The header MUST contain the following fields:
-
-### `typ`
-
-The `typ` MUST be set to `"JWT"`
-
-```javascript
-"typ": "JWT"
-```
-
-### `alg`
-
-The `alg` filed MUST specify the Ed25519 [EdDSA](https://tools.ietf.org/html/rfc8032) signature scheme:
-
-```javascript
-"alg": "Ed25519"
-```
-
-## Claims
-
-The following claims MUST be included: 
-
-* `"iss"`
-* `"sub"`
-* `"aud"`
-* `"nbf"`,
-* `"exp"`
-
-The JWT can OPTIONALLY include any or all of the following:
-
-* `"method"`
-* `"path"`
-* `"params"`
-* `"paramDigest"`
-* `"bodyDigest"`
-
-Additional claims MAY be included, as required by additional applications or ptorocols.
 
 ### `iss`
 
@@ -451,7 +397,7 @@ The Unix time at which the token is no longer valid.
 
 ## Additional Notes
 
-The hash of a token may be taken as a nonce. As such, every request MUCT be unique. If there is reason to make the same request multiple times in a narrow time window, it is recommended to vary the `exp` field \("expiry-overloading"\), or add an explicit `nonce`.
+The hash of a token may be taken as a nonce. As such, every request MUST be unique. If there is reason to make the same request multiple times in a narrow time window, it is recommended to vary the `exp` field \("expiry-overloading"\), or add an explicit `nonce`.
 
 ### Signature Authentication
 
