@@ -1,17 +1,26 @@
 # Concepts
 
+> 1. The world is everything that is the case  
+> \[...\]  
+> 1.13 The facts in logical space are the world  
+>   
+> — Wittgnstein, Tractatus Logico-Philosophicus
+
 ## Authorization Space
 
 Content itself doesn’t have an implicit owner. Instead, let’s consider the space of all content. It has an X-axis — the types of content. It has a Y-axis — the range of elements of that type to be conferred. And it has a Z-axis — the depth or variety of rights you have over the other dimensions.
 
+This authorization space includes all possible resources that can be addressed. In fact, UCANs themselves are entities that live in the authorization space, as well as their contents.
+
 ## Resource
 
-A resource is a pointer \(e.g. URI, CID, address\) that represents a thing to be acted on. Exampels include:
+A resource is a pointer \(e.g. URI, CID, address\) that represents a thing to be acted on. Examples include:
 
-* DNSLink
+* DNSLinks
 * Email address
-* Domain name
-* Username
+* Domain names
+* Fission usernames
+* DIDs
 
 ## Potency
 
@@ -23,7 +32,9 @@ On the other hand, email has no such tiered relationship. You may `SEND` email, 
 
 ## Scope
 
-An authorization scope is the tuple `resource x potency`. Scopes compose, so a list of scopes can be considered the union of all of the inner scopes.
+An authorization scope is the tuple `resource x potency`.
+
+Scopes compose, so a list of scopes can be considered the union of all of the inner scopes.
 
 ![](../../.gitbook/assets/img_0179.jpeg)
 
@@ -35,5 +46,13 @@ Inside this content space, can draw a boundary around some resource\(s\) \(their
 
 ## Proof
 
-fdhjsa
+Proofs are existing facts.
+
+### Self-Evident UCANs
+
+dsa
+
+### Raw Facts
+
+hsdajk
 
