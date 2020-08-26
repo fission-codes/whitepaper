@@ -4,20 +4,7 @@
 What follows is the UCAN 0.4.x technical specification. This currently gets updated every few weeks, but we try to keep the API as backwards-compatible as possible.
 {% endhint %}
 
-The JWT structure is a convenient container to carry the authenticated information we need for the functioning of a UCAN.
-
-From a purely technical perspective, there’s nothing special about the JWT. Socially, the JWT is currently the most common and widely understood format for tokens in web applications today.
-
-
-
-`rsc` \("resource"\) is a generalization of the UCAN v0.1.0 `scp` \("scope"\) parameter. The TL;DR is it no longer only refers to the filesystem, but also apps and domains. It could be used for more in the future, as well.
-
-We're dropping support for 0.1.0, since it was effectively unreleased and this covers more use cases that we're using imminently.
-
-## TL;DR
-
-* Drop `scp` field
-* Add `rsc` field
+The JWT structure is a convenient container to carry the authenticated information we need for the functioning of a UCAN. From a purely technical perspective, there’s nothing special about the JWT. However, in terms of human factors, the JWT is currently the most common and widely understood format for tokens in web applications today.
 
 ## v0.2.0 Claims Schema
 
@@ -164,22 +151,6 @@ The solution should be fully decentralized, not depend on our servers, be quick 
 To guard against replay attacks, all authenticated requests to and from Fission are one-time use only, and feature a unique nonce inside a sliding time window.
 
 Fission uses the familiar JWT format, plus a few additional keys.
-
-
-
-[Fission](https://blog.fission.codes/)
-
-* [WEEKLY LINK ROUNDUP](https://blog.fission.codes/tag/fragments/)
-* [EVENTS](https://blog.fission.codes/tag/event/)
-* [PRESENTATIONS](https://blog.fission.codes/tag/presentation/)
-* [HOMEPAGE ⇗](https://fission.codes/)
-* [FORUM ⇗](https://talk.fission.codes/)
-
-[Subscribe](https://blog.fission.codes/auth-without-backend/#subscribe)7 MAY 2020/[TECHNOLOGY HIGHLIGHT](https://blog.fission.codes/tag/technology-highlight/)
-
-## UCAN: Authorizing Users Without a Back End
-
-![UCAN: Authorizing Users Without a Back End](https://s3.fission.codes/2020/05/zdenek-machacek-EtxsgEcHnZg-unsplash.jpg)
 
 Fission is building a system which "makes the right thing the easy thing." It lets you write apps for the browser without having to write or deploy a back end. We're making use of fairly recent browser features and W3C standards to make this all possible. Read on for a technical summary, or [join us in the developer forum](https://talk.fission.codes/) to get into more detail.
 
