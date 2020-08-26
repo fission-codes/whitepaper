@@ -12,9 +12,7 @@ Users control the data \(and other resources\) that they create. They also have 
 
 ### Authorization Network
 
-“Network” here is pulling double duty as both ”graph” and ”transport”.
-
-#### Graph
+“Network” here is meant in the sense of a graph.
 
 The UCAN format is designed as an _authenticated_ digraph in some larger _authorization_ space. The other way to view this is as a function from a set of authorizations \(“UCAN proofs“\) to a subset output \(“UCAN capabilities”\).
 
