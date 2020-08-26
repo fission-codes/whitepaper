@@ -16,9 +16,11 @@ The JWT structure is a convenient container to carry the authenticated informati
 
 The [JWT standard](https://tools.ietf.org/html/rfc7519) includes a number of sections and keys that are required. For those not familiar, a JWT is made up of three components:
 
-* Header — metadata
-* Body — actual credential
-* Signature — token authentication
+| Section | Purpose |
+| :--- | :--- |
+| Header | Token Metadata |
+| Payload | Authorization Information |
+| Signature | Token Authentication |
 
 The vast majority of the UCAN specification is in the body. We will note changes elsewhere as required.
 
@@ -455,5 +457,5 @@ Authentication method will be extensible in the future, ideally converging to th
 
 {% embed url="https://www.w3.org/TR/webauthn/" %}
 
-
+S
 
