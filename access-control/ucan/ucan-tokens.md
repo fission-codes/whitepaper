@@ -1,6 +1,8 @@
 # UCAN Tokens
 
-Fission‘s protocol for this is called a User Controlled Authorization Network, or ”UCAN” \(pronounced ”you can”\).
+Fission‘s protocol for commands and mutations is called a User Controlled Authorization Network, or ”UCAN” \(pronounced ”you can”\). These are a way of doing authorization where users are fully in control. Whee OAuth is designed for a centralized world, UCAN is the distributed, user-controlled equivalent.
+
+![UCAN Sam](https://s3.fission.codes/2020/05/UCAN_SAM-1.png)
 
 ### User Controlled
 

@@ -32,6 +32,7 @@
   * [Revoking](access-control/query-and-read/key-revocation.md)
 * [Command & Mutation](access-control/ucan/README.md)
   * [UCAN Tokens](access-control/ucan/ucan-tokens.md)
+  * [Concepts](access-control/ucan/concepts.md)
   * [JWT Structure](access-control/ucan/jwt-authentication.md)
   * [Differences from OAuth](access-control/ucan/differences-from-oauth.md)
   * [Threshold Write Permission](access-control/ucan/threshold-writes.md)

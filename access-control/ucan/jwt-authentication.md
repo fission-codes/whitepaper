@@ -1,8 +1,8 @@
 # JWT Structure
 
--—-
+Why JWT?
 
-JWT is currently the most common format.
+From a purely technical perspective, there’s nothing special about the JWT. Socially, the JWT is currently the most common and widely understood format for tokens in web applications today.
 
 
 
@@ -189,11 +189,7 @@ Even incumbents like[ Google are moving away from the traditional auth server mo
 
 What if we learn from Google's approach \(plus older approaches like [SDSI/SPKI](https://tools.ietf.org/html/rfc2693)\) but took it to its logic conclusion?
 
-### Introducing UCANs <a id="introducing-ucans"></a>
-
-> User Controlled Authorization Networks \(UCANs\) are a way of doing authorization where users are fully in control. OAuth is designed for a centralized world, UCAN is the distributed user controlled version.
-
-![](https://s3.fission.codes/2020/05/UCAN_SAM-1.png)UCAN Sam
+###  <a id="introducing-ucans"></a>
 
 At a high level, User Controlled Authorization Networks \(UCANs\) are a way of doing authorization \("what _you can_ do"\) where users are fully in control. There's no all-powerful authorization server, or server of any kind required. Everything that a users is allowed to do is captured directly in a key or token, and can be sent to anyone that knows how to interpret this format.
 
@@ -213,50 +209,6 @@ This setup has several advantages:
 UCANs are all that we need to sign into multiple machines, delegate access for service providers to do things while we're offline, securely collaborate on documents with a team, and more. We get the flexibility of fine- or coarse-grained control, all controlled by the one who cares about the data the most: the user.
 
 We've implemented this as the authorization system for Fission, and are also making this available as a building block for developers to solve user authorization and delegation within their own applications.
-
-This system of authorization is broken into two halves: read and write \(or "command and query", depending on your background\). Without getting too in the weeds, here's a high level description of how this all works:
-
-### Read \(Query\) Access <a id="read-query-access"></a>
-
-Read access comes in three flavours: public, private, and unlisted. Access follows the [object-capability model](https://en.wikipedia.org/wiki/Object-capability_model?oldformat=true), where anyone with the reference \(URL or CID\) and cryptograhic key can read the data by virtue of having access to these.
-
-#### Public 👀 <a id="public-"></a>
-
-Public files are just that: files that can be discovered or accessed by anyone at an easy-to read path.
-
-Here's a live example: [https://boris.fission.name/Photos/boris-with-icecream.jpg](https://boris.fission.name/Photos/boris-with-icecream.jpg)
-
-#### Private 🔐 <a id="private-"></a>
-
-The user encrypts the data, and shares the key with those that should have access. The contents of a private directory is only readable with a key, but once you have access to that directory, all of the data in that directory \(including subdirectories and metadata\) is accessible.
-
-The end experience matches the behaviour in other online consumer file storage solutions like Dropbox and Google Drive. A major difference with Fission is that the end user is given complete control over who has access, and access does not depend on Fission's servers being accessible \(i.e. you're offline or Fission disappears\).
-
-#### Unlisted 🗺️ <a id="unlisted-"></a>
-
-Sort of a mashup of public and private files! This is useful when you want to \(e.g.\) embed an image in an email without distributing keys, but also don't want it easily discoverable.
-
-The unlisted files themselves are left unencrypted, but finding them is practically infeasible without the private index. Think of this index as a secret treasure map for the web — the map itself private \(only a select few have the map\), but anyone with it can find the data at the marked locations.
-
-Under the hood, the Fission SDK creates a JSON file that lists all of the locations. That JSON file is then encrypted and the key passed to whoever should have access., or the links can be shared directly.
-
-Here's a simple example of what this looks like:
-
-```text
-// The "treasure map"
-{
-  "QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ": {
-      "cat.jpg": "Qmd286K6pohQcTKYqnS1YhWrCiS4gz7Xi34sdwMe9USZ7u"
-  }
-}
-```
-
-```text
-# URL
-https://ipfs.runfission.com/ipfs/QmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ/cat.jpg
-```
-
-### Write \(Command\) Access 🖊️ <a id="write-command-access-"></a>
 
 There are some actions that a user needs the help of another user or service to perform. For example: sending an email, or updating DNS.
 
