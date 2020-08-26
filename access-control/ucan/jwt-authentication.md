@@ -116,11 +116,15 @@ Due to clock drift, do not expect the time bounds to be exact. At minimum assume
 
 `“fct”` is an optional UCAN field for arbitrary facts and proofs of knowledge. These can be things like providing a raw valuet that is hased elsewhere in the UCAN, signing a challenge string with the private key associated with the `“iss”`, a Merkle proof, and so on.
 
+All values in this field MUST be self evident and externally verifiable.
+
+The values in this field MAY be individual CIDs, or a tree of CIDs.
+
 | Field | Long Name | Required |
 | :--- | :--- | :--- |
 | `“fct”` | Facts | ❌ |
 
-An empty facts field may be the absense of the field, `null`, or an empty array.
+An empty facts field may be represented as the absence of the field or an empty array.
 
 #### Example
 
