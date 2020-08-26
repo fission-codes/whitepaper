@@ -54,7 +54,9 @@ The originating UCAN contains no proofs. It is merely a UCAN signed by the priva
 
 ## Facts & Proofs of Knowledge
 
-Logical or self-evident facts are a related form of proof. A statement of fact may be the inclusion of a CID in a Merkle tree , or a statement about the input to a hash. For example:
+Logical or self-evident facts are a related form of proof. A statement of fact may be the inclusion of a CID in a Merkle tree , or a statement about the input to a hash.
+
+As a simple example:
 
 ```text
 SHA256(”hello world”) = 0xa948904f2f0f479b8f8197694b30184b0d2ed1c1cd2a1ec0fb85d299a192a447
