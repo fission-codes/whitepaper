@@ -1,8 +1,10 @@
 # JWT Structure
 
-The JWT structure is a convenient container for the types of data presented in the Concepts section.
+{% hint style="info" %}
+What follows is the UCAN 0.4.x technical specification. This currently gets updated every few weeks, but we try to keep the API as backwards-compatible as possible.
+{% endhint %}
 
-Why JWT?
+The JWT structure is a convenient container to carry the authenticated information we need for the functioning of a UCAN.
 
 From a purely technical perspective, there’s nothing special about the JWT. Socially, the JWT is currently the most common and widely understood format for tokens in web applications today.
 
