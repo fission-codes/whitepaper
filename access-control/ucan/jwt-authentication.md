@@ -70,8 +70,6 @@ This section describes the authorization claims being made, who is involved, and
 
 ### Sender/Receiver
 
-`iss` and `aud` stand for “issuer“ and “audience“ respectively. These are standard JWT fields_._
-
 | Field | Long Name | Role | Required |
 | :---: | :---: | :---: | :---: |
 | `“iss“` | Issuer | Sender DID / signer | ✅ |
@@ -110,11 +108,30 @@ Due to clock drift, do not expect the time bounds to be exact. At minimum assume
 #### Example
 
 ```javascript
-  "nbf": 1529496683,
-  "exp": 1575606941,
+"nbf": 1529496683,
+"exp": 1575606941,
 ```
 
-## Proofs
+## Facts
+
+`“fct”` is an optional UCAN field for arbitrary facts and proofs of knowledge. These can be things like providing a raw valuet that is hased elsewhere in the UCAN, signing a challenge string with the private key associated with the `“iss”`, a Merkle proof, and so on.
+
+| Field | Long Name | Required |
+| :--- | :--- | :--- |
+| `“fct”` | Facts | ❌ |
+
+An empty facts field may be the absense of the field, `null`, or an empty array.
+
+#### Example
+
+```javascript
+"fct": [
+  {
+    "sha256": "B94D27B9934D3E08A52E52D7DA7DABFAC484EFE37A5380EE9088F7ACE2EFCDE9",
+    "raw": "hello world"
+  }
+]
+```
 
 -—-
 
