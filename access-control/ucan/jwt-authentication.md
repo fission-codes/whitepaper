@@ -30,12 +30,12 @@ The header MUST include the following fields:
 
 | Field | Meaning | Valid Options |
 | ---: | :---: | :--- |
-| `“alg“` | Algorithm | `”Ed25519”` or `”RS256”` |
+| `“alg“` | Signature Algorithm | `”EdDSA”` or `”RS256”` |
 | `“typ“` | Type | `”JWT”` |
 | `”ucv”` | UCAN Version | `”m.n.p“` |
 
 {% hint style="info" %}
-Note that Ed25519 is not in RFC 7519 at time of writing, but already used elsewere in the wild
+Note that EdDSA is not in RFC 7519 at time of writing, but already widely used “in the wild“, in common JWT libraries, and is listed on [jwt.io](https://jwt.io).
 {% endhint %}
 
 ### Example
