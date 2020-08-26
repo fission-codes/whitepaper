@@ -44,15 +44,19 @@ Inside this content space, can draw a boundary around some resource\(s\) \(their
 
 As a practical matter, since scopes form a monoid, you can be fairly loose: order doesn’t matter, and merging resources can be quite broad since the more powerful of any overlap will take precidence \(i.e. you don’t need a clean separation\).
 
-## Proofs
+## Authorization Proofs
 
-Proofs are existing facts. Typically these are UCAN chains, leading back to a self-evident origin token. However, these can be any facts, including things like an input value to a hash to prove knowledge.
+Proofs are existing facts. Typically these are UCAN chains, leading back to a self-evident origin token.
 
 ### Self-Evident UCANs
 
 The originating UCAN contains no proofs. It is merely a UCAN signed by the private key associated with the corresponding account’s DID. As such, the proof _is_ the signature itself. We call these ”self-evident” or “origin” UCANs.
 
-### Raw Facts
+## Facts & Proofs of Knowledge
 
-Logical facts are also a form of proof. The 
+Logical facts are also a form of proof. A statement of fact may be the inclusion of a CID in a Merkle tree , or a statement about the input to a hash. For example:
+
+```text
+SHA256(”hello world”) = 0xa948904f2f0f479b8f8197694b30184b0d2ed1c1cd2a1ec0fb85d299a192a447
+```
 
