@@ -62,3 +62,5 @@ As a simple example:
 SHA256(”hello world”) = 0xa948904f2f0f479b8f8197694b30184b0d2ed1c1cd2a1ec0fb85d299a192a447
 ```
 
+Perhaps nonintuitively, signing a challenge string also constitutes a fact: that you know the private key associated with some public key. Despite not giving away the actual private key, this suffices as a succinct proof of the fact that you control the correct private key.
+
