@@ -52,6 +52,8 @@ EdDSA applied to JOSE \(including JWT\) exists as its own spec: [RFC 8037](https
 
 ## Payload
 
+This section describes the authorization claims being made, who is involved, and ow long it’s valid for.
+
 ```typescript
 { 
   "iss": DID,
