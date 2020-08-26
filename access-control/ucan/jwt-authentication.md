@@ -12,6 +12,10 @@ UCAN is a familiar, bog standard JWT format, plus a few additional keys
 
 The JWT structure is a convenient container to carry the authenticated information we need for the functioning of a UCAN. From a purely technical perspective, there’s nothing special about the JWT. However, in terms of human factors, the JWT is currently the most common and widely understood format for tokens in web applications today.
 
+## Uniqueness
+
+The hash of a token may be taken as a nonce. As such, each token MUST be unique. The Fission server also requires that all tokens be used at most once to avoid replay attacks. If there is reason to make the same request multiple times in a narrow time window, it is recommended to vary the `exp` field \("expiry-overloading"\), or add an explicit `nonce`.
+
 ## Skeleton
 
 The [JWT standard](https://tools.ietf.org/html/rfc7519) includes a number of sections and keys that are required. For those not familiar, a JWT is made up of three components:
@@ -32,7 +36,7 @@ The header MUST include the following fields:
 | :---: | :---: | :---: | :---: |
 | `“alg“` | Signature Algorithm | `”EdDSA”` or `”RS256”` | ✅ |
 | `“typ“` | Type | `”JWT”` | ✅ |
-| `”ucv”` | UCAN Version | `”m.n.p“` | ✅ |
+| `”ucv”` | UCAN Version | Semver \(`”m.n.p”`\) | ✅ |
 
 {% hint style="info" %}
 Note that EdDSA is not in the JWT spec [RFC 7519](https://tools.ietf.org/html/rfc7519) at time of writing, but already widely used “in the wild“, in common JWT libraries, and is listed on [jwt.io](https://jwt.io).
@@ -116,9 +120,9 @@ Due to clock drift, do not expect the time bounds to be exact. At minimum assume
 
 `“fct”` is an optional UCAN field for arbitrary facts and proofs of knowledge. These can be things like providing a raw valuet that is hased elsewhere in the UCAN, signing a challenge string with the private key associated with the `“iss”`, a Merkle proof, and so on.
 
-All values in this field MUST be self evident and externally verifiable.
+To qualify asvalid “facts”, they MUST be self evident & externally verifiable.
 
-The values in this field MAY be individual CIDs, or a tree of CIDs.
+The values in this field MUST be the value directly, or individual CIDs of the facts, or a tree of CIDs. Prefer direct values whenever possible.
 
 | Field | Long Name | Required |
 | :--- | :--- | :--- |
@@ -137,7 +141,17 @@ An empty facts field may be represented as the absence of the field or an empty 
 ]
 ```
 
--—-
+## Proofs
+
+
+
+### 
+
+### 
+
+### 
+
+### 
 
 ### Introduction rules
 
@@ -312,124 +326,4 @@ These chains can get large, so you can optionally hash the outermost one before 
 ```
 
 Same as the example above, but with the proof compressed to a content address
-
-## Conclusion <a id="conclusion"></a>
-
-UCANs are a straightforward way of doing authorization that leverage the public key infrastructure already baked into Fission. This is essentially authorization-at-the-edge with familiar JWTs. Since the token is self-contained, it's infinitely scalable. It's also very flexible: the user can grant root access to everything, or grant a tab write access to a single object for one minute.
-
-## Complete Example
-
-NOTE THIS SECTION IS OUT OF DATE AND BEING _HEAVILY REWORKED 👷‍♀️🚨_ 
-
-```javascript
-{
-  "alg": "Ed25519",
-  "typ": "JWT"
-}
-{ 
-  "iss": "did:key:Md8JiMIwsapml_FtQ2ngnGftNP5UmVCAUuhnLyAsPxI#pubkey",
-  "sub": "_did.snak.fission.name",
-  "aud": "_did.runfission.com",
-  "nbf": 1529496683,
-  "exp": 1575606941,
-  "method": "GET"
-  "path": "/users/snak"
-  "query": "fname=satoshi&lname=nakamoto",
-  "bodyDigest": "0a7c05d1b06a76f7e76fcc74d8606518e6a916368b92f1f622db3a8c824c9f1f"
-}
-SIGNATURE
-```
-
-
-
-### `iss`
-
-Since Fission JWTs are self-signed, so the the "issuer claim" \(`iss`\) MUST specify the DID public key used to sign the token. This key MUST be formatted in the `key` DID scheme. The key MUST be prefixed with `did:key:`, and end in `#pubkey`.
-
-#### Example
-
-```javascript
-"iss": "did:key:Md8JiMIwsapml_FtQ2ngnGftNP5UmVCAUuhnLyAsPxI#pubkey"
-```
-
-### `sub`
-
-The JWT subject claim \(`sub`\) MUST specify the the subject that the JWT is acting on behalf of. This MUST be either:
-
-1. Recommended: the subject's DID
-2. Fully-qualified [TXT record DID name](https://tools.ietf.org/html/draft-mayrhofer-did-dns)
-
-This is typically the same as the `iss`, but MAY be different — for instance in cases of delegated authorization. The direct DID is preferred as it does not rely on any external systems.
-
-#### Key Example
-
-```javascript
-  "sub": "did:key:Md8JiMIwsapml_FtQ2ngnGftNP5UmVCAUuhnLyAsPxI#pubkey",
-```
-
-#### DNS Example
-
-```javascript
-  "sub": "_did.expede.fission.name",
-```
-
-### `aud`
-
-The JWT audience \(`aud`\) MUST be one of:
-
-1. Recommended: the DID of the intended recipient
-2. [TXT-record based DID name](https://tools.ietf.org/html/draft-mayrhofer-did-dns)
-3. In the case of an HTTP service: the domain name unprefixed by HTTP scheme
-
-The DID is preferred as it does not rely on any external systems.
-
-#### DID Example
-
-```javascript
-"aud": "did:key:u49kIt8edfomL3FtQ2ngnGZtNE4UmVCABuhnLyAsYDi#pubkey"
-```
-
-#### DNS Example
-
-```javascript
-"aud": "_did.fission.codes"
-```
-
-#### HTTP Service Example
-
-```javascript
-"aud": "runfission.com"
-```
-
-### `nbf`
-
-The Unix time at which the token becomes valid, expressed in milliseconds. This is typically the time it was issued, but may also be in the future.
-
-#### Example
-
-```javascript
-"nbf": 1529496683
-```
-
-### `exp`
-
-The Unix time at which the token is no longer valid. 
-
-#### Example
-
-```javascript
-"exp": 1575606941
-```
-
-## Additional Notes
-
-The hash of a token may be taken as a nonce. As such, every request MUST be unique. If there is reason to make the same request multiple times in a narrow time window, it is recommended to vary the `exp` field \("expiry-overloading"\), or add an explicit `nonce`.
-
-### Signature Authentication
-
-Authentication method will be extensible in the future, ideally converging to the IETF's Signature method as that becomes a more mature standard.
-
-{% embed url="https://www.w3.org/TR/webauthn/" %}
-
-S
 
