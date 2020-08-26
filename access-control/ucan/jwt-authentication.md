@@ -62,7 +62,7 @@ EdDSA applied to JOSE \(including JWT\) exists as its own spec: [RFC 8037](https
   
   "prf": [Proof],
   "scp": [Scope],
-  "fct": [Fact],
+  "fct": [Fact]
 }
 ```
 
@@ -130,44 +130,7 @@ To guard against replay attacks, all authenticated requests to and from Fission 
 
 
 
-Fission is building a system which "makes the right thing the easy thing." It lets you write apps for the browser without having to write or deploy a back end. We're making use of fairly recent browser features and W3C standards to make this all possible. Read on for a technical summary, or [join us in the developer forum](https://talk.fission.codes/) to get into more detail.
-
-One of the most common tasks for apps is authorizing users to perform some action, like storing new data to storage, updating records, or fetching a file. 
-
-Traditional app architecture has many users share one database \("multi-tenant"\), with all user data fully interleaved with each other. Authorization here is primarily focused on keeping users from editing each other's records on this shared infrastructure. The server's rules give fairly coarse-grained control. Due to the inevitable exceptions to these rules, the logic becomes increasingly complex over time.
-
-Even in a microservice architecture, typically all requests are funneled through a central authorization service. Over time this causes several challenges, including complex logic, cost of maintenance, tricky edge cases, and difficulty managing traffic spikes. In short: it doesn't scale well.
-
-Even incumbents like[ Google are moving away from the traditional auth server model](https://research.google/pubs/pub41892/)to overcome the above challenges. Fission has different constraints from Google and Amazon, but can adapt a lot of these ideas for our purposes. Essentially they're moving from a central auth server setup to a distributed model where more power is delegated to services.
-
-What if we learn from Google's approach \(plus older approaches like [SDSI/SPKI](https://tools.ietf.org/html/rfc2693)\) but took it to its logic conclusion?
-
-###  <a id="introducing-ucans"></a>
-
-At a high level, User Controlled Authorization Networks \(UCANs\) are a way of doing authorization \("what _you can_ do"\) where users are fully in control. There's no all-powerful authorization server, or server of any kind required. Everything that a users is allowed to do is captured directly in a key or token, and can be sent to anyone that knows how to interpret this format.
-
-Since all Fission accounts are equipped with a global ID and cryptographic keys, we were able to design a system that has very few assumptions and thus works in a huge number of situations.
-
-This setup has several advantages:
-
-1. Low effort: developers don't need to write and maintain complex access logic
-2. Familiar: uses very common JSON Web Tokens \(JWTs\)
-3. Invisible: users don't need to know that anything special is happening
-4. Flexible: access can be granted as coarse or granular as the end users wants
-5. Scalable: no auth server bottleneck / scales infinitely
-6. Secure: military-grade encryption
-7. Collaborative: users and services and delegate a subset of their access to others
-8. Self-contained: the token contains all the information needed to verify it
-
-UCANs are all that we need to sign into multiple machines, delegate access for service providers to do things while we're offline, securely collaborate on documents with a team, and more. We get the flexibility of fine- or coarse-grained control, all controlled by the one who cares about the data the most: the user.
-
-We've implemented this as the authorization system for Fission, and are also making this available as a building block for developers to solve user authorization and delegation within their own applications.
-
-There are some actions that a user needs the help of another user or service to perform. For example: sending an email, or updating DNS.
-
-In a traditional OAuth based system, the "account" lives entirely on the server, and the user is granted access with a token_._ In Fission's design, the account is a key pair, and a UCAN is equivalent to an OAuth token. OAuth is designed for a centralized client/server world. UCANs are the distributed user controlled equivalent.
-
-UCANs are simply [JWT](https://blog.fission.codes/auth-without-backend/jwt.io)s that contain special keys. Much of this will look familiar if you've done web auth in the past decade or so. Here's an example:
+ Much of this will look familiar if you've done web auth in the past decade or so. Here's an example:
 
 ```text
 {
