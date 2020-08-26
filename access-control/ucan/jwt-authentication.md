@@ -103,11 +103,20 @@ The `“exp“` field is extremely important for a number of reasons. It is stro
 
 By limiting the time range, you lower the risk of a malicious user abusing a UCAN. There’s a balance, since if a user trusts an audience \(e.g. their personal phone\), they may not want to  reauthorize it very often.
 
-While we would like to depend on a logic clock, this is not always possible, so a wall clock time keeping is required to some degree.
-
 {% hint style="danger" %}
-Due to clock drift, do not expect the time bounds to be exact. At minimum assume +/- 60 seconds.
+Due to clock drift, do not expect the time bounds to be exact. At minimum assume +/- 60 seconds. While we would like to depend on a logic clock, this is not always possible, so a wall clock time keeping is required to some degree.
 {% endhint %}
+
+#### Example
+
+```javascript
+  "nbf": 1529496683,
+  "exp": 1575606941,
+```
+
+## Proofs
+
+-—-
 
 ### Introduction rules
 
