@@ -1,5 +1,9 @@
 # Concepts
 
+## Authorization Space
+
+Content itself doesn’t have an implicit owner. Instead, let’s consider the space of all content. It has an X-axis — the types of content. It has a Y-axis — the range of elements of that type to be conferred. And it has a Z-axis — the depth or variety of rights you have over the other dimensions.
+
 ## Resource
 
 A resource is a pointer \(e.g. URI, CID, address\) that represents a thing to be acted on. Exampels include:
@@ -21,13 +25,9 @@ On the other hand, email has no such tiered relationship. You may `SEND` email, 
 
 An authorization scope is the tuple `resource x potency`. Scopes compose, so a list of scopes can be considered the union of all of the inner scopes.
 
-You can think of this as ”scoping” the total rights of the authorization space down to 
+You can think of this as ”scoping” the total rights of the authorization space down to the relevant volume of authorizations.
 
-
-
-## Authorization Space
-
-Content itself doesn’t have an implicit owner. Instead, let’s consider the space of all content. Inside this content space, can draw a boundary around 
+Inside this content space, can draw a boundary around some resource\(s\) \(their type, identifiers, and paths or children\), and ther potencies.
 
 ## Proof
 
