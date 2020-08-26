@@ -22,7 +22,7 @@ The [JWT standard](https://tools.ietf.org/html/rfc7519) includes a number of sec
 
 The vast majority of the UCAN specification is in the body. We will note changes elsewhere as required.
 
-### Header
+## Header
 
 The header MUST include the following fields:
 
@@ -30,11 +30,13 @@ The header MUST include the following fields:
 | :--- | :--- | :--- |
 | `“alg“` | Algorithm | `”Ed25519”` or `”RS256”` |
 | `“typ“` | Type | `”JWT”` |
-| `”ucv”` | UCAN Version | 0.x.y |
+| `”ucv”` | UCAN Version | `”m.n.p“` |
 
 {% hint style="info" %}
-Note that Ed25519 is nonstandard at time of writing, but already used elsewere in the wild
+Note that Ed25519 is not in RFC 7519 at time of writing, but already used elsewere in the wild
 {% endhint %}
+
+### Example
 
 ```javascript
 {
