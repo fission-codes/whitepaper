@@ -17,7 +17,7 @@ The JWT structure is a convenient container to carry the authenticated informati
 The [JWT standard](https://tools.ietf.org/html/rfc7519) includes a number of sections and keys that are required. For those not familiar, a JWT is made up of three components:
 
 | Section | Purpose |
-| :--- | :--- |
+| ---: | :--- |
 | Header | Token Metadata |
 | Payload | Authorization Information |
 | Signature | Token Authentication |
@@ -29,7 +29,7 @@ The vast majority of the UCAN specification is in the body. We will note changes
 The header MUST include the following fields:
 
 | Field | Meaning | Valid Options |
-| :--- | :--- | :--- |
+| ---: | :---: | :--- |
 | `“alg“` | Algorithm | `”Ed25519”` or `”RS256”` |
 | `“typ“` | Type | `”JWT”` |
 | `”ucv”` | UCAN Version | `”m.n.p“` |
