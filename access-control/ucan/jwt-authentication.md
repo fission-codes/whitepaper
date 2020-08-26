@@ -97,9 +97,11 @@ Being self-signed, these are the DIDs of the sender and receiver. The token sign
 | `“nbf“` | Not Before | ❌ |
 | `”exp“` | Expires At | ✅ |
 
-The `“nbf“` field is optional \(though recommended\). When omitted, it is assumed to be currently valid.
+The `“nbf“` field is optional \(though recommended\). When omitted, it is assumed to be currently valid. Setting this field in the future allows the sender to delay ue of a UCAN. For example, you may want someone to only be able to post something over the weekend at a hackaton, but not before.
 
 The `“exp“` field is extremely important for a number of reasons. It is strongly encouraged to keep the time as short as  possible for a use case. For instance, when sending commands to the server, keeping it to 30 seconds is very reasonable when sending over TLS.
+
+By limiting the time range, you lower the risk of a malicious user abusing a UCAN. There’s a balance, since if a user trusts an audience \(e.g. their personal phone\), they may not want to  reauthorize it very often.
 
 While we would like to depend on a logic clock, this is not always possible, so a wall clock time keeping is required to some degree.
 
@@ -108,6 +110,10 @@ Due to clock drift, do not expect the time bounds to be exact. At minimum assume
 {% endhint %}
 
 ### Introduction rules
+
+## Uniqueness
+
+When the audience is set to the Fission server, every request is required to be unique \(generally by setting a different expiry\) to prevent replay attacks.
 
 
 
