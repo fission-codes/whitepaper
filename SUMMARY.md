@@ -21,7 +21,6 @@
 * [Overview](identity/id-overview.md)
 * [Keys](identity/keys.md)
 * [DID Document](identity/did-doc.md)
-* [JWT Authentication](identity/jwt-authentication.md)
 * [Verifiable Claims](identity/verifiable-claims.md)
 
 ## Access Control
@@ -32,11 +31,11 @@
   * [Sharing](access-control/query-and-read/key-exchange.md)
   * [Revoking](access-control/query-and-read/key-revocation.md)
 * [Command & Mutation](access-control/ucan/README.md)
-  * [Self-Signed Authorization](access-control/ucan/self-signed-tokens.md)
   * [UCAN Tokens](access-control/ucan/ucan-tokens.md)
   * [Structure](access-control/ucan/structure.md)
   * [Differences from OAuth](access-control/ucan/differences-from-oauth.md)
   * [Threshold Write Permission](access-control/ucan/threshold-writes.md)
+  * [JWT Authentication](access-control/ucan/jwt-authentication.md)
 
 ## File System
 
