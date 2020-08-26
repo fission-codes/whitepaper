@@ -52,7 +52,7 @@ EdDSA applied to JOSE \(including JWT\) exists as its own spec: [RFC 8037](https
 
 ## Payload
 
-This section describes the authorization claims being made, who is involved, and ow long it’s valid for.
+This section describes the authorization claims being made, who is involved, and when it’s valid.
 
 ```typescript
 { 
@@ -97,7 +97,15 @@ Being self-signed, these are the DIDs of the sender and receiver. The token sign
 | `“nbf“` | Not Before | ❌ |
 | `”exp“` | Expires At | ✅ |
 
-The nbf field is optional \(though recommended\). When omitted, it is assumed to be currently valid.
+The `“nbf“` field is optional \(though recommended\). When omitted, it is assumed to be currently valid.
+
+The `“exp“` field is extremely important for a number of reasons. It is strongly encouraged to keep the time as short as  possible for a use case. For instance, when sending commands to the server, keeping it to 30 seconds is very reasonable when sending over TLS.
+
+While we would like to depend on a logic clock, this is not always possible, so a wall clock time keeping is required to some degree.
+
+{% hint style="danger" %}
+Due to clock drift, do not expect the time bounds to be exact. At minimum assume +/- 60 seconds.
+{% endhint %}
 
 ### Introduction rules
 
