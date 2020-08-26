@@ -28,11 +28,11 @@ The vast majority of the UCAN specification is in the body. We will note changes
 
 The header MUST include the following fields:
 
-| Field | Meaning | Valid Options |
-| ---: | :---: | :--- |
-| `“alg“` | Signature Algorithm | `”EdDSA”` or `”RS256”` |
-| `“typ“` | Type | `”JWT”` |
-| `”ucv”` | UCAN Version | `”m.n.p“` |
+| Field | Meaning | Valid Options | Required |
+| :---: | :---: | :---: | :---: |
+| `“alg“` | Signature Algorithm | `”EdDSA”` or `”RS256”` | ✅ |
+| `“typ“` | Type | `”JWT”` | ✅ |
+| `”ucv”` | UCAN Version | `”m.n.p“` | ✅ |
 
 {% hint style="info" %}
 Note that EdDSA is not in the JWT spec [RFC 7519](https://tools.ietf.org/html/rfc7519) at time of writing, but already widely used “in the wild“, in common JWT libraries, and is listed on [jwt.io](https://jwt.io).
@@ -70,14 +70,32 @@ EdDSA applied to JOSE \(including JWT\) exists as its own spec: [RFC 8037](https
 
 `iss` and `aud` stand for “issuer“ and “audience“ respectively. These are standard JWT fields_._
 
-| Field | Long Name | Role |
-| :--- | :--- | :--- |
-| `“iss“` | Issuer | Sender DID / signer |
-| `“aud“` | Audience | Receiver DID |
+| Field | Long Name | Role | Required |
+| :---: | :---: | :---: | :---: |
+| `“iss“` | Issuer | Sender DID / signer | ✅ |
+| `“aud“` | Audience | Receiver DID | ✅ |
 
 {% hint style="success" %}
 Being self-signed, these are the DIDs of the sender and receiver. The token signature MUST be signed with the private key associated with the `“iss”` field
 {% endhint %}
+
+#### Example
+
+```javascript
+"aud": "did:key:zStEZpzSMtTt9k2vszgvCwF4fLQQSyA15W5AQ4z3AR6Bx4eFJ5crJFbuGxKmbma4",
+"iss": "did:key:z5C4fuP2DDJChhMBCwAkpYUMuJZdNWWH5NeYjUyY8btYfzDh3aHwT5picHr9Ttjq",
+```
+
+### Time Bounds
+
+`“nbf“` and `“exp”` stand for ”not before” and ”expires at” respectively. These are standard JWT fields. Taken together they represent the time bounds for a token.
+
+| Field | Long Name | Required |
+| :---: | :---: | :---: |
+| `“nbf“` | Not Before | ❌ |
+| `”exp“` | Expires At | ✅ |
+
+The nbf field is optional \(though recommended\). When omitted, it is assumed to be currently valid.
 
 ### Introduction rules
 
