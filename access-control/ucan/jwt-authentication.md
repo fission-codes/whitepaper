@@ -1,5 +1,7 @@
 # JWT Structure
 
+The JWT structure is a convenient container for the types of data presented in the Concepts section.
+
 Why JWT?
 
 From a purely technical perspective, there’s nothing special about the JWT. Socially, the JWT is currently the most common and widely understood format for tokens in web applications today.
