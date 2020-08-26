@@ -12,6 +12,8 @@ Content itself doesn’t have an implicit owner. Instead, let’s consider the s
 
 This authorization space includes all possible resources that can be addressed. In fact, UCANs themselves are entities that live in the authorization space, as well as their contents.
 
+Judgements about the authorization space are [constructive](https://en.wikipedia.org/wiki/Intuitionistic_logic). While it’s technically possible to express concepts like negation, we generally limit ourselves to making true statements and present positive facts.
+
 ## Resource
 
 A resource is a pointer \(e.g. URI, CID, address\) that represents a thing to be acted on. Examples include:
@@ -40,17 +42,17 @@ You can think of this as ”scoping” the total rights of the authorization spa
 
 Inside this content space, can draw a boundary around some resource\(s\) \(their type, identifiers, and paths or children\), and ther potencies.
 
+As a practical matter, since scopes form a monoid, you can be fairly loose: order doesn’t matter, and merging resources can be quite broad since the more powerful of any overlap will take precidence \(i.e. you don’t need a clean separation\).
 
+## Proofs
 
-## Proof
-
-Proofs are existing facts.
+Proofs are existing facts. Typically these are UCAN chains, leading back to a self-evident origin token. However, these can be any facts, including things like an input value to a hash to prove knowledge.
 
 ### Self-Evident UCANs
 
-dsa
+The originating UCAN contains no proofs. It is merely a UCAN signed by the private key associated with the corresponding account’s DID. As such, the proof _is_ the signature itself. We call these ”self-evident” or “origin” UCANs.
 
 ### Raw Facts
 
-hsdajk
+Logical facts are also a form of proof. The 
 
