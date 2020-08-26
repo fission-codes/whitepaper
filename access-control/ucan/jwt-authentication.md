@@ -1,12 +1,56 @@
 # JWT Structure
 
-{% hint style="info" %}
+{% hint style="warning" %}
 What follows is the UCAN 0.4.x technical specification. This currently gets updated every few weeks, but we try to keep the API as backwards-compatible as possible.
+{% endhint %}
+
+{% hint style="info" %}
+**TL;DR**
+
+UCAN is a familiar, bog standard JWT format, plus a few additional keys
 {% endhint %}
 
 The JWT structure is a convenient container to carry the authenticated information we need for the functioning of a UCAN. From a purely technical perspective, there’s nothing special about the JWT. However, in terms of human factors, the JWT is currently the most common and widely understood format for tokens in web applications today.
 
-## v0.2.0 Claims Schema
+## Skeleton
+
+The [JWT standard](https://tools.ietf.org/html/rfc7519) includes a number of sections and keys that are required. For those not familiar, a JWT is made up of three components:
+
+* Header — metadata
+* Body — actual credential
+* Signature — token authentication
+
+The vast majority of the UCAN specification is in the body. We will note changes elsewhere as required.
+
+### Header
+
+The header MUST include the following fields:
+
+| Field | Meaning | Valid Options |
+| :--- | :--- | :--- |
+| `“alg“` | Algorithm | `”Ed25519”` or `”RS256”` |
+| `“typ“` | Type | `”JWT”` |
+| `”ucv”` | UCAN Version | 0.x.y |
+
+{% hint style="info" %}
+Note that Ed25519 is nonstandard at time of writing, but already used elsewere in the wild
+{% endhint %}
+
+```javascript
+{
+  "alg": "Ed25519",
+  "typ": "JWT"
+  "ucv": "0.4.0"
+}
+```
+
+### Body
+
+dsahjjkl
+
+### Signature
+
+fdsjkadjla
 
 ```typescript
 { 
@@ -39,23 +83,6 @@ You probably see the overall pattern:
 * `{"resource_variety": "scope_of_that_resource"}`
 
 Okay, so UCAN changes
-
-This may change _slightly_ this morning, but wanted to catch y'all up on what's on the branch now and design goals
-
-## Existing
-
-The existing v0.2.0 UCAN spec _only_ supports FFS
-
-There's a `scp` \("scope"\) field that contains a file path, which is represented as a string
-
-## Updated
-
-### Design goals
-
-* Support delegated access to FFS, apps, and domains
-* Open to extension to more \(arbitrary\) resources
-* Not explicitly reveal \(i.e. list out\) _all_ of the resources that you have access to
-* Remain as compact as possible
 
 `scp` is gone, replaced with `rsc` \("resource"\)
 
@@ -99,19 +126,9 @@ My biggest open question in this design is if we need the layer of nesting under
 
 This was going in a post for Imperial College, but writing out the problem lead to a series of solutions. Sooo moving here.
 
-Copy/paste from Discord
-
-> Oh god I'm solving problems while I'm typing up tasks for IC :stuck\_out\_tongue: This is what happens when I have time to think about stuff :laughing: So, UCAN revocation We only need to keep a list of non-expired, invalid tokens UCANs are content addressable, as are the PKs involved So... keep a list of bad CIDs in FLOOFS to start at least Clear the cache from time to time Keep this cache at a well-known path Potentially even include the actual bad UCAN Service providers use a Merkel proof to know that nothing has changed since they last looked Crap, that could actually work :woman\_shrugging: Removing it from the IC write up Moving to a new Talk post This... is a problem with PKI that has existed since the 80s Vertically integrated tech stacks FTW
-
-
-
-
-
-
-
 To guard against replay attacks, all authenticated requests to and from Fission are one-time use only, and feature a unique nonce inside a sliding time window.
 
-Fission uses the familiar JWT format, plus a few additional keys.
+
 
 Fission is building a system which "makes the right thing the easy thing." It lets you write apps for the browser without having to write or deploy a back end. We're making use of fairly recent browser features and W3C standards to make this all possible. Read on for a technical summary, or [join us in the developer forum](https://talk.fission.codes/) to get into more detail.
 
