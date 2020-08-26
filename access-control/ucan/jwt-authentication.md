@@ -35,7 +35,9 @@ The header MUST include the following fields:
 | `”ucv”` | UCAN Version | `”m.n.p“` |
 
 {% hint style="info" %}
-Note that EdDSA is not in RFC 7519 at time of writing, but already widely used “in the wild“, in common JWT libraries, and is listed on [jwt.io](https://jwt.io).
+Note that EdDSA is not in the JWT spec [RFC 7519](https://tools.ietf.org/html/rfc7519) at time of writing, but already widely used “in the wild“, in common JWT libraries, and is listed on [jwt.io](https://jwt.io).
+
+EdDSA applied to JOSE \(including JWT\) exists as its own spec: [RFC 8037](https://tools.ietf.org/html/rfc8037).
 {% endhint %}
 
 ### Example
