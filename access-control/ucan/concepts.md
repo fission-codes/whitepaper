@@ -1,20 +1,33 @@
 # Concepts
 
-## Authorization Space
-
-dsa
-
 ## Resource
 
-dsa
+A resource is a pointer \(e.g. URI, CID, address\) that represents a thing to be acted on. Exampels include:
+
+* DNSLink
+* Email address
+* Domain name
+* Username
 
 ## Potency
 
-hfjdska
+The potency are the rights on some resource. Each potency type has its own elements and semantics. They may by unary, support a semilattice, be monotone, and so on. Potencies may be considered on their own — separate from resources — and applied to different resources.
+
+For example, `APPEND` is a potency for WNFS paths. The potency `OVERWRITE` also implies the ability to `APPEND`.
+
+On the other hand, email has no such tiered relationship. You may `SEND` email, but there is no ”super send”.
 
 ## Scope
 
-ds
+An authorization scope is the tuple `resource x potency`. Scopes compose, so a list of scopes can be considered the union of all of the inner scopes.
+
+You can think of this as ”scoping” the total rights of the authorization space down to 
+
+
+
+## Authorization Space
+
+Content itself doesn’t have an implicit owner. Instead, let’s consider the space of all content. Inside this content space, can draw a boundary around 
 
 ## Proof
 
