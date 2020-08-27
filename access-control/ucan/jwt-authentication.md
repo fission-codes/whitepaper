@@ -34,9 +34,9 @@ The header MUST include the following fields:
 
 | Field | Meaning | Valid Options | Required |
 | :---: | :---: | :---: | :---: |
-| `“alg“` | Signature Algorithm | `”EdDSA”` or `”RS256”` | ✅ |
-| `“typ“` | Type | `”JWT”` | ✅ |
-| `”ucv”` | UCAN Version | Semver \(`”m.n.p”`\) | ✅ |
+| `“alg“` | Signature Algorithm | `”EdDSA”` or `”RS256”` | ✔️ |
+| `“typ“` | Type | `”JWT”` | ✔️ |
+| `”ucv”` | UCAN Version | Semver \(`”m.n.p”`\) | ✔️ |
 
 {% hint style="info" %}
 Note that EdDSA is not in the JWT spec [RFC 7519](https://tools.ietf.org/html/rfc7519) at time of writing, but already widely used “in the wild“, in common JWT libraries, and is listed on [jwt.io](https://jwt.io).
@@ -76,8 +76,8 @@ This section describes the authorization claims being made, who is involved, and
 
 | Field | Long Name | Role | Required |
 | :---: | :---: | :---: | :---: |
-| `“iss“` | Issuer | Sender DID / signer | ✅ |
-| `“aud“` | Audience | Receiver DID | ✅ |
+| `“iss“` | Issuer | Sender DID / signer | ✔️ |
+| `“aud“` | Audience | Receiver DID | ✔️ |
 
 {% hint style="success" %}
 Being self-signed, these are the DIDs of the sender and receiver. The token signature MUST be signed with the private key associated with the `“iss”` field
@@ -97,7 +97,7 @@ Being self-signed, these are the DIDs of the sender and receiver. The token sign
 | Field | Long Name | Required |
 | :---: | :---: | :---: |
 | `“nbf“` | Not Before | ❌ |
-| `”exp“` | Expires At | ✅ |
+| `”exp“` | Expires At | ✔️ |
 
 The `“nbf“` field is optional \(though recommended\). When omitted, it is assumed to be currently valid. Setting this field in the future allows the sender to delay ue of a UCAN. For example, you may want someone to only be able to post something over the weekend at a hackaton, but not before.
 
@@ -167,207 +167,62 @@ These UCAN chains — especially with 2048-bit RSA DIDs — have the potential 
 ]
 ```
 
-### Capabilities
+### Attenuation
 
-The capabilities \(i.e. output\) of a UCAN is an array of heterogeneous resources and potencies \(defined below\).
+The attenuated resources \(i.e. output\) of a UCAN is an array of heterogeneous resources and capabilities \(defined below\).
 
 The union of this array must be a strict subset \(attenuation\) of the proofs plus resources created/owned/originated by the `”iss”` DID. This scoping also includes time ranges, making the proof that starts latest and proof the end soonest the lower and upper time bounds.
 
-Each capability has its own semantics. They consist of at least a resource and a potency, generally adhering to the form:
+Each capability has its own semantics. They consist of at least a resource and a capability, generally adhering to the form:
 
 ```javascript
 {
   $TYPE: $IDENTIFIER,
-  "ptc": $POTENCY
+  "cap": $CAPABILITY
 }
 ```
+
+| Field Name | Long Name | Required |
+| :--- | :--- | :--- |
+| `“att“` | Attenuation | ✔️  |
 
 #### Example
 
 ```javascript
-"cap": [
+"att": [
   {
     "wnfs": "boris.fission.name/public/photos/*",
-    "ptc": "OVERWRITE"
+    "cap": "OVERWRITE"
   },
   {
     "wnfs": "boris.fission.name/private/2600c900ad41f2cd2dde208aecd8272be554db12b7a7dd18f087c9571c2b70e254bb7f85fde9de1d16c200ec32fc2bd51ced4ecf250f7ca9fd37bb2852a0ae822600c900ad41f2cd2dde208aecd8272be554db12b7a7dd18f087c9571c2b70e254bb7f85fde9de1d16c200ec32fc2bd51ced4ecf250f7ca9fd37bb2852a0ae82",
-    "ptc": "APPEND"
+    "cap": "APPEND"
   },
   {
     "email": "boris@fission.codes",
-    "ptc": "SEND"
+    "cap": "SEND"
   }
 ]
 ```
 
 ### Resources
 
+#### Resource Type
 
+This merely a unique identifier to indicate the type of thing being being described. For example, `“wnfs“` for the WebNative File System, `“email”` for email, and `“domain“` for domain names.
 
-### Resource Values
+#### Resource Identifier
 
-| `rsc` | Meaning |
+This value depends on the resource type. A resource identifier is a canonical reference of some sort. For instance, a DNSLink, email address, domain name, or username.
+
+These values may also include the wildcard \(`*`\). This means ”any resource of this type”, even if not yet created, bounded by proofs. These are generally used for account linking. Wildcards are not required to delegate longer paths, as paths are generally taken as `OR` filters.
+
+| Resource Value | Meaning |
 | :--- | :--- |
-| `"*"` | Delegate all resources \(includes ones in the future — for account linking\) |
-| `{"floofs": "/file/path/"}` | File paths in our file system |
+| `"*"` | Delegate all resources of any type that are in scope |
+| `{"wfs": "/file/path/"}` | File paths in our file system |
 | `{"app": "*"}` | All apps that the `iss` has access to, including future ones |
 | `{"app": "myapp.fission.app"}` | A URL for the app \(ideally the autoassigned one\) |
 | `{"domain": "*"}` | All domain names that a user has imported or bought |
 | `{"domain": "somedomain.com"}` | A domain name that a user has imported or bought |
-
-You probably see the overall pattern:
-
-* `"*"` is the wildcard "any and all"
-* `{"resource_variety": "scope_of_that_resource"}`
-
-Okay, so UCAN changes
-
-`scp` is gone, replaced with `rsc` \("resource"\)
-
-All other JWT claims are the same — time, potency, and so on
-
-Inside `rsc` is an object that lists the type of resource, and the scope of that resource \(and potentially other fields in the future\)
-
-### Some Examples
-
-```javascript
-  "rsc": { "app_url": "lucky-unicorn.fission.app" }
-  "rsc": { "domain": "myawesomedomain.com" }
-  "rsc": { "domain": "*" }
-  "rsc": { "fission_fs": "/" }
-  "rsc": "*"
-```
-
-We'll get to those `"*"` s momentarily
-
-This layout does not put the potency, time, &c inside the `rsc`
-
-As noted above, we do not want multiple resources in a single UCAN. The two options are "everything" or "this specific resource"
-
-| Human | Machine |
-| :--- | :--- |
-| All resources | `"rsc": "*"` |
-| Everything of this type of resource | `"rsc": { "domain": "*" }` |
-| This specific resource | `"rsc": { "domain": "myawesomedomain.com" }` |
-
- Much of this will look familiar if you've done web auth in the past decade or so. Here's an example:
-
-```text
-{
-  "alg": "Ed25519",
-  "typ": "JWT"
-  "uav": "0.1.0"
-}
-{
-  "aud": "did:key:zStEZpzSMtTt9k2vszgvCwF4fLQQSyA15W5AQ4z3AR6Bx4eFJ5crJFbuGxKmbma4",
-  "iss": "did:key:z5C4fuP2DDJChhMBCwAkpYUMuJZdNWWH5NeYjUyY8btYfzDh3aHwT5picHr9Ttjq",
-  "nbf": 1588713622,
-  "exp": 1589000000,
-  "scp": "/"
-  "ptc": "APPEND",
-  "prf": null,
-}
-```
-
-Example UCAN JSON Web Token
-
-```text
-Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsInVhdiI6IjAuMS4wIn0.eyJhdWQiOiJkaW
-Q6a2V5OnpTdEVacHpTTXRUdDlrMnZzemd2Q3dGNGZMUVFTeUExNVc1QVE0ejNBUjZCeDRl
-Rko1Y3JKRmJ1R3hLbWJtYTQiLCJpc3MiOiJkaWQ6a2V5Ono1QzRmdVAyRERKQ2hoTUJDd0
-FrcFlVTXVKWmROV1dINU5lWWpVeVk4YnRZZnpEaDNhSHdUNXBpY0hyOVR0anEiLCJuYmYi
-OjE1ODg3MTM2MjIsImV4cCI6MTU4OTAwMDAwMCwic2NwIjoiLyIsInB0YyI6IkFQUEVORC
-IsInByZiI6bnVsbH0.Ay8C5ajYWHxtD8y0msla5IJ8VFffTHgVq448Hlr818JtNaTUzNIw
-FiuutEMECGTy69hV9Xu9bxGxTe0TpC7AzV34p0wSFax075mC3w9JYB8yqck_MEBg_dZ1xl
-JCfDve60AHseKPtbr2emp6hZVfTpQGZzusstimAxyYPrQUWv9wqTFmin0Ls-loAWamleUZ
-oE1Tarlp_0h9SeV614RfRTC0e3x_VP9Ra_84JhJHZ7kiLf44TnyPl_9AbzuMdDwCvu-zX
-jd_jMlDyYcuwamJ15XqrgykLOm0WTREgr_sNLVciXBXd6EQ-Zh2L7hd38noJm1P_MIr9_
-EDRWAhoRLXPQ
-```
-
-The same, as a bearer token \(for an HTTP `Authorization` header\)
-
-### Body 💪 <a id="body-"></a>
-
-* `aud` "Audience" — the ID of who it's intended for \(the "to" field\)
-* `iss` "Issuer" — ID of who sent it \(the "from" field\)
-* `nbf` "Not Before" — Unix timestamp of when it becomes valid \(typically when it was created, but not always\)
-* `exp` "Expiry" — Unix timestamp of when it stops being valid
-* `scp` "Scope" — The scope of things it's able to change \(e.g. a file system path\)
-* `ptc` "Potency" — what rights comes with the token \(in this case it's append only\)
-* `prf` "Proof" — an optional nested token with equal or greater privileges
-
-These are then all signed with the user's private key. This key must match the public key in the `iss` field \(user IDs are public keys\), directly authenticating the token. As the token is a complete description of access, this token is self-validating with no need to look at other data or services.
-
-#### Delegation 🤝 <a id="delegation-"></a>
-
-What if you want to grant another user or service the ability to perform some action on your behalf? As long as they have a valid UCAN, they can wrap it in another with equal or lesser rights and include the original in the `prf` field.
-
-Since every UCAN layer is self-signed, we can trace back to the root \(no `prf` field\), and know who the delegate is acting as. This chain of tokens is itself is the proof that you're perform some action.
-
-For example, here's a chain:
-
-```text
-"prf":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.
-       eyJhdWQiOiJkaWQ6a2V5OnpTdEVacHpTTXRUdDlrMnZz
-       emd2Q3dGNGZMUVFTeUExNVc1QVE0ejNBUjZCeDRlRko1
-       Y3JKRmJ1R3hLbWJtYTQiLCJleHAiOjE1ODgyNjU0MjAs
-       ImlzcyI6ImRpZDprZXk6ejFMQm53RWt0d1lMcnBQaHV3
-       Rm93ZFZ3QUZYNXpwUm85cnJWendpUlJCQmlhQm9DUjdo
-       TnFnc3RXN1ZNM1Q5YXVOYnFUbVFXNHZkSGI2MVJoVE1W
-       Z0NwMUJUeHVhS1UzYW5Xb0VSRlhwdVp2ZkUzOWc4dTdI
-       UzlCZUQxUUpOMWZYNlM4dnZza2FQaHhGa3dMdEdyNFpm
-       ZmtVRTU3V1pwTldNNlU2QnFka3RaeG1LenhDODV6TjRG
-       QzlXczVMSHVHZnhhQ3VCTGlVZkE3cUVZVlN6MVF1MXJa
-       RHBENk55ZlVOckhKMUVyWmR1SnVuOTc2bmJGSHJtRG5V
-       NDdSY1NNRkVTYk5LRGkxNDY3dFJmdWJzTXJEemViZENG
-       S1EybTFBWXlzdG8yaTZXbWNudWNqdDN0bndUcWU3Qm84
-       TDFnOGg4VUdBOTQ2REYzV2VHYlBVR3F6bnNVZExxNlhM
-       Q21KekprSm1yTnllWmtzd2R5UFgyVnU2SjlFNEoxMlNi
-       M2g5ZHM3YXRCeWFtZnRpdEVac2Y2aFBKa0xVWEdUaFlw
-       Q25tUkFBclJSZlBZMkg2Y0tEYzdBY25GUHlOSEdrYWI1
-       WkZvNHF2Z0JaeXRiSzFLNW9EM0hmUTZFMnliTGh5QzJi
-       OGk1d282REx0bTl1Zml4U0pOTlRIN1Vpa2s4OENtZXJ0
-       S1I3czEyQ0sxV0xFTTNadTVZQlpOcGhuamo3Y3A4UVRv
-       ZEFlaFJQVjlORzFDTEVBTUpWTjc5RHZZZTZTZmlhZkpv
-       YmN2ZkQ4bnBmUzZqY2VqY3lvdVFiRXBLREc3UUFuS1M0
-       OFA0QXZnQnFEdmZOVWU1NGpNa2s2cjZDb1g0TGNZR0h1
-       a1pERW5lYTlrd2tFb1hrVVlTNGoxQWZiS2g0NEZ6U3VY
-       YlFxWm5qalZwVGh4Q05tbU5uMUU0cUhtc0ZrdkdvRjNG
-       TjU1Q1Brb0dmREN2eVFKZ3Ftc0ZtcGVUSlN5OXd6djRN
-       dmJxcHVBVHhyN2V5eHNHZUNXUWtjRHd1YjMyaW5HcFIz
-       cmVUZnpSSkVDQ0ZaYXJuWGRjQzVQaWRha2IxV3U4TCIs
-       Im5iZiI6MCwicHRjIjoiQVBQRU5EIiwicHJmIjpudWxs
-       LCJzY3AiOiIvIn0.leyE9w2TF28espPq6mOWziQuJny2
-       GHH_wajV6S9q4gF9SLP-i9JaX_XbkHlE1GhpQ36gSs6F
-       v4_AXSuJzDkUhnAA-oPsI5bSHl28XbobzqdmXtQ2liK-
-       Gum7kUtF1CPXlIamV0NIUlCKLlaUgFod5ZQvvA19kMHU
-       ugDGm8O3G98TSm3qLlG-eoFNVXr0NSpvLeui3kQbdBsP
-       GMykaTsUn1fNLI3oKkK6JvUIq4po6gIidTdOJDlS7y_W
-       4bdMXUQcTprtpd2QmTqwTzws9tu4GBdx7q1vz35LiG39
-       ohhRs2NKB4rxbZK2O9kX1G2xLMSETE_YT9GR04XWMnFo
-       eIodsg"
-```
-
-Nested proof
-
-You'll notice that the nested proof is encoded as a bearer token. This is because it needs to include its signature to prove that it's valid, and a JWT signature is on the content encoded this way.
-
-This token is thus valid as long as:
-
-* All token signatures are correct
-* The time range, potency, and scope of `prf` are greater-or-equal to the enclosing token
-* The outer token's `iss` field matches the `prf`'s `aud` field \(chain "to" and "from" correctly\)
-* The timestamps are valid at the present time
-
-#### Hashing ️ 🏎️ <a id="hashing-"></a>
-
-These chains can get large, so you can optionally hash the outermost one before sending to a server. This acts as a "content address", meaning that if the service hasn't seen it before, it can separately request that token, but if it already has it in cache and doesn't need to get it over the network. Since hashes are much smaller than their content, this can save a lot of bandwidth on repeated requests.
-
-```text
-"prf": "QmU5WJTTp9vtMN1PBJpTV9xWXbTFBcWx3qjPGuXJXtujyd"
-```
-
-Same as the example above, but with the proof compressed to a content address
 
