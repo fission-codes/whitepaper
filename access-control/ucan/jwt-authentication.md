@@ -153,15 +153,17 @@ In the case of multiple proofs, any capabilities not covered by a proof are cons
 
 This field contains an array of proofs. The field is optional, and may be omitted.
 
-### 
+Inline proofs MUST include the entire _encoded_ token, since they will be validated by the receiver.
 
-### 
+These UCAN chains have the potential to become quite large relative to the header size limit of some servers. You can substitute them for CIDs of the proofs _as long as the proof is reachable over IPFS_. Prefer inlining the UCANs whenever possible, as choice of format will also permanently affect delegates.
 
-### Introduction rules
+#### Example
 
-## Uniqueness
-
-When the audience is set to the Fission server, every request is required to be unique \(generally by setting a different expiry\) to prevent replay attacks.
+```javascript
+"prf": [
+  "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsInVhdiI6IjAuMS4wIn0.eyJhdWQiOiJkaWQ6a2V5OnpTdEVacHpTTXRUdDlrMnZzemd2Q3dGNGZMUVFTeUExNVc1QVE0ejNBUjZCeDRlRko1Y3JKRmJ1R3hLbWJtYTQiLCJpc3MiOiJkaWQ6a2V5Ono1QzRmdVAyRERKQ2hoTUJDd0FrcFlVTXVKWmROV1dINU5lWWpVeVk4YnRZZnpEaDNhSHdUNXBpY0hyOVR0anEiLCJuYmYiOjE1ODg3MTM2MjIsImV4cCI6MTU4OTAwMDAwMCwic2NwIjoiLyIsInB0YyI6IkFQUEVORCIsInByZiI6bnVsbH0.Ay8C5ajYWHxtD8y0msla5IJ8VFffTHgVq448Hlr818JtNaTUzNIwFiuutEMECGTy69hV9Xu9bxGxTe0TpC7AzV34p0wSFax075mC3w9JYB8yqck_MEBg_dZ1xlJCfDve60AHseKPtbr2emp6hZVfTpQGZzusstimAxyYPrQUWv9wqTFmin0Ls-loAWamleUZoE1Tarlp_0h9SeV614RfRTC0e3x_VP9Ra_84JhJHZ7kiLf44TnyPl_9AbzuMdDwCvu-zXjd_jMlDyYcuwamJ15XqrgykLOm0WTREgr_sNLVciXBXd6EQ-Zh2L7hd38noJm1P_MIr9_EDRWAhoRLXPQ"
+]
+```
 
 
 
