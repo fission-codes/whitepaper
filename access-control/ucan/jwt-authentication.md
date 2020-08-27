@@ -151,11 +151,13 @@ In the case of multiple proofs, any capabilities not covered by a proof are cons
 | :--- | :--- | :--- |
 | `”prf”` | UCAN Proofs | ❌ |
 
-This field contains an array of proofs. The field is optional, and may be omitted.
+This field contains an array of proofs. The field is required if you are accessing deleagted resources. If the resources are associated with the current DID, this field may be omitted.
 
 Inline proofs MUST include the entire _encoded_ token, since they will be validated by the receiver.
 
-These UCAN chains have the potential to become quite large relative to the header size limit of some servers. You can substitute them for CIDs of the proofs _as long as the proof is reachable over IPFS_. Prefer inlining the UCANs whenever possible, as choice of format will also permanently affect delegates.
+{% hint style="warning" %}
+These UCAN chains — especially with 2048-bit RSA DIDs — have the potential to become quite large relative to the header size limit of some servers, running roughly 2kb/layer. You can substitute them for CIDs of the proofs _as long as the proof is reachable over IPFS_. Prefer inlining the UCANs whenever possible, as choice of format will also permanently affect delegates.
+{% endhint %}
 
 #### Example
 
