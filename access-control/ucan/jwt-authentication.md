@@ -136,18 +136,20 @@ An empty facts field may be represented as the absence of the field or an empty 
 "fct": [
   {
     "sha256": "B94D27B9934D3E08A52E52D7DA7DABFAC484EFE37A5380EE9088F7ACE2EFCDE9",
-    "raw": "hello world"
+    "msg": "hello world"
   }
 ]
 ```
 
 ## Proofs
 
-The `“prf”` section is reserved for UCAN proofs — the ”inputs” of the UCAN. This forms a chain all the way back to the resource originator / owner.
+The `“prf”` section is reserved for UCAN proofs — the ”inputs” of the UCAN. Each proof MUST form a chain all the way back to the resource originator / owner. If a UCAN does not include a `“prf”` field, it is read as being the initial UCAN. In this case, the `”iss”` is the resource originator / owner for everything in the `“cap”` section.
 
-If a UCAN does not include a `“prf”` field, it is read as being the initial UCAN. In this case, the `”iss”` is the resource originator / owner for everything in the `“cap”` section.
+In the case of multiple proofs, any capailties not covered by a proof are considered to be claimed by the issuer DID.
 
-In the case of multiple proofs, any capailties not covered by a proof are considered to be claimed by the issuer DID. 
+| Field | Long Name | Required |
+| :--- | :--- | :--- |
+| `”prf”` | UCAN Proof | ❌ |
 
 ### 
 
