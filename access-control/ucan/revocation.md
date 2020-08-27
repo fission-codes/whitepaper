@@ -1,10 +1,10 @@
 # Revocation
 
-## Efficient Distributed Key Revocation ⛔
+## Efficient Distributed Key Revocation
 
 ### One-Liner
 
-Decentralized authorization token blocklist
+Decentralized authorization token blocklist / 
 
 ### Background
 
@@ -38,6 +38,4 @@ A naive approach is token "generations" — essentially version the tokens and p
 The good news is that we only need to worry about potentially revoking tokens haven't expired. Proactive auth means that these tokens _should_ be short lived, but that's not enforceable.
 
 The solution should be fully decentralized, not depend on our servers, be quick to look up, and not require downloading oodles of data.
-
-\[Having a brain wave, moving to Discord\]
 
