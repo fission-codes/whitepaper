@@ -26,7 +26,9 @@ WNFS capabilities are monotone, where each level “contains” the capabilities
 
 ### 1. CREATE
 
-Append access allows for the adding of completely new file paths, but not new generations.
+At the platform layer, this ”create new path”. This is a new path _relative_ to the most recent generation. So, if this path existed in a previous generaion, but was then removed, it’s allowed to be created anew.
+
+Append access allows for the adding of completely new file paths, but not new generations. In other words, at the low-level protocol layer, this is a restricted form of “append only”.
 
 ### 2. REVISE
 
