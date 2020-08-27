@@ -4,6 +4,12 @@ Attenuations for the WebNative File System are a thin layer on top of the UCAN s
 
 The resource type is `”wnfs”`. The resource value is a DNSLink pointing at the highest node in the graph granting access. Everything below is given the same acces \(as its content\).
 
+## Paths
+
+### Public
+
+
+
 ## Capabilities
 
 WNFS capabilities are monotone, where each level “contains” the capabilities below it.
@@ -40,7 +46,7 @@ Includes Capability 1, Capability 2, and Capability 3.
 >   
 > — Wikipedia, [Property Rights \(economics\)](https://en.wikipedia.org/wiki/Property_rights_%28economics%29)
 
-The ability to destroy the file system itself, or transfer it to another owner.
+The ability to destroy the file system itself, or transfer it to another owner. “Transfer here is the transfer of ownship over the actual head pointer, as all other data can be copied with sufficient read permissions.
 
 Includes Capability 1, Capability 2, Capability 3, and Capability 4.
 
