@@ -167,7 +167,17 @@ These UCAN chains — especially with 2048-bit RSA DIDs — have the potential 
 ]
 ```
 
+### Capabilities
 
+The capabilities \(i.e. output\) of a UCAN is an array of reosurces and potencies \(defined below\). They must be a strict subset of the proofs plus resources created/owned/originated by the `”iss”` DID.
+
+#### Example
+
+```javascript
+"cap": [
+  ""
+]
+```
 
 ### Resource Values
 
