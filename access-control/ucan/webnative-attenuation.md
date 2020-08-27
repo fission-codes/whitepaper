@@ -6,9 +6,19 @@ The resource type is `”wnfs”`. The resource value is a DNSLink pointing at t
 
 ## Paths
 
+All paths in WNFS are gven in relationship to some head pointer via a [DNSLink](https://docs.ipfs.io/concepts/dnslink/). Access is given by a binary `OR` of the path, and match that to the longer path. If they match, access is granted.
+
 ### Public
 
+Public paths are human readable, and are fairly straightforward. The binary `OR` mentioned above works out to a prefix. As such `boris.fission.name/foo/` matches `boris.fission.name/foo/bar.jpg`, but not `boris.fission.name/nope/bar.jpg`  or `icidasset.fission.name/foo/bar.jpg`.
 
+### Private
+
+Private paths have an additional wrinkle. For privacy, paths are given as namefilters — Bloom filters of the AES keys of the path, plus some filler. The resource path is given as the namefilter without the additional filler — a ”bare” namefilter.
+
+We follow the same procedure — check if the path successfully `OR`s with the bare namefilter.
+
+For space saving reasons, these namefilters are then hashed down for storage. The UCAN is required to also include a mapping “fact“ of the namefilter and its SHA256 value.
 
 ## Capabilities
 
@@ -26,7 +36,9 @@ Includes Capability 1.
 
 ### 3. SOFT\_DELETE
 
-Remove a file path from the next generation. The file will still be available in the WNFS history.
+Remove a _public_ file path from the next generation. The file will still be available in the WNFS history.
+
+It is not possible to inspect a private file, so this capability does not make sense in the context of the private file system.
 
 Includes Capability 1 and Capability 2.
 
