@@ -48,7 +48,7 @@ Includes Capability 1 and Capability 2.
 >   
 > — Uncle Ben via Spider Man
 
-The ability to rewrite history. This is a fairly dagerous opration, as it may break assumptions from other users. This is the “hard delete”, contrasted with Capability 3’s “soft delete”.
+The ability to rewrite history. This is a fairly dangerous operation, as it may break assumptions from other users. This is the “hard delete”, contrasted with Capability 3’s “soft delete”.
 
 Includes Capability 1, Capability 2, and Capability 3.
 
@@ -58,7 +58,7 @@ Includes Capability 1, Capability 2, and Capability 3.
 >   
 > — Wikipedia, [Property Rights \(economics\)](https://en.wikipedia.org/wiki/Property_rights_%28economics%29)
 
-The ability to destroy the file system itself, or transfer it to another owner. “Transfer here is the transfer of ownship over the actual head pointer, as all other data can be copied with sufficient read permissions.
+The ability to destroy the file system itself, or transfer it to another owner. “Transfer here is the transfer of ownership over the actual head pointer, as all other data can be copied with sufficient read permissions.
 
 Includes Capability 1, Capability 2, Capability 3, and Capability 4.
 
