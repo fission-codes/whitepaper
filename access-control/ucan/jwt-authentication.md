@@ -195,7 +195,7 @@ Each capability has its own semantics. They consist of at least a resource and a
     "cap": "OVERWRITE"
   },
   {
-    "wnfs": "boris.fission.name/private/2600c900ad41f2cd2dde208aecd8272be554db12b7a7dd18f087c9571c2b70e254bb7f85fde9de1d16c200ec32fc2bd51ced4ecf250f7ca9fd37bb2852a0ae822600c900ad41f2cd2dde208aecd8272be554db12b7a7dd18f087c9571c2b70e254bb7f85fde9de1d16c200ec32fc2bd51ced4ecf250f7ca9fd37bb2852a0ae82",
+    "wnfs": "boris.fission.name/private/4tZA6S61BSXygmJGGW885odfQwpnR2UgmCaS5CfCuWtEKQdtkRnvKVdZ4q6wBXYTjhewomJWPL2ui3hJqaSodFnKyWiPZWLwzp1h7wLtaVBQqSW4ZFgyYaJScVkBs32BThn6BZBJTmayeoA9hm8XrhTX4CGX5CVCwqvEUvHTSzAwdaR",
     "cap": "APPEND"
   },
   {
