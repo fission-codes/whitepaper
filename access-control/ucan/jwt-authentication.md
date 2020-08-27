@@ -169,15 +169,41 @@ These UCAN chains — especially with 2048-bit RSA DIDs — have the potential 
 
 ### Capabilities
 
-The capabilities \(i.e. output\) of a UCAN is an array of reosurces and potencies \(defined below\). They must be a strict subset of the proofs plus resources created/owned/originated by the `”iss”` DID.
+The capabilities \(i.e. output\) of a UCAN is an array of heterogeneous resources and potencies \(defined below\).
+
+The union of this array must be a strict subset \(attenuation\) of the proofs plus resources created/owned/originated by the `”iss”` DID. This scoping also includes time ranges, making the proof that starts latest and proof the end soonest the lower and upper time bounds.
+
+Each capability has its own semantics. They consist of at least a resource and a potency, generally adhering to the form:
+
+```javascript
+{
+  $TYPE: $IDENTIFIER,
+  "ptc": $POTENCY
+}
+```
 
 #### Example
 
 ```javascript
 "cap": [
-  ""
+  {
+    "wnfs": "boris.fission.name/public/photos/*",
+    "ptc": "OVERWRITE"
+  },
+  {
+    "wnfs": "boris.fission.name/private/2600c900ad41f2cd2dde208aecd8272be554db12b7a7dd18f087c9571c2b70e254bb7f85fde9de1d16c200ec32fc2bd51ced4ecf250f7ca9fd37bb2852a0ae822600c900ad41f2cd2dde208aecd8272be554db12b7a7dd18f087c9571c2b70e254bb7f85fde9de1d16c200ec32fc2bd51ced4ecf250f7ca9fd37bb2852a0ae82",
+    "ptc": "APPEND"
+  },
+  {
+    "email": "boris@fission.codes",
+    "ptc": "SEND"
+  }
 ]
 ```
+
+### Resources
+
+
 
 ### Resource Values
 
