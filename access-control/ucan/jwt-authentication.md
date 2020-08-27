@@ -5,7 +5,7 @@ What follows is the UCAN 0.4.x technical specification. This currently gets upda
 {% endhint %}
 
 {% hint style="info" %}
-**TL;DR**
+### **TL;DR**
 
 UCAN is the familiar, standard JWT format, plus a few required keys
 {% endhint %}
@@ -145,15 +145,13 @@ An empty facts field may be represented as the absence of the field or an empty 
 
 The `“prf”` section is reserved for UCAN proofs — the ”inputs” of the UCAN. Each proof MUST form a chain all the way back to the resource originator / owner. If a UCAN does not include a `“prf”` field, it is read as being the initial UCAN. In this case, the `”iss”` is the resource originator / owner for everything in the `“cap”` section.
 
-In the case of multiple proofs, any capailties not covered by a proof are considered to be claimed by the issuer DID.
+In the case of multiple proofs, any capabilities not covered by a proof are considered to be claimed by the issuer DID.
 
 | Field | Long Name | Required |
 | :--- | :--- | :--- |
-| `”prf”` | UCAN Proof | ❌ |
+| `”prf”` | UCAN Proofs | ❌ |
 
-### 
-
-### 
+This field contains an array of proofs. The field is optional, and may be omitted.
 
 ### 
 
