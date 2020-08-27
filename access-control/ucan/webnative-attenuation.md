@@ -18,7 +18,7 @@ Private paths have an additional wrinkle. For privacy, paths are given as namefi
 
 We follow the same procedure — check if the path successfully `OR`s with the bare namefilter.
 
-For space saving reasons, these namefilters are then hashed down for storage. The UCAN is required to also include a mapping “fact“ of the namefilter and its SHA256 value.
+For space saving reasons, these namefilters are then hashed down for storage. The UCAN is required to also include a mapping “fact“ of the namefilter and its base58 SHA256 value.
 
 ## Capabilities
 
