@@ -143,7 +143,11 @@ An empty facts field may be represented as the absence of the field or an empty 
 
 ## Proofs
 
+The `“prf”` section is reserved for UCAN proofs — the ”inputs” of the UCAN. This forms a chain all the way back to the resource originator / owner.
 
+If a UCAN does not include a `“prf”` field, it is read as being the initial UCAN. In this case, the `”iss”` is the resource originator / owner for everything in the `“cap”` section.
+
+In the case of multiple proofs, any capailties not covered by a proof are considered to be claimed by the issuer DID. 
 
 ### 
 
