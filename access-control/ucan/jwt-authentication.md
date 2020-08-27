@@ -120,7 +120,7 @@ Due to clock drift, do not expect the time bounds to be exact. At minimum assume
 
 `“fct”` is an optional UCAN field for arbitrary facts and proofs of knowledge. These can be things like providing a raw valuet that is hased elsewhere in the UCAN, signing a challenge string with the private key associated with the `“iss”`, a Merkle proof, and so on.
 
-To qualify asvalid “facts”, they MUST be self evident & externally verifiable.
+To qualify as valid “facts”, they MUST be self evident & externally verifiable.
 
 The values in this field MUST be the value directly, or individual CIDs of the facts, or a tree of CIDs. Prefer direct values whenever possible.
 
@@ -220,7 +220,7 @@ These values may also include the wildcard \(`*`\). This means ”any resource o
 | Resource Value | Meaning |
 | :--- | :--- |
 | `"*"` | Delegate all resources of any type that are in scope |
-| `{"wfs": "/file/path/"}` | File paths in our file system |
+| `{"wnfs": "/file/path/"}` | File paths in our file system |
 | `{"app": "*"}` | All apps that the `iss` has access to, including future ones |
 | `{"app": "myapp.fission.app"}` | A URL for the app \(ideally the autoassigned one\) |
 | `{"domain": "*"}` | All domain names that a user has imported or bought |
