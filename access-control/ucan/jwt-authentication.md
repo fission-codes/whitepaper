@@ -7,7 +7,7 @@ What follows is the UCAN 0.4.x technical specification. This currently gets upda
 {% hint style="info" %}
 **TL;DR**
 
-UCAN is a familiar, bog standard JWT format, plus a few additional keys
+UCAN is the familiar, standard JWT format, plus a few required keys
 {% endhint %}
 
 The JWT structure is a convenient container to carry the authenticated information we need for the functioning of a UCAN. From a purely technical perspective, there’s nothing special about the JWT. However, in terms of human factors, the JWT is currently the most common and widely understood format for tokens in web applications today.
