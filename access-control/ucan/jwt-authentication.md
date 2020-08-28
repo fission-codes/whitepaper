@@ -1,5 +1,7 @@
 # JWT Structure
 
+
+
 {% hint style="warning" %}
 What follows is the UCAN 0.4.x technical specification. This currently gets updated every few weeks, but we try to keep the API as backwards-compatible as possible.
 {% endhint %}
@@ -191,7 +193,7 @@ Each capability has its own semantics. They consist of at least a resource and a
 ```javascript
 "att": [
   {
-    "wnfs": "boris.fission.name/public/photos/*",
+    "wnfs": "boris.fission.name/public/photos/",
     "cap": "OVERWRITE"
   },
   {
