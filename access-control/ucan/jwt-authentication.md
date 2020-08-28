@@ -127,7 +127,7 @@ To qualify as valid “facts”, they MUST be self evident & externally verifiab
 The values in this field MUST be the value directly, or individual CIDs of the facts, or a tree of CIDs. Prefer direct values whenever possible.
 
 | Field | Long Name | Required |
-| :--- | :--- | :--- |
+| :---: | :---: | :---: |
 | `“fct”` | Facts | ❌ |
 
 An empty facts field may be represented as the absence of the field or an empty array.
@@ -150,7 +150,7 @@ The `“prf”` section is reserved for UCAN proofs — the ”inputs” of the
 In the case of multiple proofs, any capabilities not covered by a proof are considered to be claimed by the issuer DID.
 
 | Field | Long Name | Required |
-| :--- | :--- | :--- |
+| :---: | :---: | :---: |
 | `”prf”` | UCAN Proofs | ❌ |
 
 This field contains an array of proofs. The field is required if you are accessing deleagted resources. If the resources are associated with the current DID, this field may be omitted.
@@ -185,7 +185,7 @@ Each capability has its own semantics. They consist of at least a resource and a
 ```
 
 | Field Name | Long Name | Required |
-| :--- | :--- | :--- |
+| :---: | :---: | :---: |
 | `“att“` | Attenuation | ✔️  |
 
 #### Example
