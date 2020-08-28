@@ -67,7 +67,7 @@ This section describes the authorization claims being made, who is involved, and
   "nbf": UTCTime,
   
   "prf": [Proof],
-  "cap": [Capability],
+  "att": [Attenuation],
   "fct": [Fact]
 }
 ```
