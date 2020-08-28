@@ -37,7 +37,6 @@
   * [WebNative Attenuation](access-control/ucan/webnative-attenuation.md)
   * [Revocation](access-control/ucan/revocation.md)
   * [Differences from OAuth](access-control/ucan/differences-from-oauth.md)
-  * [Threshold Write Permission](access-control/ucan/threshold-writes.md)
 
 ## File System
 
