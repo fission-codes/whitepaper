@@ -167,7 +167,7 @@ These UCAN chains — especially with 2048-bit RSA DIDs — have the potential 
 ]
 ```
 
-### Attenuation
+## Attenuation
 
 The attenuated resources \(i.e. output\) of a UCAN is an array of heterogeneous resources and capabilities \(defined below\).
 
