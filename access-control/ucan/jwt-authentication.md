@@ -48,7 +48,7 @@ EdDSA applied to JOSE \(including JWT\) exists as its own spec: [RFC 8037](https
 
 ```javascript
 {
-  "alg": "Ed25519",
+  "alg": "EdDSA",
   "typ": "JWT"
   "ucv": "0.4.0"
 }
