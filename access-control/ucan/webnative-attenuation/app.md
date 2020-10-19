@@ -2,7 +2,7 @@
 
 ## Resource
 
-The resource key \(type\) is `”web_app”`. The resource value \(identifier\) is the hostname \(i.e. subdomains + domain name\).
+The resource key \(type\) is `”web”`. The resource value \(identifier\) is the hostname \(i.e. subdomains + domain name\).
 
 ## Capabilities
 
