@@ -1,5 +1,7 @@
 # File System
 
+## Resource
+
 The resource type is `”wnfs”`. The resource value is a DNSLink pointing at the highest node in the graph granting access. Everything below is given the same acces \(as its content\).
 
 ## Paths
