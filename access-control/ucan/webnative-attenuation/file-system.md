@@ -1,7 +1,5 @@
 # File System
 
-Attenuations for the WebNative File System are a thin layer on top of the UCAN spec presented earlier in this paper.
-
 The resource type is `”wnfs”`. The resource value is a DNSLink pointing at the highest node in the graph granting access. Everything below is given the same acces \(as its content\).
 
 ## Paths
