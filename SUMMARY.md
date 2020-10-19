@@ -34,7 +34,10 @@
   * [UCAN Tokens](access-control/ucan/ucan-tokens.md)
   * [Concepts](access-control/ucan/concepts.md)
   * [JWT Structure](access-control/ucan/jwt-authentication.md)
-  * [WebNative Attenuation](access-control/ucan/webnative-attenuation.md)
+  * [Attenuation](access-control/ucan/webnative-attenuation/README.md)
+    * [Domain Name](access-control/ucan/webnative-attenuation/domain-name.md)
+    * [File System](access-control/ucan/webnative-attenuation/file-system.md)
+    * [App](access-control/ucan/webnative-attenuation/app.md)
   * [Revocation](access-control/ucan/revocation.md)
   * [Differences from OAuth](access-control/ucan/differences-from-oauth.md)
 
