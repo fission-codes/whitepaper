@@ -30,5 +30,5 @@ Apps can always be created; it is not possible to restict the ability to deploy 
 
 #### How do I create an app alias? \(e.g. alias foo.fission.app at example.com\)
 
-In this scenario, you already have `foo.fission.app` deployed, and would like to alias that at `example.com`. This is achieved via [DNSLink](https://dnslink.io/) in a TXT record, and thus controlled at with the `domain` resource.
+In this scenario, you already have `foo.fission.app` deployed, and would like to alias that at `example.com`. This is achieved via [DNSLink](https://dnslink.io/) in a TXT record, and thus controlled at with the [`domain` resource](https://app.gitbook.com/@runfission/s/whitepaper/access-control/ucan/webnative-attenuation/domain-name).
 
