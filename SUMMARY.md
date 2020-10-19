@@ -37,7 +37,7 @@
   * [Attenuation](access-control/ucan/webnative-attenuation/README.md)
     * [Domain Name](access-control/ucan/webnative-attenuation/domain-name.md)
     * [File System](access-control/ucan/webnative-attenuation/file-system.md)
-    * [Application](access-control/ucan/webnative-attenuation/app.md)
+    * [Web Application](access-control/ucan/webnative-attenuation/app.md)
   * [Revocation](access-control/ucan/revocation.md)
   * [Differences from OAuth](access-control/ucan/differences-from-oauth.md)
 
