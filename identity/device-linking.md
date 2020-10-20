@@ -89,8 +89,9 @@ Here we're _securely_ responding with a randomly generated AES256 key, embedded 
 
 The recipient MUST validate the following:
 
-* Signature chain — from the outmost JWT signature, all the way through nested UCANs back to the root
-* The first-level proofs \(EXACTLY one level above\) MUST contain the permissions that you are looking to be granted \(not two nested levels of \`att: \[\]\`\), OR be the root credential.
+1. Signature chain — from the outmost JWT signature, all the way through nested UCANs back to the root
+2. The first-level proofs \(EXACTLY one level above\) MUST contain the permissions that you are looking to be granted \(not two nested levels of \`att: \[\]\`\), OR be the root credential.
+3. The innermost \(root\) issuer \(`iss` field\) MUST match the channel's DID \(i.e. the DID that you are requesting from\).
 
 {% hint style="danger" %}
 If any of the above does not match, you MUST ignore that message. It's Eve's machine trying to establish a person-in-the-middle attack \(PITM\) 😈
