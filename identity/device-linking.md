@@ -70,19 +70,19 @@ This step proves provides two things:
 💻 responds by broadcasting a "closed" UCAN on channel `did:key:zALICE`, encrypted for `did:key:zTHROWAWAY`. The embedded UCAN is proof that the sender does in fact have permissions for the account, but does not delegate anything yet. The facts section \(`fct`\) includes an AES256 session key that will be used for the remainder of the communications.
 
 ```javascript
-const payload = rsa_encrypt({
+const payload = rsaEncrypt({
   from: LAPTOP_SK,
   to: IPHONE_PK, 
-  payload: sign({
+  payload: rsaSign({
     key: LAPTOP_SK
-    payload: closed_ucan
+    payload: closedUcan
   })
 })
 
-closed_ucan.iss = "did:key:zLAPTOP"
-closed_ucan.aud = "did:key:zTHROWAWAY"
-closed_ucan.fct = [..., {"sessionKey": rand_aes256}]
-closed_ucan.att = [] // i.e. MUST delegate nothing
+closedUcan.iss = `did:key:z${LAPTOP}`
+closedUcan.aud = `did:key:z${THROWAWAY}`
+closedUcan.fct = [..., {"sessionKey": randAes256}]
+closedUcan.att = [] // i.e. MUST delegate nothing
 ```
 
 Here we're _securely_ responding with a randomly generated AES256 key, embedded in the UCAN's "facts" section. Since UCANs are signed, and the audience is the recipient, we have proof that this message was intended for the recipient and has not been modified along the way.
@@ -97,6 +97,8 @@ If any of the above does not match, you MUST ignore that message. It's Eve's mac
 
 Steps 1-3 establish a connection with _a requesting machine_, but nt nessesarily _the user's machine_. To validate that this is the correct user, we go out of band, and have the human verify a code.
 
+The requestor displays a challenge \(PIN code\) to the user. It sends the PIN and DID/signing key \(encrpyted with the AES key\) over pubsub. The UCAN holder decrypts and displays this PIN to the user and asks them to confirm that it matches. If it matches, you are talking to the correct machine, and have the DID to delegate to 🎉
+
 #### Example
 
 📱 receives the above message, and extracts the sender's DID \(and thus PK\). It then [verifies](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/verify) that the sender's PK is in the list of exchange keys found in DNS for the target username.
@@ -107,7 +109,12 @@ If it fails PIN validation, you MUST ignore the message, since it's Eve trying t
 
 ### **5. Credential Delegation**
 
-Now that we know that the message can be trusted, :iphone: decrypts it with their SK to recover the AES key from earlier.
+Now that we know that the message can be trusted, the token holder creates a UCAN with delegate rights for the requestor using their DID from the most recent message. Send that UCAN and the WNFS read key \(which is also an AES key\) back over the pubsub channel.
 
-Store this key locally, since it will be used for all future communication in this session.
+```javascript
+aesEncrypt({
+  "readKey": wnfsReadKey,
+  "ucan": newUcan
+})
+```
 
