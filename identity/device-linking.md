@@ -1,10 +1,16 @@
 # Device Linking
 
+Devices are linked by sending a symmetric read key, and delegating a UCAN to the new device's DID. There are several ways to send this information securely, but here we will be solving for the most difficult and universal case: over pubsub.
+
+These messages are visible to the world in cleartext. We want to prevent man-in-the-middle attacks and other forms of spoofing. While we have a list of known-good exchange keys in DNS \(and later right in the user's WNFS\), we would like to avoid hittng the network as much as possible. Luckily, we can bootstrap up a secure channel with a known ID on one side, and a challenge nonce on the other.
+
+It should be noted that the bootstrap process here may also be used to set up secure channels for other use cases, including chat.
+
 ## Summary
 
 1. Everyone subscribes to channel
 2. Requestor broadcasts public key
-3. Key negotiation over UCAN
+3. Session Key negotiation over UCAN
 4. Confirm requestor PIN
 5. Credential delegation
 
@@ -34,13 +40,9 @@
 * Evil Server 😈
   * Eve’s server that watches all traffic on pubsub
 
-## **Steps**
-
-All of these messages are being conducted over IPFS pubsub, and are visible to the world in cleartext. We want to prevent man-in-the-middle attacks and other forms of spoofing. While we have a list of known-good exchange keys in DNS \(and later right in the user's WNFS\), we would like to avoid hittng the network as much as possible. Luckily, we can bootstrap up a secure channel with a known ID on one side, and a challenge nonce on the other.
+## **Sequence**
 
 ### **Step 1: Everyone Subscribes to Channel**
-
-#### Summary
 
 All parties listen for messags on a channel named for the root DID. A peer that can issue UCANs must be online and listening on the correct channel. For simplicity and future compatibility, it's the root DID in the UCAN chain being requested.
 
@@ -48,17 +50,15 @@ All parties listen for messags on a channel named for the root DID. A peer that 
 
 💻 \(who has a UCAN already\) and 📱 \(requestor\) listen for incoming messages on channel `did:key:zALICE`
 
-### **2. Requestor Broadcasts PK**
+### **Step 2: Requestor Broadcasts Public Key**
 
-Summary
-
-This gives all recipients the public key for :iphone: to send encrypted messages back to
+This gives everyone on the channel a public key to send private data to.
 
 #### Example
 
 📱 broadcasts the cleartext message `did:key:zPHONE` on the channel `did:key:zALICE`
 
-### **3. Key Negotiation over UCAN**
+### **3. Session Key Negotiation over UCAN**
 
 :computer: responds by broadcasting the following message on channel `did:key:zALICE`
 
