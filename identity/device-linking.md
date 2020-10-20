@@ -6,7 +6,9 @@ These messages are visible to the world in cleartext. We want to prevent man-in-
 
 It should be noted that the bootstrap process here may also be used to set up secure channels for other use cases, including chat.
 
-## Summary
+## Sequence
+
+### Summary
 
 1. Everyone subscribes to channel
 2. Requestor broadcasts public key
@@ -40,8 +42,6 @@ It should be noted that the bootstrap process here may also be used to set up se
 * Evil Server 😈
   * Eve’s server that watches all traffic on pubsub
 
-## **Sequence**
-
 ### **Step 1: Everyone Subscribes to Channel**
 
 All parties listen for messags on a channel named for the root DID. A peer that can issue UCANs must be online and listening on the correct channel. For simplicity and future compatibility, it's the root DID in the UCAN chain being requested.
@@ -50,36 +50,47 @@ All parties listen for messags on a channel named for the root DID. A peer that 
 
 💻 \(who has a UCAN already\) and 📱 \(requestor\) listen for incoming messages on channel `did:key:zALICE`
 
-### **Step 2: Requestor Broadcasts Public Key**
+### **Step 2: Requestor Broadcasts an Exchange Public Key**
 
-This gives everyone on the channel a public key to send private data to.
+This gives everyone on the channel a 2048-bit RSA public key to send private data to.
+
+Note that this MAY be a throwaway public key as we \(and the WeCrypto API\) keep encryption keys separate from signing keys. It will be used to bootstrap up a channel, but does not need to live beyond that \(though it can\).
 
 #### Example
 
-📱 broadcasts the cleartext message `did:key:zPHONE` on the channel `did:key:zALICE`
+📱 broadcasts the cleartext message `did:key:zTHROWAWAY` on the channel `did:key:zALICE`
 
 ### **3. Session Key Negotiation over UCAN**
 
-:computer: responds by broadcasting the following message on channel `did:key:zALICE`
+This step proves that you are talking to a machine that does in fact have the correct rights that you're looking to have delegated.
+
+💻 responds by broadcasting a "closed" UCAN on channel `did:key:zALICE`, encrypted for `did:key:zTHROWAWAY`. The embedded UCAN is proof that the sender does in fact have permissions for the account, but does not delegate anything yet. The facts section \(`fct`\) includes an AES256 session key that will be used for the remainder of the communications.
 
 ```javascript
-{
-  "sender": "did:key:zLAPTOP",
-  "sessionKey": <rsa_enc(LAPTOP_SK,IPHONE_PK,rand_aes256)>
-}
+const payload = rsa_encrypt({
+  from: LAPTOP_SK,
+  to: IPHONE_PK, 
+  payload: sign({
+    key: LAPTOP_SK
+    payload: closed_ucan
+  })
+})
+
+closed_ucan.iss = "did:key:zLAPTOP"
+closed_ucan.aud = "did:key:zTHROWAWAY"
+closed_ucan.fct = [..., {"sessionKey": rand_aes256}]
+closed_ucan.att = [] // i.e. MUST delegate nothing
 ```
 
-Here we're _securely_ responding with a randomly generated AES256 key. The payload is a single string, but it has encoded the information on
+Here we're _securely_ responding with a randomly generated AES256 key, embedded in the UCAN's "facts" section. Since UCANs are signed, and the audience is the recipient, we have proof that this message was intended for the recipient and has not been modified along the way.
 
-Let's break that payload down:
+The recipient MUST validate the signature chain all the way back to the root. The first-level proofs \(non-nested\) MUST contain the permissions that you are looking to be granted.
 
-* It's encoded in JSON. Less compact, but also easier for humans to implement & debug.
-  * PLEASE LET ME KNOW if it's easier in a stringified form with escaped quotes.
-* `did:key:zLAPTOP` is simply the _cleartext_ DID of the sender \(i.e. its PK\)
-* `rsa_enc(LAPTOP_SK,IPHONE_PK,rand_aes256)` is an RSA key exchange from the laptop's SK to the phone's PK. It's payload is a _randomly generated_ AES256 \(symmetric\) key that we will use for the rest of the session.
-* Make sure that the sender stores the AES key. You'll need it soon :key: 
+If any of the above does not match, you MUST ignore that message.
 
 ### **4. Confirm Requestor PIN**
+
+
 
 📱 receives the above message, and extracts the sender's DID \(and thus PK\). It then [verifies](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/verify) that the sender's PK is in the list of exchange keys found in DNS for the target username.
 
