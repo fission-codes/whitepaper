@@ -21,7 +21,8 @@
 * [Overview](identity/id-overview.md)
 * [Keys](identity/keys.md)
 * [DID Document](identity/did-doc.md)
-* [Verifiable Claims](identity/verifiable-claims.md)
+* [Login](identity/verifiable-claims.md)
+* [Device Linking](identity/device-linking.md)
 
 ## Access Control
 
