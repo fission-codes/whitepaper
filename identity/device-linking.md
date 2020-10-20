@@ -108,7 +108,7 @@ The requestor displays a challenge \(PIN code\) to the user. It sends the PIN a
 📱 receives the above message, and extracts the sender's DID \(and thus PK\). It then [verifies](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/verify) that the sender's PK is in the list of exchange keys found in DNS for the target username.
 
 {% hint style="danger" %}
-If PIN validation fails, you MUST ignore the message, since it's Eve trying to get you to delegate rights to her 🦹‍♀️ You MUST start over, since that channel is clearly comprimised.
+If PIN validation fails, you MUST ignore the message, since it's Eve trying to get you to delegate rights to her 🦹‍♀️ **You MUST start over, since that channel is clearly comprimised.**
 {% endhint %}
 
 ### **5. Credential Delegation**
