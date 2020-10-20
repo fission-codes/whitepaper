@@ -36,29 +36,27 @@
 
 ## **Steps**
 
-All of these messages are being conducted over IPFS pubsub, and are visible to the world in cleartext. We want to prevent man-in-the-middle attacks and other forms of spoofing. Luckily, we have a list of known-good exchange keys in DNS \(and later right in the user's WNFS\).
+All of these messages are being conducted over IPFS pubsub, and are visible to the world in cleartext. We want to prevent man-in-the-middle attacks and other forms of spoofing. While we have a list of known-good exchange keys in DNS \(and later right in the user's WNFS\), we would like to avoid hittng the network as much as possible. Luckily, we can bootstrap up a secure channel with a known ID on one side, and a challenge nonce on the other.
 
-The downside here is that we need to wait for DNS to update with the exchange keys. We already need to do this with the root DID, so in theory not much changes time-wise.
+### **Step 1: Everyone Subscribes to Channel**
 
-### **1. Everyone Subscribes to Channel**
+#### Summary
 
-All parties listen for messags on a channel named for the root DID.
+All parties listen for messags on a channel named for the root DID. A peer that can issue UCANs must be online and listening on the correct channel. For simplicity and future compatibility, it's the root DID in the UCAN chain being requested.
 
-#### Scenario
+#### Example
 
-:computer: \(who has a UCAN already\) and :iphone: \(requestor\) listen for incoming messages on `did:key:zALICE`
-
-A peer that can issue UCANs must be online and listening on the correct channel. For simplicity and future compatibility, it's the root DID in the UCAN chain being requested.
+💻 \(who has a UCAN already\) and 📱 \(requestor\) listen for incoming messages on channel `did:key:zALICE`
 
 ### **2. Requestor Broadcasts PK**
 
-djskal
-
-#### Scenario
-
-📱 broadcasts the cleartext message `did:key:zPHONE` on the channel `did:key:zALICE`
+Summary
 
 This gives all recipients the public key for :iphone: to send encrypted messages back to
+
+#### Example
+
+📱 broadcasts the cleartext message `did:key:zPHONE` on the channel `did:key:zALICE`
 
 ### **3. Key Negotiation over UCAN**
 
