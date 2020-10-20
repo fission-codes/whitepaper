@@ -89,7 +89,7 @@ Here we're _securely_ responding with a randomly generated AES256 key, embedded 
 
 The recipient MUST validate the following:
 
-* Signature chain — all the way back to the root
+* Signature chain — from the outmost JWT signature, all the way through nested UCANs back to the root
 * The first-level proofs \(EXACTLY one level above\) MUST contain the permissions that you are looking to be granted \(not two nested levels of \`att: \[\]\`\), OR be the root credential.
 
 {% hint style="danger" %}
