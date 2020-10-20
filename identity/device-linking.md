@@ -54,7 +54,7 @@ All parties listen for messags on a channel named for the root DID. A peer that 
 
 This gives everyone on the channel a 2048-bit RSA public key to send private data to.
 
-Note that this MAY be a throwaway public key as we \(and the WeCrypto API\) keep encryption keys separate from signing keys. It will be used to bootstrap up a channel, but does not need to live beyond that \(though it can\).
+Note that this MAY be a throwaway public key as we \(and the WeCrypto API\) keep encryption keys separate from signing keys. It will be used to bootstrap up a channel, but does not need to live beyond that \(though it can\). The ONLY requirement is that this key be unique to this machine \(never shared, ideally non-exportable\).
 
 #### Example
 
