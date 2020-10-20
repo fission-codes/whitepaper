@@ -87,7 +87,11 @@ closedUcan.att = [] // i.e. MUST delegate nothing
 
 Here we're _securely_ responding with a randomly generated AES256 key, embedded in the UCAN's "facts" section. Since UCANs are signed, and the audience is the recipient, we have proof that this message was intended for the recipient and has not been modified along the way.
 
-The recipient MUST validate the signature chain all the way back to the root. The first-level proofs \(non-nested\) MUST contain the permissions that you are looking to be granted.
+The recipient MUST validate the following:
+
+* Signature chain — all the way back to the root
+* Attenuation superset chain — back to the root
+* The first-level proofs \(non-nested\) MUST contain the permissions that you are looking to be granted
 
 {% hint style="danger" %}
 If any of the above does not match, you MUST ignore that message. It's Eve's machine trying to establish a person-in-the-middle attack \(PITM\) 😈
@@ -112,7 +116,9 @@ If it fails PIN validation, you MUST ignore the message, since it's Eve trying t
 Now that we know that the message can be trusted, the token holder creates a UCAN with delegate rights for the requestor using their DID from the most recent message. Send that UCAN and the WNFS read key \(which is also an AES key\) back over the pubsub channel.
 
 ```javascript
-aesEncrypt({
+aesEncrypt(
+  key: sessionKey,
+  payload: {
   "readKey": wnfsReadKey,
   "ucan": newUcan
 })
