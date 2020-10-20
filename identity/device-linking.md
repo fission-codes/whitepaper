@@ -112,7 +112,7 @@ If it fails PIN validation, you MUST ignore the message, since it's Eve trying t
 
 ### **5. Credential Delegation**
 
-Now that we know that the message can be trusted, the token holder creates a UCAN with delegate rights for the requestor using their DID from the most recent message. Send that UCAN and the WNFS read key \(which is also an AES key\) back over the pubsub channel.
+Now that we know that the message can be trusted, the token holder creates a UCAN with delegate rights for the requestor using their DID from the most recent message. Send that UCAN and the WNFS read key \(which is also an AES key\) back over the pubsub channel — of course encypted with the AES session key.
 
 ```javascript
 aesEncrypt(
