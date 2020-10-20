@@ -62,7 +62,10 @@ Note that this MAY be a throwaway public key as we \(and the WeCrypto API\) keep
 
 ### **3. Session Key Negotiation over UCAN**
 
-This step proves that you are talking to a machine that does in fact have the correct rights that you're looking to have delegated.
+This step proves provides two things:
+
+1. Proves that that you are talking to a machine that does in fact have the correct rights that you're looking to have delegated
+2. Securely exchanges a 256-bit AES key \(which is much more efficient than RSA encryption\) for use in the rest of the session.
 
 💻 responds by broadcasting a "closed" UCAN on channel `did:key:zALICE`, encrypted for `did:key:zTHROWAWAY`. The embedded UCAN is proof that the sender does in fact have permissions for the account, but does not delegate anything yet. The facts section \(`fct`\) includes an AES256 session key that will be used for the remainder of the communications.
 
@@ -86,15 +89,21 @@ Here we're _securely_ responding with a randomly generated AES256 key, embedded 
 
 The recipient MUST validate the signature chain all the way back to the root. The first-level proofs \(non-nested\) MUST contain the permissions that you are looking to be granted.
 
-If any of the above does not match, you MUST ignore that message.
+{% hint style="danger" %}
+If any of the above does not match, you MUST ignore that message. It's Eve's machine trying to establish a person-in-the-middle attack \(PITM\) 😈
+{% endhint %}
 
 ### **4. Confirm Requestor PIN**
 
+Steps 1-3 establish a connection with _a requesting machine_, but nt nessesarily _the user's machine_. To validate that this is the correct user, we go out of band, and have the human verify a code.
 
+#### Example
 
 📱 receives the above message, and extracts the sender's DID \(and thus PK\). It then [verifies](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/verify) that the sender's PK is in the list of exchange keys found in DNS for the target username.
 
-If it fails validation, ignore the message, since it's Eve trying to mess with your security :woman\_supervillain:
+{% hint style="danger" %}
+If it fails PIN validation, you MUST ignore the message, since it's Eve trying to get you to delegate rights to her 🦹‍♀️
+{% endhint %}
 
 ### **5. Credential Delegation**
 
