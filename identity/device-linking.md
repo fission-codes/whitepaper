@@ -70,19 +70,34 @@ This step proves provides two things:
 💻 responds by broadcasting a "closed" UCAN on channel `did:key:zALICE`, encrypted for `did:key:zTHROWAWAY`. The embedded UCAN is proof that the sender does in fact have permissions for the account, but does not delegate anything yet. The facts section \(`fct`\) includes an AES256 session key that will be used for the remainder of the communications.
 
 ```javascript
-const payload = rsaEncrypt({
-  from: LAPTOP_SK,
-  to: IPHONE_PK, 
-  payload: rsaSign({
-    key: LAPTOP_SK
-    payload: closedUcan
-  })
+// A UCAN with sent to the THROWAWAY address with *no delegation*
+closedUcan.claims.iss = `did:key:z${LAPTOP}`
+closedUcan.claims.aud = `did:key:z${THROWAWAY}`
+closedUcan.claims.fct = [..., {"sessionKey": randAes256}]
+closedUcan.claims.att = [] // i.e. MUST delegate nothing
+
+closedUcan.signature = rsaSign({
+  publicKey: THROWAWAY_PK,
+  tokenHead: closedUcan.header,
+  tokenClaims: closedUcan.claims
 })
 
-closedUcan.iss = `did:key:z${LAPTOP}`
-closedUcan.aud = `did:key:z${THROWAWAY}`
-closedUcan.fct = [..., {"sessionKey": randAes256}]
-closedUcan.att = [] // i.e. MUST delegate nothing
+// Encrypt the token
+const encryptedPayload = rsaEncrypt({
+  to: IPHONE_PK, 
+  payload: closedUcan
+})
+
+// Sign the encrypted message to ensure no tampering / PITM
+const messageSignature = rsaSign({
+  key: LAPTOP_SK,
+  payload: encryptedPayload
+})
+
+const toSend = {
+  "payload": encryptedPayload,
+  "signature": messageSignature
+}
 ```
 
 Here we're _securely_ responding with a randomly generated AES256 key, embedded in the UCAN's "facts" section. Since UCANs are signed, and the audience is the recipient, we have proof that this message was intended for the recipient and has not been modified along the way.
