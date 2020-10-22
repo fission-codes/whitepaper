@@ -87,17 +87,6 @@ const encryptedPayload = rsaEncrypt({
   to: IPHONE_PK, 
   payload: closedUcan
 })
-
-// Sign the encrypted message to ensure no tampering / PITM
-const messageSignature = rsaSign({
-  key: LAPTOP_SK,
-  payload: encryptedPayload
-})
-
-const toSend = {
-  "payload": encryptedPayload,
-  "signature": messageSignature
-}
 ```
 
 Here we're _securely_ responding with a randomly generated AES256 key, embedded in the UCAN's "facts" section. Since UCANs are signed, and the audience is the recipient, we have proof that this message was intended for the recipient and has not been modified along the way.
