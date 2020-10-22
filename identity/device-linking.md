@@ -99,7 +99,7 @@ The recipient MUST validate the following:
 4. The innermost \(root\) issuer \(`iss` field\) MUST match the channel's DID \(i.e. the DID that you are requesting from\).
 
 {% hint style="danger" %}
-If any of the above does not match, you MUST ignore that message. It's Eve's machine trying to establish a person-in-the-middle attack \(PITM\) 😈
+If any of the above does not match, you MUST ignore that message and start again. It's Eve's machine trying to establish a person-in-the-middle attack \(PITM\) 😈
 {% endhint %}
 
 ### **4. Confirm Requestor PIN**
