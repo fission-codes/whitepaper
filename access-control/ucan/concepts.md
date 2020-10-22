@@ -40,7 +40,7 @@ An authorization scope is the tuple `resource x potency`. Scopes compose, so a l
 
 You can think of this as ”scoping” the total rights of the authorization space down to the relevant volume of authorizations.
 
-Inside this content space, can draw a boundary around some resource\(s\) \(their type, identifiers, and paths or children\), and ther potencies.
+Inside this content space, can draw a boundary around some resource\(s\) \(their type, identifiers, and paths or children\), and ther capabilities \(potencies\).
 
 As a practical matter, since scopes form a monoid, you can be fairly loose: order doesn’t matter, and merging resources can be quite broad since the more powerful of any overlap will take precidence \(i.e. you don’t need a clean separation\).
 
