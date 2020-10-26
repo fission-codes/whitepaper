@@ -77,7 +77,7 @@ closedUcan.claims.fct = [..., {"sessionKey": randAes256}]
 closedUcan.claims.att = [] // i.e. MUST delegate nothing
 
 closedUcan.signature = rsaSign({
-  publicKey: THROWAWAY_PK,
+  secretKey: THROWAWAY_SK,
   tokenHead: closedUcan.header,
   tokenClaims: closedUcan.claims
 })
