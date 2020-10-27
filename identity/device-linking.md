@@ -75,9 +75,10 @@ closedUcan.claims.iss = `did:key:z${LAPTOP}`
 closedUcan.claims.aud = `did:key:z${THROWAWAY}`
 closedUcan.claims.fct = [..., {"sessionKey": randAes256}]
 closedUcan.claims.att = [] // i.e. MUST delegate nothing
+closedUcan.claims.prf = [...proofs] // May be omited if on the root machine
 
 closedUcan.signature = rsaSign({
-  secretKey: THROWAWAY_SK,
+  secretKey: LAPTOP_SK,
   tokenHead: closedUcan.header,
   tokenClaims: closedUcan.claims
 })
