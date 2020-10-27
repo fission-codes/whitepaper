@@ -62,7 +62,11 @@ Note that this MAY be a throwaway public key as we \(and the WeCrypto API\) keep
 
 ### **3. Session Key Negotiation over UCAN**
 
-This step proves provides two things:
+This step is both a "preflight" and session key exchange. It delegates no rights \(`att = []`\), but includes the entire proof chain that will be used in the actual credential delegation \(step 4\). This proves _a priori_ that you are communicating _directly_ with an authorized machine \(it can prove that it has access to the credentials that you want delegated\).
+
+We then use this to embed an AES256 session key in the "facts" field. Since UCANs are signed, we can prove that this came from the authorized user. Because the entire payload is asymmetrically encrypted against the public key in the audience field, we know that no one else has been able to decrypt this message.
+
+Boiled down, this step proves provides two things:
 
 1. Proves that that you are talking to a machine that does in fact have the correct rights that you're looking to have delegated
 2. Securely exchanges a 256-bit AES key \(which is much more efficient than RSA encryption\) for use in the rest of the session.
