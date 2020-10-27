@@ -1,7 +1,7 @@
 # JWT Structure
 
 {% hint style="warning" %}
-What follows is the UCAN 0.4.x technical specification. This currently gets updated every few weeks, but we try to keep the API as backwards-compatible as possible.
+What follows is the UCAN 0.5.x technical specification. This currently gets updated every few weeks, but we try to keep the API as backwards-compatible as possible.
 {% endhint %}
 
 {% hint style="info" %}
@@ -50,7 +50,7 @@ EdDSA applied to JOSE \(including JWT\) exists as its own spec: [RFC 8037](https
 {
   "alg": "EdDSA",
   "typ": "JWT"
-  "ucv": "0.4.0"
+  "ucv": "0.5.0"
 }
 ```
 
@@ -118,7 +118,7 @@ Due to clock drift, do not expect the time bounds to be exact. At minimum assume
 
 ## Facts
 
-`“fct”` is an optional UCAN field for arbitrary facts and proofs of knowledge. These can be things like providing a raw valuet that is hased elsewhere in the UCAN, signing a challenge string with the private key associated with the `“iss”`, a Merkle proof, and so on.
+`“fct”` is a UCAN field for arbitrary facts and proofs of knowledge. These can be things like providing a raw valuet that is hased elsewhere in the UCAN, signing a challenge string with the private key associated with the `“iss”`, a Merkle proof, and so on.
 
 To qualify as valid “facts”, they MUST be self evident & externally verifiable.
 
@@ -126,7 +126,7 @@ The values in this field MUST be the value directly, or individual CIDs of the f
 
 | Field | Long Name | Required |
 | :---: | :---: | :---: |
-| `“fct”` | Facts | ❌ |
+| `“fct”` | Facts | ✔️ |
 
 An empty facts field may be represented as the absence of the field or an empty array.
 
