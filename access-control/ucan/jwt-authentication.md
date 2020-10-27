@@ -143,13 +143,13 @@ An empty facts field may be represented as the absence of the field or an empty 
 
 ## Proofs
 
-The `“prf”` section is reserved for UCAN proofs — the ”inputs” of the UCAN. Each proof MUST form a chain all the way back to the resource originator / owner. If a UCAN does not include a `“prf”` field, it is read as being the initial UCAN. In this case, the `”iss”` is the resource originator / owner for everything in the `“cap”` section.
+The `“prf”` section is reserved for UCAN proofs — the ”inputs” of the UCAN. Each proof MUST form a chain all the way back to the resource originator / owner. If a UCAN's proof list is empty, it is read as being the initial/"root" UCAN. In this case, the `”iss”` is the resource originator / owner for everything in the `“cap”` section.
 
 In the case of multiple proofs, any capabilities not covered by a proof are considered to be claimed by the issuer DID.
 
 | Field | Long Name | Required |
 | :---: | :---: | :---: |
-| `”prf”` | UCAN Proofs | ❌ |
+| `”prf”` | UCAN Proofs | ✔️ |
 
 This field contains an array of proofs. The field is required if you are accessing deleagted resources. If the resources are associated with the current DID, this field may be omitted.
 
