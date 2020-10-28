@@ -94,7 +94,7 @@ Boiled down, this step proves provides two things:
 // A UCAN with sent to the THROWAWAY address with *no delegation*
 closedUcan.claims.iss = `did:key:z${LAPTOP}`
 closedUcan.claims.aud = `did:key:z${THROWAWAY}`
-closedUcan.claims.fct = [..., {"sessionKey": randAes256}]
+closedUcan.claims.fct = [..., {"sessionKey": sessonKeyAES256}]
 closedUcan.claims.att = [] // i.e. MUST delegate nothing
 closedUcan.claims.prf = [...proofs] // May be omited if on the root machine
 
