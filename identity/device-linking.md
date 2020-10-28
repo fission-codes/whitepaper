@@ -88,7 +88,7 @@ Boiled down, this step proves provides two things:
 1. Proves that that you are talking to a machine that does in fact have the correct rights that you're looking to have delegated
 2. Authenticates the a 256-bit AES key to make sure that the session key hasn't been tampered with
 
-💻 responds by broadcasting a "closed" UCAN on channel `did:key:zALICE`, encrypted for `did:key:zTHROWAWAY`. The embedded UCAN is proof that the sender does in fact have permissions for the account, but does not delegate anything yet. The facts section \(`fct`\) includes an AES256 session key that will be used for the remainder of the communications.
+💻 responds by broadcasting a "closed" UCAN on channel `did:key:zALICE`, encrypted with the session key. The embedded UCAN is proof that the sender does in fact have permissions for the account, but does not delegate anything yet. The facts section \(`fct`\) includes the same session key that is used to encrypt the data on this channel.
 
 ```javascript
 // A UCAN with sent to the THROWAWAY address with *no delegation*
