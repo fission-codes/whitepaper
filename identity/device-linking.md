@@ -86,7 +86,7 @@ This will tell us that the sender intended that key fo us, and no others. It is 
 Boiled down, this step proves provides two things:
 
 1. Proves that that you are talking to a machine that does in fact have the correct rights that you're looking to have delegated
-2. Securely exchanges a 256-bit AES key \(which is much more efficient than RSA encryption\) for use in the rest of the session.
+2. Authenticates the a 256-bit AES key to make sure that the session key hasn't been tampered with
 
 💻 responds by broadcasting a "closed" UCAN on channel `did:key:zALICE`, encrypted for `did:key:zTHROWAWAY`. The embedded UCAN is proof that the sender does in fact have permissions for the account, but does not delegate anything yet. The facts section \(`fct`\) includes an AES256 session key that will be used for the remainder of the communications.
 
