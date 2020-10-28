@@ -12,9 +12,10 @@ It should be noted that the bootstrap process here may also be used to set up se
 
 1. Everyone subscribes to channel
 2. Requestor broadcasts public key
-3. Session Key negotiation over UCAN
-4. Confirm requestor PIN
-5. Credential delegation
+3. Open a secure channel
+4. Provider authentication over UCAN
+5. Confirm requestor PIN
+6. Credential delegation
 
 ### Dramatis Personae
 
@@ -32,7 +33,7 @@ It should be noted that the bootstrap process here may also be used to set up se
   * Does not participate in the example flow, but exists offline
   * Has a PK corresponding to `did:key:zALICE`
 * Laptop 💻
-  * Alice’s second device
+  * Alice’s second device — the "provider" in this scenario
   * Has a PK corresponding to `did:key:zLAPTOP`
   * Has an existing UCAN for Alice’s account
 * Phone 📱
@@ -60,11 +61,27 @@ Note that this MAY be a throwaway public key as we \(and the WeCrypto API\) keep
 
 📱 broadcasts the cleartext message `did:key:zTHROWAWAY` on the channel `did:key:zALICE`
 
-### **3. Session Key Negotiation over UCAN**
+### **3. Provider Opens Channel**
 
-This step is both a "preflight" and session key exchange. It delegates no rights \(`att = []`\), but includes the entire proof chain that will be used in the actual credential delegation \(step 4\). This proves _a priori_ that you are communicating _directly_ with an authorized machine \(it can prove that it has access to the credentials that you want delegated\).
+Since RSA-OAEP can only hold a small amount of data, we use it to open a secured channel.
 
-We then use this to embed an AES256 session key in the "facts" field. Since UCANs are signed, we can prove that this came from the authorized user. Because the entire payload is asymmetrically encrypted against the public key in the audience field, we know that no one else has been able to decrypt this message.
+{% hint style="danger" %}
+At this step, we **do not** know that the provider is actually our other machine, and not a perosn-in-the-middle 🦹‍♀️😈 We will authenticate them in the next step.
+{% endhint %}
+
+The provider 💻 sends an asymmetrically encrypted AES256 session key to the public key broadcast in step 2. The provier must ensure that they ONLY use this key for this one channel, aimed at the specific RSA public key recieved in step 2. New connections MUST use new randomly generated keys.
+
+We will use this session key for the remainder of the steps.
+
+### **4. Session Key Negotiation over UCAN**
+
+This step is both a "preflight" and session key authentication. It delegates no rights \(`att = []`\), but includes the entire proof chain that will be used in the actual credential delegation \(step 4\). This proves _a priori_ that you are communicating _directly_ with an authorized machine \(it can prove that it has access to the credentials that you want delegated\).
+
+We then use this to embed the AES256 session key in the "facts" field. Since UCANs are signed, we can prove that this came from the authorized user. Because the entire payload is asymmetrically encrypted against the public key in the audience field, we know that no one else has been able to decrypt this message.
+
+{% hint style="warning" %}
+This will tell us that the sender intended that key fo us, and no others. It is predicated on the assumption that the **provider never reuses that key** in any other channel.
+{% endhint %}
 
 Boiled down, this step proves provides two things:
 
@@ -107,7 +124,7 @@ The recipient MUST validate the following:
 If any of the above does not match, you MUST ignore that message and start again. It's Eve's machine trying to establish a person-in-the-middle attack \(PITM\) 😈
 {% endhint %}
 
-### **4. Confirm Requestor PIN**
+### **5. Confirm Requestor PIN**
 
 Steps 1-3 establish a connection with _a requesting machine_, but nt nessesarily _the user's machine_. To validate that this is the correct user, we go out of band, and have the human verify a code.
 
@@ -121,7 +138,7 @@ The requestor displays a challenge \(PIN code\) to the user. It sends the PIN a
 If PIN validation fails, you MUST ignore the message, since it's Eve trying to get you to delegate rights to her 🦹‍♀️ **You MUST start over, since that channel is compromised.**
 {% endhint %}
 
-### **5. Credential Delegation**
+### **6. Credential Delegation**
 
 Now that we know that the message can be trusted, the token holder creates a UCAN with delegate rights for the requestor using their DID from the most recent message. Send that UCAN and the WNFS read key \(which is also an AES key\) back over the pubsub channel — of course encypted with the AES session key.
 
