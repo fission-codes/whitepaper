@@ -15,7 +15,9 @@ data RootNode = RootNode
 
 Since this layer is completely controlled by WebNative, we don't need to worry about metadata elements conflicting with userland.
 
-* Pretty is repesented as simply `/p/` to be unobtrusive in URLs.
+## Pretty
+
+The pretty tree \(public reduction\) is repesented as simply `/p/` to be unobtrusive in URLs.
 
 ## Private Log
 
