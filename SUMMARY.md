@@ -49,6 +49,7 @@
   * [Versioning](file-system/file-system-basics/versioning.md)
   * [Journal](file-system/file-system-basics/journal.md)
 * [Sections](file-system/sections/README.md)
+  * [Root](file-system/sections/root.md)
   * [Public](file-system/sections/public-directory.md)
   * [Pretty](file-system/sections/pretty.md)
   * [Private](file-system/sections/private-directories/README.md)
