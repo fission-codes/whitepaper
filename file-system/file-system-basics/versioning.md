@@ -1,12 +1,12 @@
 # Versioning
 
-FLOOFS is a nondestructive, versioned file system. This is a lot like how git history works: files that are unchanged remain unchanged, but parents need to change to accomodate any altered children.
+WNFS is a nondestructive, versioned file system. This is a lot like how git history works: files that are unchanged remain unchanged, but parents need to change to accomodate any altered children.
 
 We are using a temporal DAG with fuctional persistence. Unlike Git, it is curretly designed to be ”single writer” — new patches must be applied in order, and conflicts are not automatically resolvable. It’s like only having only one branch. That is on the roadmap, but there’s a lot of bootstrap in the meantime.
 
-This is versioning at the file system level only. Subfile versioning can be implemented on top of FLOOFS, but does not come baked-in. This is already an improvement over what most uses expect, and each committed version of the file can be stepped through to retrieve old history \(e.g. what was the state 3 weeks ago?\).
+This is versioning at the file system level only. Subfile versioning can be implemented on top of WNFS, but does not come baked-in. This is already an improvement over what most uses expect, and each committed version of the file can be stepped through to retrieve old history \(e.g. what was the state 3 weeks ago?\).
 
-Versioning is quite simple at present: properties such as confluence are being left in favour of easy comprehension for less technical users. A single linear history is wel understood to most people. Advanced merging and split histories are possible down the road. Collaboration is also being pushed to another layer that looks more like system memory as opposed to the FLOOFS ”disk.”
+Versioning is quite simple at present: properties such as confluence are being left in favour of easy comprehension for less technical users. A single linear history is wel understood to most people. Advanced merging and split histories are possible down the road. Collaboration is also being pushed to another layer that looks more like system memory as opposed to the WNFS ”disk.”
 
 ## Diffs, Revisions, and Generations
 
@@ -22,7 +22,7 @@ B   C
   D   E
 ```
 
-This DAG has no diffs, one revision, and one generation. Since the content changes, so does the CID and thus the pointers to it i the graph. If we update node `E` to `E’`, the pointers above it need to be updated as well. This then changes `C` to `C’`, and thus `A` to `A’`\(“A revision 1”\). All other links can be copied over \(`B` and `D` remain at their previous revision 0\). We are using the term ”revision” to avoid the word ”version” which conflicts with the version of FLOOFS itself.
+This DAG has no diffs, one revision, and one generation. Since the content changes, so does the CID and thus the pointers to it i the graph. If we update node `E` to `E’`, the pointers above it need to be updated as well. This then changes `C` to `C’`, and thus `A` to `A’`\(“A revision 1”\). All other links can be copied over \(`B` and `D` remain at their previous revision 0\). We are using the term ”revision” to avoid the word ”version” which conflicts with the version of WNFS itself.
 
 ```text
 Gen 1
@@ -40,7 +40,7 @@ This is a new generation, which we can name after the sequence \(”generation 1
 
 There is one diff here: `<A’, C’, E’>`. The rest is shared structurally. Thus, `B` originated in Generation 0, but is a member of both Generations 0 and 1.
 
-Given that FLOOFS is nondestructive, we can easily gain history by simply adding an edge named `previous` to the older version of the vnode. This also makes validation that the DAG has been nondestructively appended with a Merkle proof that `A` exists inside `A’`.
+Given that WNFS is nondestructive, we can easily gain history by simply adding an edge named `previous` to the older version of the vnode. This also makes validation that the DAG has been nondestructively appended with a Merkle proof that `A` exists inside `A’`.
 
 ```text
 ==========

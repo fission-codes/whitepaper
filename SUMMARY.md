@@ -59,7 +59,6 @@
     * [Append Access](file-system/sections/private-directories/append-access.md)
   * [Unlisted](file-system/sections/unlisted-directories.md)
   * [Share](file-system/sections/shared.md)
-* [Security](file-system/cryptrees.md)
 
 ## Dynamic FaaS
 
