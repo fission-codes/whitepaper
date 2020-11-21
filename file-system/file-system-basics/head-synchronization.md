@@ -16,12 +16,12 @@ In a fully mutable setting, this can become tricky since data is dropped — yo
 
 The basic comparison algorithm is the same in all cases, though some of the details change to maintain properties like security.
 
-In all cases, we can think of the history as a list of CIDs \(only how they're stored is different\). There are four states that we may be in:
+In all cases, we can think of the history as a set of CIDs \(only how they're stored is different\). If we add order \(a list instead of a set\), we can additionally tell where we diverged. There are four possible states:
 
-1. In sync
-2. Ahead of remote
-3. Behind remote
-4. Diverged with a shared history
+1. In sync \(the heads are equal\)
+2. Ahead of remote \(remote's head CID is contained in local's history\)
+3. Behind remote \(local's head CID iscontained in remote's history\)
+4. Diverged with a shared history \(local and remote share a common ancestor\)
 
 Or, if you prefer:
 
@@ -35,7 +35,7 @@ data VersionOrder
 
 To give us a base case, we consider the genesis filesystem to be blank in all cases \(`Qmc5m94Gu7z62RC8waSKkZUrCCBJPyHbkpmGzEePxy2oXJ`\). From intuition: every file system began blank before we added something to it.
 
-Once we have the history, we can walk back one at a time, looking for the head CID of the other system. In principe, we can do this one at a time, but for performance, we do this simultaneously on both local and remote file systems:
+Once we have the history, we can walk back one at a time, looking for the head CID of the other system. In principe we can do this one at a time \(`O(m + n)`\), but for performance we do this simultaneously on both local and remote file systems \(`O(min(m, n))`\)
 
 ```haskell
 -- newest to oldest
@@ -70,5 +70,15 @@ The root of the file system itself is designed to be very flexible, and support 
 
 As such, you need to look at  the sections themselves to determine priority. If one section is ahead of remote, and the other is behind remote, then this is considered to have diverged, and user intervention is required. This is actually not as bad as it sounds, since the actual data content would be the same even if comparing a versioned root. It feels off because we're treating the sections differently, but they're functionally equivalent.
 
-## Structural Versioning
+## Where to Find History
+
+### Structural Versioning
+
+This is the most inutitive: walk the tree backwards along the `previous` links. This can be done lazily.
+
+### Version Log
+
+This style is to keep a log of versions identifiers, and walk down those lists. The logs don't need to be CIDs per se — any bijective mapping will do.
+
+For instance, to avoid revealing correlated items on the private file system, we run the CIDs through a SHA256 first. This makes it impossible to discover the contents of each version unless you already have the CID. You don't learn any new information, since direct structural  analysis gives the same information if you have all previous versions available.
 
