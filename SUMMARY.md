@@ -47,6 +47,7 @@
 * [Basics](file-system/file-system-basics/README.md)
   * [Anatomy](file-system/file-system-basics/anatomy.md)
   * [Versioning](file-system/file-system-basics/versioning.md)
+  * [Head Synchronization](file-system/file-system-basics/head-synchronization.md)
   * [Journal](file-system/file-system-basics/journal.md)
 * [Sections](file-system/sections/README.md)
   * [Root](file-system/sections/root.md)
