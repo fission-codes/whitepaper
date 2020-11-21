@@ -10,9 +10,19 @@ There is nothing special about the "broadcast" part of this setup. For all inten
 As such, we will name the current pair being compared as "local" and "remote".
 {% endhint %}
 
-In a fully mutable setting, this can become tricky since data is dropped. Comparing history fully depends on a history cache, loss of which leaves you needing to compare entire trees and diverge more easily. Persistent data structures have several nice properties that make approaching the problem more tractable.
+In a fully mutable setting, this can become tricky since data is dropped — you diverge _immediately_.You can work around this by comparing a history log \(as we do for the private section\). Persistent data structures have several nice properties that make approaching the problem more tractable.
 
+## WNFS Root
 
+The root of the file system itself is designed to be very flexible, and support many different versioning metds below it, specifically:
+
+* Structural \(`public`\)
+* Log \(`private` due to for security\)
+* Mutable \(`pretty` & `shared`\)
+
+As such, you need to look at  the sections themselves to determine priority. If one section is ahead of remote, and the other is behind remote, then this is considered to have diverged, and user intervention is required. This is actually not as bad as it sounds, since the actual data content would be the same even if comparing a versioned root. It feels off because we're treating the sections differently, but they're functionally equivalent.
+
+## Structural Versioning
 
 
 
