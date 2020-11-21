@@ -10,19 +10,65 @@ There is nothing special about the "broadcast" part of this setup. For all inten
 As such, we will name the current pair being compared as "local" and "remote".
 {% endhint %}
 
-In a fully mutable setting, this can become tricky since data is dropped — you diverge _immediately_.You can work around this by comparing a history log \(as we do for the private section\). Persistent data structures have several nice properties that make approaching the problem more tractable.
+In a fully mutable setting, this can become tricky since data is dropped — you diverge _immediately_.You can work around this by comparing a history log \(as we do for the private section\). Persistent merklized data structures have several nice properties that make approaching the problem more tractable.
+
+## Comparison Algorithm
+
+The basic comparison algorithm is the same in all cases, though some of the details change to maintain properties like security.
+
+In all cases, we can think of the history as a list of CIDs \(only how they're stored is different\). There are four states that we may be in:
+
+1. In sync
+2. Ahead of remote
+3. Behind remote
+4. Diverged with a shared history
+
+Or, if you prefer:
+
+```haskell
+data VersionOrder
+  = InSync
+  | AheadOfRemote
+  | BehindRemote
+  | DivergedAt CID
+```
+
+To give us a base case, we consider the genesis filesystem to be blank in all cases \(`Qmc5m94Gu7z62RC8waSKkZUrCCBJPyHbkpmGzEePxy2oXJ`\). From intuition: every file system began blank before we added something to it.
+
+Once we have the history, we can walk back one at a time, looking for the head CID of the other system. In principe, we can do this one at a time, but for performance, we do this simultaneously on both local and remote file systems:
+
+```haskell
+-- newest to oldest
+localHistory  = [localCID0,  localCID1,  localCID2]
+remoteHistory = [remoteCID0, remoteCID1, remoteCID2, remoteCID3]
+
+compareHistories :: [CID] -> VersionOrder
+compareHistories [] [] = InSync
+compareHistories [] _  = BehindRemote
+compareHistories _  [] = AhedOfRemote
+compareHistories locals@(localHead : _) remotes@(remoteHead : _) =
+  innerCompae locals remotes
+  where
+    innerCompare [] [] = InSync
+    innerCompare [] _  = DivergedAt genesis
+    innerCompare _  [] = DivergedAt genesis
+    innerCompare (localFocus : moreLocal) (remoteFocus : moreRemote) =
+      case (localFocus == remoteHead, remoteFocus == localHead) of
+        (True, True)   -> InSync
+        (True, False)  -> AheadOfRemote
+        (False, True)  -> BehindRemote
+        (False, False) -> innerCompare moreLocal moreRemote
+```
 
 ## WNFS Root
 
 The root of the file system itself is designed to be very flexible, and support many different versioning metds below it, specifically:
 
 * Structural \(`public`\)
-* Log \(`private` due to for security\)
-* Mutable \(`pretty` & `shared`\)
+* Log \(`private` for security\)
+* Mutable \(`pretty` & `shared` since they're not versioned\)
 
 As such, you need to look at  the sections themselves to determine priority. If one section is ahead of remote, and the other is behind remote, then this is considered to have diverged, and user intervention is required. This is actually not as bad as it sounds, since the actual data content would be the same even if comparing a versioned root. It feels off because we're treating the sections differently, but they're functionally equivalent.
 
 ## Structural Versioning
-
-
 
