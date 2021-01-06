@@ -23,6 +23,7 @@
 * [DID Document](identity/did-doc.md)
 * [Login](identity/verifiable-claims.md)
 * [Device Linking](identity/device-linking.md)
+* [Account Recovery](identity/account-recovery.md)
 
 ## Access Control
 
