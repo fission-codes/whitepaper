@@ -68,3 +68,11 @@ Basic outline:
   * retrieves the encrypted `AccessFile` from `/recovery/{sha256(R_recovery)}` 
   * decrypts `AccessFile` with `R_recovery` 
 
+## Account Reconstruction
+
+In the event that all a user is locked out of all of their devices and loses all of their recovery codes, they can undergo account reconstruction. They are able to retain their username, namespace, and public filesystem. However, they are not able to gain access to their private filesystem, and account reconstruction resets all of the user's UCANs and then revokes access to any app that a user has permissioned.
+
+To reconstruct an account, a user generates a completely new root AES key for their filesystem, as well as a new base keypair and related DID for their account. Fission sets their DID at `_did.${username}.fission.name}` to the newly generated DID.
+
+The user then backs up their existing file system \(in the event that they do find the necessary recovery codes\), creates a new `/private` branch of the filesystem \(encrypted with the newly created root AES key\), and updates `_dataroot.${username}.fission.name` to the root of this new filesystem.
+
