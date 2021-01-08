@@ -1,5 +1,7 @@
 # Account Recovery
 
+## Secure Account Recovery
+
 A user must be able to recovery their account and file system in a privacy-preserving way that reveals no information to Fission.  
 - **Read Access:** By decrypting a root AES key that reveals access to the `/private` branch of the filesystem   
 - **Write Access:** By delegating full write access to a new DID through a UCAN
@@ -35,7 +37,7 @@ Basic outline:
 {
   root: did:key:zAlice,
   username: alice.fission.name,
-  rootAesReadKey: RK,
+  rootAesReadKey: R_root,
   recoveryPartnerBlsPublicKey: PK_f,
   delegatedUcan: UCAN_recovery,
 }
@@ -47,7 +49,7 @@ Basic outline:
 
 #### **Recovery**
 
-* The user 
+* Alice
   * enters one of their recovery codes
   * hashes the recovery code to reveal `SK_a` 
   * creates a new keypair `(SK_r, PK_r)` and associated DID `did:key:zAliceNew`
@@ -67,6 +69,40 @@ Basic outline:
   * hashes `sig_agg` to obtain  AES256 key `R_recovery` 
   * retrieves the encrypted `AccessFile` from `/recovery/{sha256(R_recovery)}` 
   * decrypts `AccessFile` with `R_recovery` 
+
+### Fission Backup
+
+Fission can also offer to store a backup key for the user's account in a secure location. 
+
+There is a trade off here: **security/privacy** for **ease of use**. A user can guarantee that they won't be locked out of their account and can log into new accounts without going through the device linking process. But they will rely on Fission to keep their key safe, and Fission would have the technical capability to view their filesystem \(although their filesystem will remain encrypted at rest, and this would of course go against our principles\). The security/privacy deficit of this would still be less than a traditional Web 2.0 architecture. 
+
+In this case, a user's backup key would be stored in a Hardware Security Module.
+
+#### Creation
+
+* The server
+  * Generates a new keypair `(SK_f, PK_f)` and related DID `did:key:zFissionRecovery` and stores it in an HSM
+  * Sends `PK_f` to Alice
+* Alice
+  * Creates a full permission UCAN `UCAN_Fission_Recovery` for `PK_f` 
+  * Sends `UCAN_Fission_Recovery` to the server
+  * Uses key exchange to securely send the root AES key \(`R_root`\) to the server
+* The server
+  * Stores `UCAN_Fission_Recovery` in the DB
+  * Securely store `R_root` in the HSM
+
+#### Recovery
+
+* Alice
+  * Creates a new keypair `(SK_a, PK_a)` and related DID `did:key:zAliceNew` 
+  * Sends `PK_a` to the server
+* The server
+  * Creates a full permission UCAN `UCAN_Alice_New` for `PK_a` using `SK_f` and extending `UCAN_Fission_Recovery` 
+  * Sends `UCAN_Alice_New` to Alice
+  * Uses key excahnge to securely send the root AEES key \(`R_root`\) to Alice
+* Alice
+  * Unlocks her private filesystem with `R_root` 
+  * Stores `UCAN_Alice_New` in her filesystem
 
 ## Account Reconstruction
 
