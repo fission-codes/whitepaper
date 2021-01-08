@@ -23,7 +23,44 @@ To allow **Read** permission recovery, the user stores an encrypted AccessFile i
 
 ### Creation & Recovery Flow
 
-#### C**reation**
+_Note: we separate out the read & write flows here for clarity, but they will be done at the same time with the server_
+
+#### Write Creation
+
+* Alice
+  * generates 10 random BLS secret keys \(`SK_a`\)
+  * takes the SHA256 hash of each of these secret keys
+  * sends the hashes to the server
+* The server
+  * generates 10 BLS secret keys \(`SK_f`\), one for each hash, and stores them in a database alongside the hashes
+  * sends Alice the public key for each \(`PK_f`\)
+* For each key, Alice
+  * combines the public key with the relevant public key from the server to determine `PK_agg`
+  * determines a did for each `PK_agg`: `did:key:zAliceRecovery`
+  * delegates a full permission UCAN \(`UCAN_recovery`\) to each `did:key:zAliceRecovery`, attested by her root  `did:key:zAlice` 
+
+![](../.gitbook/assets/screenshot-from-2021-01-08-15-10-02.png)
+
+#### Write Recovery
+
+* Alice
+  * enters one of her recovery codes, `SK_a` 
+  * creates a new keypair `(SK_r, PK_r)` and associated DID `did:key:zAliceNew`
+  * sends a request to the server including `SHA256(SK_a)` and `did:key:zAliceNew`
+* The server 
+  * looks up the relevant key to `SK_a` in the database: `SK_f` 
+    * _Note: We can add a time delay on this part for added security. If a user reports their device missing or their security breached, this is also where we can halt an attacker._
+  * alerts Alice if the key does not exist
+  * otherwise, signs a full permissioned UCAN \(`UCAN_new_f`\) from `did:key:zAliceRecovery` for `did:key:zAliceNew` 
+  * `UCAN_new` to Alice
+  * deletes the keypair from the DB
+* Alice
+  * signs a full permission UCAN \(`UCAN_new_a`\) from `did:key:zAliceRecovery` for `did:key:zAliceNew` 
+  * combines `UCAN_new_a` with `UCAN_new_f` to create `UCAN_new`, a fully permission UCAN for `did:key:zAliceNew`
+
+![](../.gitbook/assets/screenshot-from-2021-01-08-15-12-55.png)
+
+#### Read Creation
 
 * Alice
   * generates 10 random BLS secret keys \(`SK_a`\)
@@ -33,13 +70,10 @@ To allow **Read** permission recovery, the user stores an encrypted AccessFile i
   * generates 10 BLS secret keys \(`SK_f`\), one for each hash, and stores them in a database alongside the hashes
   * signs some arbitrary piece of data `challenge`,with each key
     * _Note: `challenge` does not have to be obscure, we can use the user's username for consistency_
-  * sends Alice a pair for each key of: `(sig_f, PK_f)` 
+  * sends Alice the signature for each key \(`sig_f`\)
 * For each key, Alice
   * signs the same `challenge` with each key to obtain `sig_a`
   * combines that signature with the relevant signature from the server to obtain `sig_agg`
-  * combines the public key with the relevant public key from the server to determine `PK_agg`
-  * determines a did for each `PK_agg`: `did:key:zAliceRecovery`
-  * delegates a full permission UCAN \(`UCAN_recovery`\) to each `did:key:zAliceRecovery`, attested by her root  `did:key:zAlice` 
   * creates an `AccessFile` for each `UCAN_recovery` and includes the root AES key \(`R_root`\) to decrypt the user's private filesystem
 
 ```text
@@ -58,28 +92,28 @@ To allow **Read** permission recovery, the user stores an encrypted AccessFile i
   * takes the SHA256 hash of `sig_agg` to determine an AES256 key `R_recovery` 
   *  encrypts `AccessFile` with each `R_recovery` key and stores it in their filesystem at `/recovery/{sha256(R_recovery)}`
 
-#### **Recovery**
+![](../.gitbook/assets/screenshot-from-2021-01-08-15-22-13.png)
+
+#### **Read Recovery**
 
 * Alice
   * enters one of her recovery codes, `SK_a` 
-  * creates a new keypair `(SK_r, PK_r)` and associated DID `did:key:zAliceNew`
-  * sends a request to the server including `SHA256(SK_a)` and `did:key:zAliceNew`
+  * sends a request to the server including `SHA256(SK_a)` 
 * The server 
   * looks up the relevant key to `SK_a` in the database: `SK_f` 
     * _Note: We can add a time delay on this part for added security. If a user reports their device missing or their security breached, this is also where we can halt an attacker._
   * alerts Alice if the key does not exist
   * otherwise, signs the original `challenge` with `SK_f` to obtain `sig_f`
-  * signs a full permissioned UCAN \(`UCAN_new_f`\) from `did:key:zAliceRecovery` for `did:key:zAliceNew` 
-  * sends `sig_f` and `UCAN_new` to Alice
+  * sends `sig_f` to Alice
   * deletes the keypair from the DB
 * Alice
-  * signs a full permission UCAN \(`UCAN_new_a`\) from `did:key:zAliceRecovery` for `did:key:zAliceNew` 
-  * combines `UCAN_new_a` with `UCAN_new_f` to create `UCAN_new`, a fully permission UCAN for `did:key:zAliceNew`
   * signs `challenge` with `SK_a` and combines the result with `sig_f` to obtain `sig_agg` 
   * takes the SHA256 hash of `sig_agg` to obtain  AES256 key `R_recovery` 
   * retrieves the encrypted `AccessFile` from `/recovery/{sha256(R_recovery)}` 
   * decrypts `AccessFile` with `R_recovery` 
   * uses `R_root` from the decrypted `AccessFile` to decrypt her `/private` filesystem
+
+![](../.gitbook/assets/screenshot-from-2021-01-08-15-22-23.png)
 
 ### Fission Backup
 
