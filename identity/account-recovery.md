@@ -6,34 +6,45 @@ A user must be able to recovery their account and file system in a privacy-prese
 - **Read Access:** By decrypting a root AES key that reveals access to the `/private` branch of the filesystem   
 - **Write Access:** By delegating full write access to a new DID through a UCAN
 
-#### Constraints
+### Constraints
 
 * Users should have a set of recovery codes \(similar to 2FA recovery codes\), such that any one recovery code has the capability of restoring full access to a user's filesystem
 * Upon recovery, a user's DID should have an unbroken chain of delegation from their original DID \(even though they no longer have access to that keypair\)
 * Fission should not be able to restore or have access to a user's filesystem without access to their recovery codes
 * Fission should have the ability to stop or slow access to a filesystem in the case of suspicious activity
 
-Basic outline:
+### Basic Outline
+
+A user generates a number of recovery tokens on account creation. Each recovery token is a 256-bit BLS secret key. The server also holds BLS secret keys, one for each token that a user possesses. When the user and the server both sign the same data, and the signatures are "added", the public key of that signature is the same as the user's and the server's public keys "added" together \("added" here refers to BLS aggregation\).
+
+To allow **Write** permission recovery, the user permissions a UCAN for the that aggregated public key. In the event of recovery, the user and the server work together to sign another UCAN for a _new_ keypair that the user creates. This signature is aggregated from the user's recovery code, and the associated secret key that the server is holding
+
+To allow **Read** permission recovery, the user stores an encrypted AccessFile in the `/recovery` directory of their filesystem \(one for each recovery token\). This AccessFile contains the root AES key for decrypting the `/private` branch of the filesystem. The AES key to decrypt this file is determined by aggregating the user's and server's signatures of some known challenge \(for instance the user's username\) and hashing the result.
+
+### Creation & Recovery Flow
 
 #### C**reation**
 
 * Alice
-  * generates 10 random codes \(of whatever length, let's say 10 hex chars\) 
-  * hashes each of these codes _once_ to create 10 BLS secret keys \(`SK_a`\)
-  * hashes each of these secret keys _again_
+  * generates 10 random BLS secret keys \(`SK_a`\)
+  * hashes each of these secret keys
   *  sends the hashes to the server
 * The server
   * generates 10 BLS secret keys \(`SK_f`\), one for each hash, and stores them in a database alongside the hashes
   * signs some arbitrary piece of data `challenge`,with each key
+    * _Note: `challenge` does not have to be obscure, we can use the user's username for consistency_
   * sends Alice a pair for each key of: `(sig_f, PK_f)` 
 * For each key, Alice
-  * signs the same arbitrary piece of data with each key and combines that signature with the relevant signature
-  * combines the public key with the relevant public key from the server, thus determining a pair of `(sig_agg, PK_agg)`
+  * signs the same `challenge` with each key to obtain `sig_a`
+  * combines that signature with the relevant signature from the server to obtain `sig_agg`
+  * combines the public key with the relevant public key from the server to determine `PK_agg`
   * determines a did for each `PK_agg`: `did:key:zAliceRecovery`
   * delegates a full permission UCAN \(`UCAN_recovery`\) to each `did:key:zAliceRecovery`, attested by her root  `did:key:zAlice` 
   * creates an `AccessFile` for each `UCAN_recovery` and includes the root AES key \(`R_root`\) to decrypt the user's private filesystem
 
 ```text
+# AccessFile
+
 {
   root: did:key:zAlice,
   username: alice.fission.name,
@@ -50,18 +61,17 @@ Basic outline:
 #### **Recovery**
 
 * Alice
-  * enters one of their recovery codes
-  * hashes the recovery code to reveal `SK_a` 
+  * enters one of her recovery codes, `SK_a` 
   * creates a new keypair `(SK_r, PK_r)` and associated DID `did:key:zAliceNew`
   * sends a request to the server including `hash(SK_a)` and `did:key:zAliceNew`
 * The server 
   * looks up the relevant key to `SK_a` in the database: `SK_f` 
-    * Checks that the key has not been used for recovery yet \(one time only\)
-    * We can add a time delay on this part for added security. If a user reports their device missing or their security breached, this is also where we can halt an attacker.
-  * signs the original `challenge` with `SK_f` to botain `sig_f`
+    * * _Note: We can add a time delay on this part for added security. If a user reports their device missing or their security breached, this is also where we can halt an attacker._
+  * alerts Alice if the key does not exist
+  * otherwise, signs the original `challenge` with `SK_f` to obtain `sig_f`
   * signs a full permissioned UCAN \(`UCAN_new_f`\) from `did:key:zAliceRecovery` for `did:key:zAliceNew` 
   * sends `sig_f` and `UCAN_new` to Alice
-  * marks that this keypair has been used in the DB
+  * deletes the keypair from the DB
 * Alice
   * signs a full permission UCAN \(`UCAN_new_a`\) from `did:key:zAliceRecovery` for `did:key:zAliceNew` 
   * combines `UCAN_new_a` with `UCAN_new_f` to create `UCAN_new`, a fully permission UCAN for `did:key:zAliceNew`
@@ -69,6 +79,7 @@ Basic outline:
   * hashes `sig_agg` to obtain  AES256 key `R_recovery` 
   * retrieves the encrypted `AccessFile` from `/recovery/{sha256(R_recovery)}` 
   * decrypts `AccessFile` with `R_recovery` 
+  * uses `R_root` from the decrypted `AccessFile` to decrypt her `/private` filesystem
 
 ### Fission Backup
 
