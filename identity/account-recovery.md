@@ -27,8 +27,8 @@ To allow **Read** permission recovery, the user stores an encrypted AccessFile i
 
 * Alice
   * generates 10 random BLS secret keys \(`SK_a`\)
-  * hashes each of these secret keys
-  *  sends the hashes to the server
+  * takes the SHA256 hash of each of these secret keys
+  * sends the hashes to the server
 * The server
   * generates 10 BLS secret keys \(`SK_f`\), one for each hash, and stores them in a database alongside the hashes
   * signs some arbitrary piece of data `challenge`,with each key
@@ -55,7 +55,7 @@ To allow **Read** permission recovery, the user stores an encrypted AccessFile i
 ```
 
 * Alice 
-  * hashes `sig_agg` to determine an AES256 key `R_recovery` 
+  * takes the SHA256 hash of `sig_agg` to determine an AES256 key `R_recovery` 
   *  encrypts `AccessFile` with each `R_recovery` key and stores it in their filesystem at `/recovery/{sha256(R_recovery)}`
 
 #### **Recovery**
@@ -63,7 +63,7 @@ To allow **Read** permission recovery, the user stores an encrypted AccessFile i
 * Alice
   * enters one of her recovery codes, `SK_a` 
   * creates a new keypair `(SK_r, PK_r)` and associated DID `did:key:zAliceNew`
-  * sends a request to the server including `hash(SK_a)` and `did:key:zAliceNew`
+  * sends a request to the server including `SHA256(SK_a)` and `did:key:zAliceNew`
 * The server 
   * looks up the relevant key to `SK_a` in the database: `SK_f` 
     * _Note: We can add a time delay on this part for added security. If a user reports their device missing or their security breached, this is also where we can halt an attacker._
@@ -76,7 +76,7 @@ To allow **Read** permission recovery, the user stores an encrypted AccessFile i
   * signs a full permission UCAN \(`UCAN_new_a`\) from `did:key:zAliceRecovery` for `did:key:zAliceNew` 
   * combines `UCAN_new_a` with `UCAN_new_f` to create `UCAN_new`, a fully permission UCAN for `did:key:zAliceNew`
   * signs `challenge` with `SK_a` and combines the result with `sig_f` to obtain `sig_agg` 
-  * hashes `sig_agg` to obtain  AES256 key `R_recovery` 
+  * takes the SHA256 hash of `sig_agg` to obtain  AES256 key `R_recovery` 
   * retrieves the encrypted `AccessFile` from `/recovery/{sha256(R_recovery)}` 
   * decrypts `AccessFile` with `R_recovery` 
   * uses `R_root` from the decrypted `AccessFile` to decrypt her `/private` filesystem
