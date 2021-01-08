@@ -2,7 +2,7 @@
 
 ## Secure Account Recovery
 
-A user must be able to recovery their account and file system in a privacy-preserving way that reveals no information to Fission.  
+A user must be able to recover their account and file system in a privacy-preserving way that reveals no information to Fission.  
 - **Read Access:** By decrypting a root AES key that reveals access to the `/private` branch of the filesystem   
 - **Write Access:** By delegating full write access to a new DID through a UCAN
 
