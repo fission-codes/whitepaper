@@ -66,7 +66,7 @@ To allow **Read** permission recovery, the user stores an encrypted AccessFile i
   * sends a request to the server including `hash(SK_a)` and `did:key:zAliceNew`
 * The server 
   * looks up the relevant key to `SK_a` in the database: `SK_f` 
-    * * _Note: We can add a time delay on this part for added security. If a user reports their device missing or their security breached, this is also where we can halt an attacker._
+    * _Note: We can add a time delay on this part for added security. If a user reports their device missing or their security breached, this is also where we can halt an attacker._
   * alerts Alice if the key does not exist
   * otherwise, signs the original `challenge` with `SK_f` to obtain `sig_f`
   * signs a full permissioned UCAN \(`UCAN_new_f`\) from `did:key:zAliceRecovery` for `did:key:zAliceNew` 
