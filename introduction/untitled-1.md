@@ -55,7 +55,7 @@ Software continues its march of abstraction.
   * Want to change as little as possible
     * Rolling weight of existing software
     * Familiarity-as-UX
-* We systemticaly tend towards centralization and capture
+* We systemically tend towards centralization and capture
 * Periodic paradigm shifts that allow for increased freedom, competition, and efficiency
 * End-users are becoming aware of the dangers of concentrated technological power
 
@@ -74,15 +74,10 @@ Software continues its march of abstraction.
 * Self-sovereignty
 * Universality
 * Modularity
-* UX and DX \(broadly HCI\) / convenience
-
-### Open Infrastructure
-
-### Progressive Decentralization
-
-\*
+* UX and DX \(broadly HCI\)
+* Convenience
 
 ## The End of History
 
-The past 60 years have been a progression from bespoke hardware through mainframes, timeshare, hardware ownership, cloud computing, containers, FaaS, and finally, hostless systems.
+The past 60 years have been a progression from bespoke hardware through mainframes, timeshare, hardware ownership, cloud computing, containers, FaaS, and finally, hostless/universal systems.
 
