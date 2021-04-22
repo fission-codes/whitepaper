@@ -1,6 +1,6 @@
 # High Level Architecture
 
-The Asimov architecture is made up of into 6 modular components, which group loosely into 3 segments:
+The Fission architecture is made up of six modular components, which group loosely into three segments:
 
 1. Unified Storage
 
@@ -52,10 +52,10 @@ The Asimov architecture is made up of into 6 modular components, which group loo
                +--------------------------------------------------------------------------------------------------------+
 ```
 
-Cutting across these are two second-order modules that rely on the 3 core areas:
+Cutting across these are two second-order modules that rely on the three core areas:
 
 1. Encryption
 2. Functions-as-a-Service
 
-The vast majority of end users will not have cryptographically-backed routing available locally for some time. To bridge this gap, Asimov leverages public DNS infrastructure as a backwards-compatibility bridge.
+The vast majority of end users will not have cryptographically-backed routing available locally for some time. To bridge this gap, Fission leverages public DNS infrastructure as a backward-compatibility bridge.
 

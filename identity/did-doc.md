@@ -41,7 +41,7 @@ DID documents of this type always follow this exact format:
 
 ## `@context`
 
-The `@context` key simply states which version of the spec this DID conforms to.
+The `@context` key states which version of the spec this DID conforms to.
 
 For example: `'https://w3id.org/did/v1'`
 
@@ -80,7 +80,7 @@ The `publicKey` array MUST:
 This contains a lot of redundant information, but is required to be compatible with other DID services
 {% endhint %}
 
-Unlike many other DID methods, a Fission Identity MUST contain _exactly one_ key. Fission treats identity as pseudonymous at best, and thus relegates access control to the realm of verifiable claims.
+Unlike many other DID methods, a Fission Identity MUST contain _exactly one_ key. Fission treats identity as pseudonymous at best and thus relegates access control to the realm of verifiable claims.
 
 > There is a need for non updateable DID's for use in IOT and other applications, where lack of network, size of code base and other such concerns are paramount to adoption. These concerns need to be addressed while not lowering the overall security guarantees.
 >

@@ -2,15 +2,15 @@
 
 ## Setting the Stage
 
-The internet is fundamentally a decentralized network. Since this network is being used to move huge amounts of valuable data, there is an incentive to become a hub for this data.
+The internet is fundamentally a decentralized network. Since this network is used to move vast amounts of valuable data, there is an incentive to become a hub for this data.
 
-The ossification of the web into a handful of major hubs is in no way surprising. Any such system will tend towards capture over time, via social contracts that provide a disincentive to exit \(e.g. social networks\). The fundamental gravity of centralization needs to be actively and persistently resisted by applying opposing forces.
+The ossification of the web into a handful of major hubs is in no way surprising. Any such system will tend towards capture over time via social contracts that provide a disincentive to exit \(e.g. social networks\). The fundamental gravity of centralization needs to be actively and persistently resisted by applying opposing forces.
 
-The web of 2019 is beginning to show signs of social flux: average everyday people are beginning to become conscious of the value of their personal data, and the role that these technologies play in their society, politics, and daily lives. The past decade has seen new approaches to security, distributed systems, and decentralization.
+The web of the 2020s is beginning to show signs of social flux: average, everyday people are beginning to become conscious of the value of their personal data and the role that these technologies play in their society, politics, and daily lives. The past decade has seen new approaches to security, distributed systems, and decentralization.
 
 ### Software Trends
 
-Software continues its march of abstraction
+Software continues its march of abstraction.
 
 * Increasing abstraction
   * Containers
@@ -36,7 +36,7 @@ Software continues its march of abstraction
 > If you don't like what you got Why don't you change it? If your world is all screwed up Rearrange it! ~ Trooper, Raise a Little Hell
 
 * Content addressing gives us a single unified namespace
-  * Portablility
+  * Portability
 * Constraints of this system mean that it should be secure-by-default
 
 ## Core Assumptions
@@ -48,7 +48,7 @@ Software continues its march of abstraction
     * Momentum
     * Familiarity-as-UX
 * Systemically, we tend towards centralization and capture
-* Periodic paradeigm shifts that allow for increased freedom, competition, and efficiency
+* Periodic paradigm shifts that allow for increased freedom, competition, and efficiency
 * Socially, end-users are becoming aware of the dangers of concentrated technological power
 
 ### Technology
@@ -57,7 +57,7 @@ Software continues its march of abstraction
   * W3C
   * Microsoft
   * BC Government
-* Wasm is going to be available everywhere
+* WebAssembly is going to be available everywhere
 * Content addressing will effectively make data location a non-issue
 
 ## Core Principles
@@ -66,7 +66,7 @@ Software continues its march of abstraction
 * Self-sovereignty
 * Universality
 * Modularity
-* UX and DX \(broadly HCI\) / conveniecne
+* UX and DX \(broadly HCI\) / convenience
 
 ### Open Infrastructure
 
@@ -76,5 +76,5 @@ Software continues its march of abstraction
 
 ## The End of History
 
-The past 60 years have been a progression from bespoke hardware, through mainframes, timeshare, hardware owneership, cloud computing, containers, FaaS, and finally hostless systems
+The past 60 years have been a progression from bespoke hardware through mainframes, timeshare, hardware ownership, cloud computing, containers, FaaS, and finally, hostless systems.
 
