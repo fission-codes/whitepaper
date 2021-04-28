@@ -6,7 +6,6 @@
 
 * [Context](introduction/untitled-1.md)
 * [Vision](introduction/goals-and-constraints.md)
-* [Core Principles](introduction/core-principles.md)
 * [The Constellation](introduction/the-constellation.md)
 * [High Level Architecture](introduction/untitled-2.md)
 
