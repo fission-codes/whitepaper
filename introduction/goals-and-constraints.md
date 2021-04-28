@@ -1,6 +1,0 @@
----
-description: Goals & Constraints
----
-
-# Vision
-
