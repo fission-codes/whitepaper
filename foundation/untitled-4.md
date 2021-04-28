@@ -18,9 +18,7 @@ These include all sorts of assets and links, not limited to images, static websi
 
 IPFS can be used as a substrate for CRDTs. These in turn can be used for passing around information for distributed databases.
 
-One such project is OrbitDB.
-
 ## Private Data on Public Networks
 
-On the public IPFS network, any addressable file is available to anyone. Encrypting private files
+On the public IPFS network, any addressable file is available to anyone. If a file on a private network is leaked, it is addressable with the same address. We assume that the transport pipes are broken, and provides key distribution and rotation mechanisms to mediate access.
 
