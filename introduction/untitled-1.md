@@ -19,6 +19,10 @@ Software continues its march of abstraction.
     * Still early in its curve
     * Primarily controlled by the major cloud companies
     * Tied to specific implementations
+  * Edge
+    * Lower latency
+    * Flexible
+    * Tied to specific providers
   * Wasm Isolates
     * Extremely early, but showing promise
 * Difficult to compete with the rolling weight of the Big Four
