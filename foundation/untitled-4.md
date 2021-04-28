@@ -1,6 +1,10 @@
+---
+description: 'Your data, everywhere'
+---
+
 # Unified Storage
 
-Storage is crucial to any application.
+Data is at the heart of all computing, from the smallest function to the largest application. 
 
 Content addressing focuses on data rather than physical location.
 

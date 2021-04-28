@@ -8,11 +8,11 @@
 * [The Constellation](introduction/the-constellation.md)
 * [High Level Architecture](introduction/untitled-2.md)
 
-## System Foundation
+## Foundation
 
-* [Unified Storage](system-foundation/untitled-4.md)
-* [Digital Scarcity](system-foundation/untitled-5.md)
-* [Portable Compute](system-foundation/portable-compute.md)
+* [Unified Storage](foundation/untitled-4.md)
+* [Digital Scarcity](foundation/untitled-5.md)
+* [Portable Compute](foundation/portable-compute.md)
 
 ## Identity
 

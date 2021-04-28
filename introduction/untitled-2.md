@@ -27,5 +27,7 @@ Cutting across these are two second-order modules that rely on the three core ar
 1. Encryption
 2. Functions-as-a-Service
 
-The vast majority of end users will not have cryptographically-backed routing available locally for some time. To bridge this gap, Fission leverages public DNS infrastructure as a backward-compatibility bridge.
+The vast majority of end users will not have cryptographically secured routing available locally for some time. To bridge this gap, Fission leverages public DNS infrastructure as a backward-compatibility bridge.
+
+![](../.gitbook/assets/screen-shot-2021-04-28-at-3.51.52-pm.png)
 
