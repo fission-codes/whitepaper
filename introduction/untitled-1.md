@@ -1,7 +1,5 @@
 # Context
 
-## Setting the Stage
-
 The internet has been a decentralized network since its conception. As this network is used to move vast amounts of valuable data, there is an incentive to become a hub for this data.
 
 The ossification of the web into the control of a handful of major hubs is in no way surprising. Any such system will tend towards capture over time via social contracts that provide a disincentive to exit \(e.g. social networks\). The fundamental gravity of centralization needs to be actively and persistently resisted by applying opposing forces if the web is to stay open.
