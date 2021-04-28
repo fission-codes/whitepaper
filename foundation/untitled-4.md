@@ -22,3 +22,9 @@ IPFS can be used as a substrate for CRDTs. These in turn can be used for passing
 
 On the public IPFS network, any addressable file is available to anyone. If a file on a private network is leaked, it is addressable with the same address. We assume that the transport pipes are broken, and provides key distribution and rotation mechanisms to mediate access.
 
+## Temporal Data Stores
+
+No one likes it when their data disappears simply because they pressed the wrong button. Storage is cheaper all the time, and there are techniques for storing only the changed parts of some data. Being able to rewind time, recover old files, and compare changes is not only useful, but essential in a distributed setting.
+
+There is one user-centric scenario when you would want to change the history: if some sensitive data was published publicly by accident.
+
