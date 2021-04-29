@@ -2,7 +2,7 @@
 
 ## QUAKE
 
-QUAKE is a [recursive acronym](https://en.wikipedia.org/wiki/Recursive_acronym) for "QUAKE UCAN Authentication & Key Exchange".
+QUAKE is a [recursive acronym](https://en.wikipedia.org/wiki/Recursive_acronym) for "QUAKE: User Authentication & Key Exchange".
 
 ## Sequence
 
