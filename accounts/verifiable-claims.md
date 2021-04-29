@@ -1,6 +1,6 @@
 # Registration
 
-In the Fission model, users own and manager their DID, not the service. Unfortunately, due to Zooko's Triangle \(a trilemma, illustrated below\), a raw DID is not particularly user-friendly. Further, all resources in Fission are based on immutable data. This is an intentional separation of concerns: a handful of mutable pointers are much easier to manage in any setting, especially a distributed one.
+In the Fission model, users own and manager their DID, not the service. Unfortunately, due to [Zooko's Triangle](https://en.wikipedia.org/wiki/Zooko%27s_triangle) \(a trilemma, illustrated below\), a raw DID is not particularly user-friendly. Further, all resources in Fission are based on immutable data. This is an intentional separation of concerns: a handful of mutable pointers are much easier to manage in any setting, especially a distributed one.
 
 ![Source: https://en.wikipedia.org/wiki/Zooko%27s\_triangle\#/media/File:Zooko&apos;s\_Triangle.svg](../.gitbook/assets/1920px-zookos_triangle.svg.png)
 
