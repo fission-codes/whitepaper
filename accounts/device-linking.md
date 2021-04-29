@@ -37,7 +37,7 @@ QUAKE is a [recursive acronym](https://en.wikipedia.org/wiki/Recursive_acronym) 
   <tbody>
     <tr>
       <td style="text-align:left">&#x1F5A5;</td>
-      <td style="text-align:left">Desktop</td>
+      <td style="text-align:left">Alice&apos;s Desktop</td>
       <td style="text-align:left">
         <ul>
           <li>Alice&#x2019;s original &#x201C;root&#x201D; device</li>
@@ -49,7 +49,7 @@ QUAKE is a [recursive acronym](https://en.wikipedia.org/wiki/Recursive_acronym) 
     </tr>
     <tr>
       <td style="text-align:left">&#x1F4BB;</td>
-      <td style="text-align:left">Laptop</td>
+      <td style="text-align:left">Alice&apos;s Laptop</td>
       <td style="text-align:left">
         <p></p>
         <ul>
@@ -63,7 +63,7 @@ QUAKE is a [recursive acronym](https://en.wikipedia.org/wiki/Recursive_acronym) 
     </tr>
     <tr>
       <td style="text-align:left">&#x1F4F1;</td>
-      <td style="text-align:left">Phone</td>
+      <td style="text-align:left">Alice&apos;s Phone</td>
       <td style="text-align:left">
         <p></p>
         <ul>
