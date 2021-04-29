@@ -20,9 +20,12 @@
 * [Self-Signed](authorization/selfsigned.md)
 * [Challenge-Based](authorization/challenge.md)
 * [DID Document](authorization/did-doc.md)
-* [Login](authorization/verifiable-claims.md)
-* [Device Linking](authorization/device-linking.md)
-* [Account Recovery](authorization/account-recovery.md)
+
+## Accounts
+
+* [Registration](accounts/verifiable-claims.md)
+* [Device Linking](accounts/device-linking.md)
+* [Recovery](accounts/recovery.md)
 
 ## Access Control
 
