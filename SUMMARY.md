@@ -14,14 +14,15 @@
 * [Digital Scarcity](foundation/untitled-5.md)
 * [Portable Compute](foundation/portable-compute.md)
 
-## Identity
+## Authorization
 
-* [Overview](identity/id-overview.md)
-* [Public Keys](identity/keys.md)
-* [DID Document](identity/did-doc.md)
-* [Login](identity/verifiable-claims.md)
-* [Device Linking](identity/device-linking.md)
-* [Account Recovery](identity/account-recovery.md)
+* [Overview](authorization/id-overview.md)
+* [Self-Signed](authorization/selfsigned.md)
+* [Challenge-Based](authorization/challenge.md)
+* [DID Document](authorization/did-doc.md)
+* [Login](authorization/verifiable-claims.md)
+* [Device Linking](authorization/device-linking.md)
+* [Account Recovery](authorization/account-recovery.md)
 
 ## Access Control
 
