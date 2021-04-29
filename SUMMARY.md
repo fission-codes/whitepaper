@@ -24,6 +24,7 @@
 ## Accounts
 
 * [Registration](accounts/verifiable-claims.md)
+* [Login](accounts/login.md)
 * [Device Linking](accounts/device-linking.md)
 * [Recovery](accounts/recovery.md)
 

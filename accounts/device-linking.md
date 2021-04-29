@@ -1,10 +1,8 @@
 # Device Linking
 
-Devices are linked by sending a symmetric WNFS read key and delegating a UCAN to the new device's DID. There are several ways to send this information securely, but here we will be solving for the most difficult and universal case: over pubsub.
+## QUAKE
 
-These messages are visible to the world in cleartext. We want to prevent man-in-the-middle attacks and other forms of spoofing. While we have a list of known-good exchange keys in DNS \(and later right in the user's WNFS\), we would like to avoid hitting the network as much as possible. Luckily, we can bootstrap up a secure channel with a known ID on one side and a challenge nonce on the other.
-
-It should be noted that the bootstrap process here may also be used to set up secure channels for other use cases, including chat.
+QUAKE is a [recursive acronym](https://en.wikipedia.org/wiki/Recursive_acronym) for "QUAKE UCAN Authentication & Key Exchange".
 
 ## Sequence
 
@@ -21,27 +19,73 @@ It should be noted that the bootstrap process here may also be used to set up se
 
 #### People
 
-* Alice 👩‍💻
-  * The root user
-* Eve 🦹‍♀️
-  * An attacker trying to gain access to Alice's account
+| Icon | Name | Goal |
+| :--- | :--- | :--- |
+| 👩‍💻 | Alice | The root user, attempting to link a second device |
+| 🦹‍♀️ | Eve | An attacker attempting to gain access to Alice's account |
 
 #### Machines
 
-* Desktop 🖥
-  * Alice’s original “root” device
-  * Does not participate in the example flow, but exists offline
-  * Has a PK corresponding to `did:key:zALICE`
-* Laptop 💻
-  * Alice’s second device — the "provider" in this scenario
-  * Has a PK corresponding to `did:key:zLAPTOP`
-  * Has an existing UCAN for Alice's account
-* Phone 📱
-  * Alice's iPhone
-  * The device requesting linking for Alice's account
-  * Has a PK corresponding to `did:key:zPHONE`
-* Evil Server 😈
-  * Eve's server that watches all traffic on pubsub
+<table>
+  <thead>
+    <tr>
+      <th style="text-align:left">Icon</th>
+      <th style="text-align:left">Name</th>
+      <th style="text-align:left">Role</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align:left">&#x1F5A5;</td>
+      <td style="text-align:left">Desktop</td>
+      <td style="text-align:left">
+        <ul>
+          <li>Alice&#x2019;s original &#x201C;root&#x201D; device</li>
+          <li>Does not participate in the example flow, but exists offline</li>
+          <li>Has a PK corresponding to <code>did:key:zALICE</code>
+          </li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left">&#x1F4BB;</td>
+      <td style="text-align:left">Laptop</td>
+      <td style="text-align:left">
+        <p></p>
+        <ul>
+          <li>Alice&#x2019;s second device &#x2014;&#xA0;the &quot;provider&quot; in
+            this scenario</li>
+          <li>Has a PK corresponding to <code>did:key:zLAPTOP</code>
+          </li>
+          <li>Has an existing UCAN for Alice&apos;s account</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left">&#x1F4F1;</td>
+      <td style="text-align:left">Phone</td>
+      <td style="text-align:left">
+        <p></p>
+        <ul>
+          <li>Alice&apos;s iPhone</li>
+          <li>The device requesting linking for Alice&apos;s account</li>
+          <li>Has a PK corresponding to <code>did:key:zPHONE</code>
+          </li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:left">&#x1F608;</td>
+      <td style="text-align:left">Evil Server</td>
+      <td style="text-align:left">
+        <p></p>
+        <ul>
+          <li>Eve&apos;s server that watches all traffic on pubsub</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 ### **Step 1: Everyone Subscribes to Channel**
 
@@ -69,7 +113,7 @@ Since RSA-OAEP can only hold a small amount of data, we use it to open a secured
 At this step, we **do not** know that the provider is actually our other machine, and not a person-in-the-middle 🦹‍♀️😈 We will authenticate them in the next step.
 {% endhint %}
 
-The provider 💻 sends an asymmetrically encrypted AES256 session key to the public key broadcast in step 2. The provider must ensure that they ONLY use this key for this one channel, aimed at the specific RSA public key recieved in step 2. New connections MUST use new randomly generated keys.
+The provider 💻 sends an asymmetrically encrypted AES256 session key to the public key broadcast in step 2. The provider must ensure that they ONLY use this key for this one channel, aimed at the specific RSA public key received in step 2. New connections MUST use new randomly generated keys.
 
 We will use this session key for the remainder of the steps.
 
@@ -116,7 +160,7 @@ Here we're _securely_ responding with a randomly generated AES256 key, embedded 
 The recipient MUST validate the following:
 
 1. The encrypted message can be decrypted by SK associated with the `ucan.aud`
-2. Signature chain — from the outmost JWT signature, all the way through nested UCANs back to the root
+2. Signature chain — from the outermost JWT signature, all the way through nested UCANs back to the root
 3. The first-level proofs \(EXACTLY one level above\) MUST contain the permissions that you are looking to be granted \(not two nested levels of \`att: \[\]\`\), OR be the root credential.
 4. The innermost \(root\) issuer \(`iss` field\) MUST match the channel's DID \(i.e. the DID that you are requesting from\).
 
