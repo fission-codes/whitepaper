@@ -17,7 +17,7 @@
 ## Identity
 
 * [Overview](identity/id-overview.md)
-* [Keys](identity/keys.md)
+* [Public Keys](identity/keys.md)
 * [DID Document](identity/did-doc.md)
 * [Login](identity/verifiable-claims.md)
 * [Device Linking](identity/device-linking.md)
