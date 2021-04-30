@@ -1,2 +1,0 @@
-# Shared Mutable State
-

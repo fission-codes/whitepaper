@@ -82,19 +82,8 @@
 
 * [Distributed & Edge FaaS](dynamic-faas/distributed-functions-as-a-service.md)
 
-## Global
-
-* [Applications](global/applications.md)
-* [Shared Mutable State](global/shared-mutable-state.md)
-* [Federation](global/interaction.md)
-
 ## Conclusion
 
 * [Recapitulation](conclusion/recapitulation.md)
 * [Afterward](conclusion/afterward.md)
-
-## WIP <a id="notes"></a>
-
-* [Scaling with SCaaS](notes/untitled-6.md)
-* [\*\*Notes to Self\*\*](notes/untitled-3.md)
 
