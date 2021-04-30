@@ -64,6 +64,13 @@
     * [Append Access](file-system/sections/private-directories/append-access.md)
   * [Unlisted](file-system/sections/unlisted-directories.md)
   * [Share](file-system/sections/shared.md)
+* [Event Sourcing](file-system/event-sourcing.md)
+* [Distribution](file-system/distribution.md)
+* [App Hosting](file-system/app-hosting.md)
+
+## Multiuser Database
+
+* [Untitled](multiuser-database/untitled.md)
 
 ## Dynamic FaaS
 
