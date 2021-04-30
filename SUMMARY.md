@@ -34,7 +34,7 @@
 * [Query Access](access-control/query-and-read/README.md)
   * [Keys & Pointers](access-control/query-and-read/keys-and-pointers.md)
   * [Sharing](access-control/query-and-read/key-exchange.md)
-  * [Revoking](access-control/query-and-read/key-revocation.md)
+  * [Revocation](access-control/query-and-read/revocation.md)
 * [Command & Mutation](access-control/ucan/README.md)
   * [UCAN Tokens](access-control/ucan/ucan-tokens.md)
   * [Concepts](access-control/ucan/concepts.md)

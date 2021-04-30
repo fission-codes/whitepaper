@@ -1,4 +1,4 @@
-# Revoking
+# Revocation
 
 ## Removal
 
