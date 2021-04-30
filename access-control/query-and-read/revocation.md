@@ -8,7 +8,7 @@ If another user has a copy of the data being revoked, either by having it on the
 
 ## Redistribution
 
-Note that removal of access via rotation is a very wide action. Subdeleation of read access of that data when not in a child relationship needs to be re-granted.
+Note that removal of access via rotation is a very wide action. Sub-deleation of read access of that data when not in a child relationship needs to be re-granted.
 
 Once a new key is used for the data, authorized users need to be granted the new key.
 
