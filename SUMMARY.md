@@ -72,10 +72,11 @@
   * [Backstop](file-system/distribution/backstop.md)
   * [Performance](file-system/distribution/performance.md)
   * [App Hosting](file-system/distribution/app-hosting.md)
+* [Multiuser](file-system/multiuser.md)
 
-## Multiuser Database
+## Database
 
-* [Untitled](multiuser-database/untitled.md)
+* [Untitled](database/untitled.md)
 
 ## Dynamic FaaS
 
