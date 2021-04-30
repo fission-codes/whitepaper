@@ -64,9 +64,14 @@
     * [Append Access](file-system/sections/private-directories/append-access.md)
   * [Unlisted](file-system/sections/unlisted-directories.md)
   * [Share](file-system/sections/shared.md)
-* [Event Sourcing](file-system/event-sourcing.md)
-* [Distribution](file-system/distribution.md)
-* [App Hosting](file-system/app-hosting.md)
+* [Properties](file-system/properties/README.md)
+  * [Atomicity](file-system/properties/atomicity.md)
+  * [Event Sourcing](file-system/properties/event-sourcing.md)
+  * [Transactions](file-system/properties/transactions.md)
+* [Distribution](file-system/distribution/README.md)
+  * [Backstop](file-system/distribution/backstop.md)
+  * [Performance](file-system/distribution/performance.md)
+  * [App Hosting](file-system/distribution/app-hosting.md)
 
 ## Multiuser Database
 
