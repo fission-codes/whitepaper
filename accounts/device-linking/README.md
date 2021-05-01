@@ -1,8 +1,8 @@
 # Device Linking
 
- to  in to an account Devices are linked by sending signing a symmetric WNFS read key and delegating a UCAN to the new device's DID. There are several ways to send this information securely, but here we will be solving for the most difficult and universal case: over pubsub.
+For convenience, a user must be able to control as many of their resources as possible without leaving the device. Since browsers are hostile places, this requires a trusted setup via a well-known authentication page. This helps guard against phishing and acts as a capability store.
 
-These messages are visible to the world in cleartext. We want to prevent man-in-the-middle attacks and other forms of spoofing. While we have a list of known-good exchange keys in DNS \(and later right in the user's WNFS\), we would like to avoid hitting the network as much as possible. Luckily, we can bootstrap up a secure channel with a known ID on one side and a challenge nonce on the other.
+Devices are "linked" by delegating strong rights to the new device. In the typical case, this is access to everything that the authorization-producing device has access to. This typically means transferring any top-level symmetric keys, and signing a maximally capable UCAN.
 
-It should be noted that the bootstrap process here may also be used to set up secure channels for other use cases, including chat.
+This transfer is highly sensitive. Luckily UCANs provide a correct-by-construction way of proving access: they can sign a non-delegating UCAN targeted at the requesting device \(see specification of the QUAKE protocol in the next section\).
 
