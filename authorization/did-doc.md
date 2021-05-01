@@ -1,6 +1,6 @@
 # DID Document
 
-Since our DID method is a single, public key, always on the Edwards curve, the DID document itself may be reconstructed from a public key at any time. This layer exists purely for compatibility purposes.
+Since our DID method is a single, public key, the DID document itself may be reconstructed from a public key at any time. This layer exists purely for compatibility purposes. This is the W3C [did:key](https://w3c-ccg.github.io/did-method-key/) specification.
 
 ## Complete Example Document
 
