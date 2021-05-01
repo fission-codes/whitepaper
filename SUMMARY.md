@@ -17,7 +17,7 @@
 ## Authorization
 
 * [Overview](authorization/id-overview.md)
-* [Self-Signed](authorization/selfsigned.md)
+* [Self-Certified](authorization/self-certified.md)
 * [Challenge-Based](authorization/challenge.md)
 * [DID Document](authorization/did-doc.md)
 
