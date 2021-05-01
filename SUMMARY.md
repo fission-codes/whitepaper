@@ -21,14 +21,6 @@
 * [Challenge-Based](authorization/challenge.md)
 * [DID Document](authorization/did-doc.md)
 
-## Accounts
-
-* [Registration](accounts/verifiable-claims.md)
-* [Login](accounts/login.md)
-* [Delegation](accounts/device-linking/README.md)
-  * [QUAKE](accounts/device-linking/quake.md)
-* [Recovery](accounts/recovery.md)
-
 ## Access Control
 
 * [Object Capability Model](access-control/cap-authz.md)
@@ -47,6 +39,14 @@
   * [Revocation](access-control/ucan/revocation.md)
   * [Legacy Interop](access-control/ucan/legacy-interop.md)
   * [Differences from OAuth](access-control/ucan/differences-from-oauth.md)
+
+## Accounts
+
+* [Registration](accounts/verifiable-claims.md)
+* [Login](accounts/login.md)
+* [Delegation](accounts/device-linking/README.md)
+  * [AWAKE](accounts/device-linking/quake.md)
+* [Recovery](accounts/recovery.md)
 
 ## File System
 
