@@ -1,18 +1,12 @@
 # Login
 
-## What Even Is a "Login"?
+The concept of "logging in" conveys the ability of a user to access and/or modify resources.
 
-The concept of "logging in" conveys the ability of a user to access and/or modify resources. This has historically been done with some proof of identity, via a password or other secret. More sophisticated systems have used challenges to prove ownership of email, public key signatures, or zero knowledge proofs, and biometrics to improve security and convenience.
+This has historically been done with some proof of identity, via a password or other secret. More sophisticated systems have used challenges to prove ownership of email, public key signatures, or zero knowledge proofs, and biometrics to improve security and convenience. To wit, the metaphor is one of identity \("I log in to _my_ account _provided by_ an app"\) rather than one of action \("I am _empowered_ to complete _my task_"\).
 
-As mentioned earlier, Fission has a weak concept of "identity"; one more based on "authorization" than "authentication". A user may be said to have "logged in" to an account if they have the necessary permissions available to perform actions as that user for their current application.
+As mentioned elsewhere, Fission has an intentionally weak concept of "identity". This is a system more on "authorization" than "authentication". A user may be said to have "logged in" to an app if they have the necessary permissions available to perform actions as that user for their current application.
 
-## Mechanism
-
- to  in to an account Devices are linked by sending signing a symmetric WNFS read key and delegating a UCAN to the new device's DID. There are several ways to send this information securely, but here we will be solving for the most difficult and universal case: over pubsub.
-
-These messages are visible to the world in cleartext. We want to prevent man-in-the-middle attacks and other forms of spoofing. While we have a list of known-good exchange keys in DNS \(and later right in the user's WNFS\), we would like to avoid hitting the network as much as possible. Luckily, we can bootstrap up a secure channel with a known ID on one side and a challenge nonce on the other.
-
-It should be noted that the bootstrap process here may also be used to set up secure channels for other use cases, including chat.
+However, the app is an agent of the user, and its codes ultimately performs actions on the users behalf. Perhaps a better view is that the user empowers the app with the delegated capabilities required to carry out tasks on their behalf. It is a model where the human is in control, not the app.
 
 ## 
 
