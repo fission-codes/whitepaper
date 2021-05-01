@@ -8,5 +8,15 @@ As mentioned elsewhere, Fission has an intentionally weak concept of "identity".
 
 However, the app is an agent of the user, and its codes ultimately performs actions on the users behalf. Perhaps a better view is that the user empowers the app with the delegated capabilities required to carry out tasks on their behalf. It is a model where the human is in control, not the app.
 
-## 
+## Building Intuition
+
+Traditional logins and account systems are no more "natural" than [using a mouse](https://www.youtube.com/watch?v=uUZ5fvsZMi4). However, since this pattern has been common for so long, it can help to look at an example. To help illustrate how this can work differently from our habitual intuitions, here is a quick illustration:
+
+![](../.gitbook/assets/screen-shot-2021-04-30-at-6.16.35-pm.png)
+
+This first image above shows a scenariothat you may be familiar with. The circles represent capabilities, for example access to an email account, access to social media, or a cached files. Alice's work desktop has very different but slightly overlapping capabilities from her personal laptop or phone. Alice's most active device is her phone, and so it has more capabilities than her laptop. We can see that Alice fills many roles across her personal life, work life, and aspects of both. They are all the same human being, but each persona behaves differently and is expected to maintain some degree of separation \(e.g. no sensitive documents brought home, or NSFW photos on her work desktop\).
+
+![](../.gitbook/assets/screen-shot-2021-04-30-at-6.05.28-pm.png)
+
+This image has only changed the labels. Here, Alice, Bob, and Carol have overlapping capabilities in the same relationship as seen earlier. Alice is able to do everything that Carol can, but not vice versa. From the pont of view of an application that Carol has access to, Alice is _functionally equivalent_ to Carol. On the other hand, Carol is unable to access all of Alice's resources. Bob has some shared resources with both Alice and Carol, but far more that are unshared.
 

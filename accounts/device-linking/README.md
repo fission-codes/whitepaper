@@ -1,4 +1,8 @@
-# Device Linking
+# Delegation
+
+## 
+
+## Device Linking
 
 For convenience, a user must be able to control as many of their resources as possible without leaving the device. Since browsers are hostile places, this requires a trusted setup via a well-known authentication page. This helps guard against phishing and acts as a capability store.
 

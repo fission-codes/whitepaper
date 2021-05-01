@@ -25,7 +25,7 @@
 
 * [Registration](accounts/verifiable-claims.md)
 * [Login](accounts/login.md)
-* [Device Linking](accounts/device-linking/README.md)
+* [Delegation](accounts/device-linking/README.md)
   * [QUAKE](accounts/device-linking/quake.md)
 * [Recovery](accounts/recovery.md)
 
