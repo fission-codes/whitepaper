@@ -1,5 +1,5 @@
 ---
-description: Authentication With Authorized Key Exchange
+description: Authorization With Authenticated Key Exchange
 ---
 
 # AWAKE
@@ -12,12 +12,13 @@ It should be noted that the bootstrap process here may also be used to set up se
 
 ### Summary
 
-1. Everyone subscribes to channel
-2. Requestor broadcasts public key
-3. Open a secure channel
-4. Provider authentication over UCAN
-5. Confirm requestor PIN
-6. Credential delegation
+* Both parties subscribe to a well-known channel
+* Consumer broadcasts a temporary DID
+* Producer securely proves that they have sufficient rights
+* Securely agree on a symmetric key
+* Consumer sends actual DID, along with a PIN
+* Producer validates PIN out of band
+* Producer creates and sends relevant UCAN and keys
 
 ### Dramatis Personae
 
@@ -57,8 +58,7 @@ It should be noted that the bootstrap process here may also be used to set up se
       <td style="text-align:left">
         <p></p>
         <ul>
-          <li>Alice&#x2019;s second device &#x2014;&#xA0;the &quot;provider&quot; in
-            this scenario</li>
+          <li>Alice&#x2019;s second device &#x2014;&#xA0;the &quot;producer&quot;</li>
           <li>Has a PK corresponding to <code>did:key:zLAPTOP</code>
           </li>
           <li>Has an existing UCAN for Alice&apos;s account</li>
@@ -71,7 +71,7 @@ It should be noted that the bootstrap process here may also be used to set up se
       <td style="text-align:left">
         <p></p>
         <ul>
-          <li>Alice&apos;s iPhone</li>
+          <li>Alice&apos;s iPhone &#x2014;&#xA0;the &quot;consumer&quot;</li>
           <li>The device requesting linking for Alice&apos;s account</li>
           <li>Has a PK corresponding to <code>did:key:zPHONE</code>
           </li>
@@ -84,7 +84,7 @@ It should be noted that the bootstrap process here may also be used to set up se
       <td style="text-align:left">
         <p></p>
         <ul>
-          <li>Eve&apos;s server that watches all traffic on pubsub</li>
+          <li>Eve&apos;s server that observes all pubsub traffic</li>
         </ul>
       </td>
     </tr>
@@ -93,39 +93,65 @@ It should be noted that the bootstrap process here may also be used to set up se
 
 ### **Step 1: Everyone Subscribes to Channel**
 
-All parties listen for messages on a channel named for the root DID. A peer that can issue UCANs must be online and listening on the correct channel. For simplicity and future compatibility, it's the root DID in the UCAN chain being requested.
+All parties listen for messages on a channel named for the root DID. A peer that can issue UCANs must be online and listening on this channel
 
 #### Example
 
+An example pubsub topic may look like:
+
+```text
+deviceLink#did:key:z6MkgYGF3thn8k1Fv4p4dWXKtsXCnLH7q9yw4QgNPULDmDKB
+```
+
 💻 \(who has a UCAN already\) and 📱 \(requestor\) listen for incoming messages on channel `did:key:zALICE`
 
-### **Step 2: Requestor Broadcasts an Exchange Public Key**
+![](../../.gitbook/assets/screen-shot-2021-05-01-at-6.26.40-pm.png)
 
-This gives everyone on the channel a 2048-bit RSA public key to send private data to.
+### **Step 2: Consumer Broadcasts an Temporary Public Key**
 
-Note that this MAY be a throwaway public key as we \(and the WebCrypto API\) keep encryption keys separate from signing keys. It will be used to bootstrap up a channel but does not need to live beyond that \(though it can\). The ONLY requirement is that the public key be unique to this machine. \(The secret key MUST never be shared, and it is ideally non-exportable.\)
+This gives everyone on the channel a 2048-bit RSA public key to send secret data to. Here we call the associated DID `did:key:zTHROWAWAY`.
+
+This key MUST be _temporary_, as public key as encryption and signing keys MUST be different. This temporary key is ONLY used to bootstrap a channel, and MUST NOT live beyond that time. It is ideally non-exportable, especially in the browser via the [WebCrypto API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API).
+
+RSA is used because it is available with a nonexportable key in browsers, is ubiquitous on all other systems, and is not considered likely backdoored \(the NIST ECCs are [considered highly suspect](http://safecurves.cr.yp.to/)\).
 
 #### Example
 
 📱 broadcasts the cleartext message `did:key:zTHROWAWAY` on the channel `did:key:zALICE`
 
-### **3. Provider Opens Channel**
+![](../../.gitbook/assets/screen-shot-2021-05-01-at-6.24.33-pm.png)
 
-Since RSA-OAEP can only hold a small amount of data, we use it to open a secured channel.
+### **3. Provider Opens a Secure Channel**
+
+Since RSA-OAEP is slow and can only hold a small amount of data, we use it to open a secured channel over AES256-GCM.
 
 {% hint style="danger" %}
-At this step, we **do not** know that the provider is actually our other machine, and not a person-in-the-middle 🦹‍♀️😈 We will authenticate them in the next step.
+At this step, you **DO NOT KNOW** that the provider is actually our other machine, and not a person-in-the-middle 🦹‍♀️😈 You will _authenticate_ them via a capability check in the next step.
 {% endhint %}
 
-The provider 💻 sends an asymmetrically encrypted AES256 session key to the public key broadcast in step 2. The provider must ensure that they ONLY use this key for this one channel, aimed at the specific RSA public key received in step 2. New connections MUST use new randomly generated keys.
+{% hint style="info" %}
+Note that there is nothing special about AES256-GCM. This key is symmetric and will be available in memory. As such, this protocol gains little from the WebCrypto API aside from potential hardware acceleration \(which can be helpful against certain timings attacks\).
 
-We will use this session key for the remainder of the steps.
+In a future version, AES-GCM may be replaced with AES-SIV-GCM or XChaCha20-Poly1305.
+{% endhint %}
+
+The producer 💻 sends an asymmetrically encrypted AES256-GCM session key to the temporary public key that was broadcast by the consumer. The producer will ONLY respond to ONE request over this channel at a time. It is locked to the one temporary DID until the AWAKE completes successfully, is rejected, or times out. New connections MUST use new randomly generated keys temporary DIDs and AES-GCM session keys. The producer SHOULD track keys that they have already seen, and reject new requests involving them.
 
 ### **4. Session Key Negotiation over UCAN**
 
-This step is both a "preflight" and session key authentication. It delegates no rights \(`att = []`\) but includes the entire proof chain that will be used in the actual credential delegation \(step 4\). This proves _a priori_ that you are communicating _directly_ with an authorized machine. \(it can prove that it has access to the credentials you want to delegate\).
+This step is both a "preflight" and provider authentication via UCAN.
 
-We then use this to embed the AES256 session key in the "facts" field. Since UCANs are signed, we can prove that this came from the authorized user. Because the entire payload is asymmetrically encrypted against the public key in the audience field, we know that no one else has been able to decrypt this message.
+{% hint style="info" %}
+Up to this point, Eve 🦹‍♀️ may be impersonating Alice 👩‍💻. This step proves a priori that the provider that sent the session key actually does hold the capabilities that are being requested.
+
+Eve 🦹‍♀️ has no incentive to delegate rights other than to hide from detection. However, in this scenario where she somehow already has a valid UCAN, the game was already over. There are remedies available \(revocation & rotation\) were that to happen. AWAKE aims to minimize this possibility from the outset \(Alice 👩‍💻 would have to agree to granting Eve 🦹‍♀️ these rights due to human error\).
+{% endhint %}
+
+This step MUST NOT delegate any rights \(`att = []`\), but MUST include the entire proof chain that will be used in the actual credential delegation later. For the consumer, this is an _a priori_ proof that you are communicating _directly_ with an authorized machine, that has access to at least the capabilities that you are interested in.
+
+The AES256-GCM session key MUST be included in the "facts" \(`fct`\) field. Since UCANs are signed, this is used to assert that the session key came directly from the authorized user.
+
+These steps taken together authenticate the session key, and if performed correctly, validate that a person-in-the-middle attack has not occured.
 
 {% hint style="warning" %}
 This will tell us that the sender intended that key for us, and no others. It is predicated on the assumption that the **provider never reuses that key** in any other channel.
