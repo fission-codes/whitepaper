@@ -151,8 +151,6 @@ This step MUST NOT delegate any rights \(`att = []`\), but MUST include the enti
 
 The AES256-GCM session key MUST be included in the "facts" \(`fct`\) field. Since UCANs are signed, this is used to assert that the session key came directly from the authorized user.
 
-These steps taken together authenticate the session key, and if performed correctly, validate that a person-in-the-middle attack has not occured.
-
 {% hint style="warning" %}
 This will tell us that the sender intended that key for us, and no others. It is predicated on the assumption that the **provider never reuses that key** in any other channel.
 {% endhint %}
@@ -161,6 +159,8 @@ In short, this step proves provides two things:
 
 1. Proves that you are talking to a machine that does, in fact, have the correct rights that you're looking to have delegated
 2. Authenticates the 256-bit AES key to make sure that the session key hasn't been tampered with
+
+#### Example
 
 💻 responds by broadcasting a "closed" UCAN on channel `did:key:zALICE`, encrypted with the session key. The embedded UCAN is proof that the sender does, in fact, have permissions for the account, but it does not delegate anything yet. The facts section \(`fct`\) includes the same session key that is used to encrypt the data on this channel.
 
@@ -198,7 +198,7 @@ The recipient MUST validate the following:
 If any of the above does not match, you MUST ignore that message and start again. It's Eve's machine trying to establish a person-in-the-middle attack \(PITM\) 😈
 {% endhint %}
 
-### **5. Confirm Requestor PIN**
+### **5. PIN Validation**
 
 Steps 1-3 establish a connection with _a requesting machine_, but not necessarily _the user's machine_. To validate that this is the correct user, we go out of band and have the human verify a code.
 
