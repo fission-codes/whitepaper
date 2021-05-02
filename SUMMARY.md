@@ -43,10 +43,11 @@
 ## Accounts
 
 * [Registration](accounts/verifiable-claims.md)
-* [Login](accounts/login.md)
-* [Delegation](accounts/device-linking/README.md)
-  * [AWAKE](accounts/device-linking/quake.md)
+* [Login](accounts/login/README.md)
+  * [Delegation](accounts/login/device-linking.md)
+  * [AWAKE](accounts/login/quake.md)
 * [Recovery](accounts/recovery.md)
+* [MFA](accounts/mfa.md)
 
 ## File System
 
