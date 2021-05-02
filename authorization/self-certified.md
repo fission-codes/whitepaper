@@ -1,6 +1,6 @@
 # Self-Certified
 
-At time of writing, only certain keys are permitted: 2048-bit RSA keys and Ed25519.
+At time of writing, only certain key types are permitted: 2048-bit RSA keys and Ed25519. The protocol is expensible to any other public key algorithm.
 
 ## 2048-bit RSA
 
