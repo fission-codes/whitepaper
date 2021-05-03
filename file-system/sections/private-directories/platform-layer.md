@@ -4,9 +4,9 @@ The platform layer has decypted \(or ”unlocked”\) access to private vnodes.
 
 ### Unlocking
 
- To read a node, the user needs to have the key either available from another noe which they have access to, in the `shared_with_me` or `shared_by_me` sections, or stored on their system directly.
+To read a node, the user needs to have the key either available from another node which they have access to, in the `shared_with_me` or `shared_by_me` sections, or stored on their system directly.
 
-To read or ”unlock“ private node, you need the node and its key:
+To read or ”unlock“ a private node, you need the node and its key:
 
 ```haskell
 read :: AES256 -> EncryptedNode -> DecryptedNode
@@ -39,8 +39,8 @@ data PrivateDirectory = PrivateDirectory
 type Skeleton = Map TextPath SkeletonInfo
 
 data SkeletonInfo = SkeletonInfo 
-  { cid: CID
-  , key: AES256
+  { cid         :: CID
+  , key         :: AES256
   , subSkeleton :: SkeletonInfo
   }
   
@@ -60,7 +60,7 @@ The private section is recursively protected with AES-256 encryption. This is to
 
 ### Revocation
 
-Read access revocation is achieved by changing the AES key and linking to a higher node. As such, it is not recommended for a user with write permissions to rotate the key of the root of ther subgraph, unless they’re able to redistribute that key somehow. For example, the root user is able to update the key for the root of the graph, and distributet that key to their other user instances by the `shared_by_me`mechanism.
+Read access revocation is achieved by changing the AES key and linking to a higher node. As such, it is not recommended for a user with write permissions to rotate the key of the root of their subgraph, unless they’re able to redistribute that key somehow. For example, the root user is able to update the key for the root of the graph, and distribute that key to their other user instances by the `shared_by_me` mechanism.
 
 {% hint style="danger" %}
 A node with no valid key pointing at it is said to be orphaned, since it has no parents that are capable of acessing the data locked in the node. It may be marked for garbase collection by the root user.
@@ -78,5 +78,5 @@ Encrypted virtual nodes are kept in a Merkle Patricia tree \(MPT\), organized by
 
 The probabilistic nature of XOR filter filenames does mean that related files are more likely to be placed near each other in the MPT, while not giving away why they are placed in that part of the tree. Some direct descendants or siblings will be in far other parts of the tree, depending on the position of the first different bit. The filter is fixed-size, which further simplifies this layout.
 
-This layout greatly improves write access verification time, while eliminating the plaintext tree structure. An authorized user reconstructs the human-readable DAG at runtime by following links in decrypted nodes. Their links point to files in the MPT \(or faster via the cache
+This layout greatly improves write access verification time, while eliminating the plaintext tree structure. An authorized user reconstructs the human-readable DAG at runtime by following links in decrypted nodes. Their links point to files in the MPT \(or faster via the cache\).
 
