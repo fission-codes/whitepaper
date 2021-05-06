@@ -6,9 +6,13 @@ The resource type is `"account"`. This is a generic account resource type that c
 
 ## Service ID
 
-The service parameter \(`"id"`\) uniquely identifies the service in question. It may be a domain name, URI, DID, blockchain address, or other identity, depending on the service.
+The service parameter \(`"at"`\) uniquely identifies the service in question. It may be a domain name, URI, DID, blockchain address, or other identity, depending on the service.
 
 Fission uses the domain name as identifier.
+
+## Account ID
+
+The acocunt ID \(`id`\) represents the user's acocunt on the service. This is often a username.
 
 ## Capabilities
 
@@ -23,7 +27,8 @@ The ability to administer the account itself: resend authentication email, close
 ```javascript
 "account": {
   "cap": "SUPER_USER",
-  "id": "runfission.com"
+  "at": "runfission.com"
+  "id": "boris"
 }
 ```
 
