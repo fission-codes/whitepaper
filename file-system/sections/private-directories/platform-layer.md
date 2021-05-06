@@ -43,7 +43,7 @@ data SkeletonInfo = SkeletonInfo
   , key         :: AES256
   , subSkeleton :: SkeletonInfo
   }
-  
+
 data PrivateLink = PrivateLink
   { name    :: Text -- Just the last segment in the path
   , key     :: AES256
