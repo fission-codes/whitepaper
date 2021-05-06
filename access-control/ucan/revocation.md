@@ -8,7 +8,7 @@ Decentralized authorization token blocklist /
 
 ### Background
 
-* Public key infrastructure without a blockchain
+* Public key infrastructure, without a blockchain or CA
 * Self-sovereign identity, where users can create keys as needed
 * Sybil resistance is _not_ a design goal \(in fact, likely an anti-goal\)
 * We keep the user's "root" PK in a DNS `TXT` record

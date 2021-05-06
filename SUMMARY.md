@@ -29,6 +29,7 @@
   * [Concepts](access-control/ucan/concepts.md)
   * [JWT Structure](access-control/ucan/jwt-authentication.md)
   * [Attenuation](access-control/ucan/webnative-attenuation/README.md)
+    * [Account](access-control/ucan/webnative-attenuation/account.md)
     * [Domain Name](access-control/ucan/webnative-attenuation/domain-name.md)
     * [File System](access-control/ucan/webnative-attenuation/file-system.md)
     * [Web Application](access-control/ucan/webnative-attenuation/app.md)
