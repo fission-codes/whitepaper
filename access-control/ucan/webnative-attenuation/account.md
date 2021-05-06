@@ -12,7 +12,7 @@ Fission uses the domain name as identifier.
 
 ## Account ID
 
-The acocunt ID \(`id`\) represents the user's acocunt on the service. This is often a username.
+The account ID \(`id`\) represents the user's account on the service. This is often a username.
 
 ## Capabilities
 
