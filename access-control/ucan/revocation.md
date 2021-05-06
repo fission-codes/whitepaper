@@ -25,7 +25,32 @@ Revocation is done by placing the offending token in a modified Merkle Patricia 
 
 ### Revoker Authentication
 
-Revocation is an implicit right to any DID used in the proof section of a UCAN. Essentially if you delegated, you can revoke that delegation, even if it was further subdelegated.
+Revocation is an implicit right to any DID used in the proof section of a UCAN. Essentially if you delegated, you can revoke anything below in the delegation chain. This applies to any depth, from the direct delegation to the a deeply nested one.
+
+Authorization needs to be passed along with the invalidated UCAN. This is done by wrapping the UCAN in question with the a signature, the DID in the chain used to sign, and the CID of the UCAN in question. The signature is formatted in base64. The key `revoke` is taken as a check that the intention was to revoke rather than simply sign.
+
+```javascript
+{
+  "revoke": {
+    "iss": "did:key:zStEksDrxkwYmpzqBdAQjjx1PRbHG3fq4ChGeJcYUYU44a4CBUExTTjeCbop6Uur",
+    "cid": "QmT78zSuBmuS4z925WZfrqQ1qHaJ56DQaTfyMUF7F8ff5o"
+  },
+  "sig": "0zcEmIwarhV11B9sDDsSJ1qJQqLDsjzPVrfXGSjsuT0="
+}
+```
+
+It is indexed by the CID, and then broken out into DIDs. We can always reconstruct the above format to check the signature, so we only need to store the signature at the leaf
+
+```javascript
+// {CID => DID => signature}
+
+{
+  "QmT78zSuBmuS4z925WZfrqQ1qHaJ56DQaTfyMUF7F8ff5o": {
+    "did:key:zStEksDrxkwYmpzqBdAQjjx1PRbHG3fq4ChGeJcYUYU44a4CBUExTTjeCbop6Uur": 
+      "0zcEmIwarhV11B9sDDsSJ1qJQqLDsjzPVrfXGSjsuT0="
+  }
+}
+```
 
 ### Performance
 
@@ -43,11 +68,7 @@ Partitioned nodes may make changes with outdated certificates prior to rejoining
 
 #### Space
 
+All parties are encouraged to aggressively replicate revoked CIDs.
+
 These revocation trees grow with the number of entries. UCANs are always time bound, and can be evicted or moved to slower storage as the UCAN becomes expired, since they can self-invalidating at that point.
-
-The agent perfor
-
-Interested parties are encouraged to aggressively replicate revoked CIDs, signed by the revoker.
-
-This approach is fully decentralized, self-sovereign, and \_\_\_
 
