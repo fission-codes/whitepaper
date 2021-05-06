@@ -1,6 +1,6 @@
 # Command & Mutation
 
-Commands and mutations and relegated via capability endowment from the account that initially created the resource \(the ”root owner”\). This is a form of delegated acess, where an agent \(indexed by DID\) that has been granted certain capabilities may redelegate a subset to another agent. One of the most common tasks for apps is authorizing users to perform some action, like storing new data to storage, updating records, or fetching a file. 
+Commands and mutations and relegated via capability endowment from the account that initially created the resource \(the ”root owner”\). This is a form of delegated access, where an agent \(identified by DID\) that has been granted certain capabilities may redelegate a subset to another agent. One of the most common tasks for apps is authorizing users to perform some action, like storing new data to storage, updating records, or fetching a file. 
 
 Traditional app architecture has many users share one database \("multi-tenant"\), with all user data fully interleaved with each other. Authorization here is primarily focused on keeping users from editing each other's records on this shared infrastructure. The server's rules give fairly coarse-grained control. Due to the inevitable exceptions to these rules, the logic becomes increasingly complex over time.
 
