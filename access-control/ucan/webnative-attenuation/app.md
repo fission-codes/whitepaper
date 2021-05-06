@@ -10,9 +10,13 @@ Web app capabilities are monotone, where each level “contains” the capabilit
 
 ### 1. REVISE
 
-Publish an updated version of the web app.
+Publish an updated version of an existing web app.
 
-### 2. SUPER\_USER
+## 2. CREATE
+
+The ability to associate new subdomains with CIDs.
+
+### 3. SUPER\_USER
 
 > Property rights are theoretical socially-enforced constructs in economics for determining how a resource or economic good is used and owned. \[...\] the right to transfer the good to others, alter it, abandon it, or destroy it \(the right to ownership cessation\)  
 >   
@@ -20,7 +24,7 @@ Publish an updated version of the web app.
 
 The ability to destroy the app, or transfer it to another owner. “Transfer" here is the transfer of ownership over the actual head pointer, as all other data can be copied with sufficient read permissions.
 
-Includes Capability 1.
+Includes Capabilities 1 & 2.
 
 ## FAQ
 
