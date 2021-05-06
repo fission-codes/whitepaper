@@ -1,7 +1,7 @@
 # JWT Structure
 
 {% hint style="warning" %}
-What follows is the UCAN 0.5.x technical specification. This currently gets updated every few weeks, but we try to keep the API as backwards-compatible as possible.
+What follows is the UCAN 0.7 technical specification. This currently gets updated every few weeks, but we try to keep the API as backwards-compatible as possible.
 {% endhint %}
 
 {% hint style="info" %}
@@ -50,7 +50,7 @@ EdDSA applied to JOSE \(including JWT\) exists as its own spec: [RFC 8037](https
 {
   "alg": "EdDSA",
   "typ": "JWT"
-  "ucv": "0.5.0"
+  "ucv": "0.7.0"
 }
 ```
 
@@ -65,6 +65,8 @@ This section describes the authorization claims being made, who is involved, and
 
   "exp": UTCTime,
   "nbf": UTCTime,
+
+  "nnc": Nonce
   
   "prf": [Proof],
   "att": [Attenuation],
@@ -116,9 +118,23 @@ Due to clock drift, do not expect the time bounds to be exact. At minimum assume
 "exp": 1575606941,
 ```
 
+### Nonce
+
+The nonce parameter `nnc` is a randomly generated string, used to ensure the uniqueness of the UCAN. This helps prevent replay attacks, and ensures a unique CID per creation. Typically the expiry time will ensure that UCANs are unique, but adding the nonce _ensures_ uniqueness.
+
+| Field | Long Name | Required |
+| :--- | :--- | :--- |
+| `nnc` | Nonce | ❌ |
+
+#### Example
+
+```javascript
+"nnc": "2N-po7"
+```
+
 ## Facts
 
-`“fct”` is a UCAN field for arbitrary facts and proofs of knowledge. These can be things like providing a raw valuet that is hased elsewhere in the UCAN, signing a challenge string with the private key associated with the `“iss”`, a Merkle proof, and so on.
+`“fct”` is a field for arbitrary facts and proofs of knowledge. These can be things like providing hash preimages, signing a challenge string with the private key associated with the `“iss”`, a Merkle proof, and so on.
 
 To qualify as valid “facts”, they MUST be self evident & externally verifiable.
 
@@ -126,7 +142,7 @@ The values in this field MUST be the value directly, or individual CIDs of the f
 
 | Field | Long Name | Required |
 | :---: | :---: | :---: |
-| `“fct”` | Facts | ✔️ |
+| `“fct”` | Facts | ❌ |
 
 An empty facts field may be represented as the absence of the field or an empty array.
 
@@ -143,7 +159,9 @@ An empty facts field may be represented as the absence of the field or an empty 
 
 ## Proofs
 
-The `“prf”` section is reserved for UCAN proofs — the ”inputs” of the UCAN. Each proof MUST form a chain all the way back to the resource originator / owner. If a UCAN's proof list is empty, it is read as being the initial/"root" UCAN. In this case, the `”iss”` is the resource originator / owner for everything in the `“cap”` section.
+The `“prf”` section is reserved for UCAN proofs; the ”inputs” of the UCAN.
+
+Each proof MUST form a chain all the way back to the resource originator / owner. If a UCAN's proof list is empty, it is read as being the initial/"root" UCAN. In this case, the `”iss”` is the resource originator / owner for everything in the `“cap”` section.
 
 In the case of multiple proofs, any capabilities not covered by a proof are considered to be claimed by the issuer DID.
 
@@ -173,7 +191,7 @@ The attenuated resources \(i.e. output\) of a UCAN is an array of heterogeneous 
 
 The union of this array must be a strict subset \(attenuation\) of the proofs plus resources created/owned/originated by the `”iss”` DID. This scoping also includes time ranges, making the proof that starts latest and proof the end soonest the lower and upper time bounds.
 
-Each capability has its own semantics. They consist of at least a resource and a capability, generally adhering to the form:
+Each capability has its own semantics, which need to be interpratable by the target resource handler. They consist of at least a resource and a capability, generally adhering to the form:
 
 ```javascript
 {
@@ -210,6 +228,10 @@ Each capability has its own semantics. They consist of at least a resource and a
 #### Resource Type
 
 This merely a unique identifier to indicate the type of thing being being described. For example, `“wnfs“` for the WebNative File System, `“email”` for email, and `“domain“` for domain names.
+
+{% hint style="warning" %}
+NOT every handler must understand every possible resource. If you receive a UCAN that has such a capability, simply ignore it. It may need to be passed through to anothre provider.
+{% endhint %}
 
 #### Resource Identifier
 
