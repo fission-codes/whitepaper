@@ -1,41 +1,53 @@
 # Revocation
 
-## Efficient Distributed Key Revocation
+## Background
 
-### One-Liner
+UCAN relies on a form of [PKI](https://en.wikipedia.org/wiki/Public_key_infrastructure). This is not a new idea, and has a long history with many attempts. This is a form of proactive authorization for mutations \(OCAP\). This works very well offline and fully P2P, takes our servers out of the equation completely, and puts all the power in the user's hands. Today these authorization tokens are fully self-contained. However, the downside is what to do when you've found misuse of these tokens, it would be good to be able to revoke them.
 
-Decentralized authorization token blocklist / 
+Our design constraints include maximizing user-controlled \(self-sovereign\) identity, in a vanilla browser, in the presence of network partitions. This requires the ability to communicate state, and to roll back incorrect changes in an eventually consistent way. These constraints also prohibits relying on a central authority such as a CA or blockchain, since these sources fail when not reachable.
 
-### Background
+Sibyl resistance is NOT a design goal. In fact, this is an anti-goal. A user should be able to create and destroy DIDs at will, and endow them with granular capabilities on a temporary or ongoing basis. Root user DIDs distribution is channel agnostic. As a first step, Fission has started with DNS `TXT` records to associate a human-readable name with a DID. This helps find an acceptable balance for [Zooko's Triangle](https://en.wikipedia.org/wiki/Zooko%27s_triangle).
 
-* Public key infrastructure, without a blockchain or CA
-* Self-sovereign identity, where users can create keys as needed
-* Sybil resistance is _not_ a design goal \(in fact, likely an anti-goal\)
-* We keep the user's "root" PK in a DNS `TXT` record
-  * But really pick your favourite distribution method
-* They then create & sign tokens delegating a subset of their rights
-  * Other machines, apps, or other users
-  * Here's a [\(very\) high level overview](https://blog.fission.codes/auth-without-backend/)
-* This delegation is signed — in layers — by the chain going back to the root user
-  * A mix of macaroons and SPKI/SDSI auth
-  * This doubles as authentication for these authorization tokens
-* These delegations are typically time limited \(unless you're linking machines as "root"\)
-  * But this time can be arbitrarily in the future
+![Fission&apos;s trilemma tradeoffs](../../.gitbook/assets/screen-shot-2021-05-05-at-10.41.27-pm.png)
 
-### Scenario
+This scheme is heavily centered on authorization over authentication. Creating tokens, and linking them together with signature chains endows a particular agent's DID with rights. These may be other users, machines, apps, processes, and so on. This delegation of rights is always attenuated: moving from high authority at the root/owner, to low authority at the delegate. This is not unlike [X.509](https://en.wikipedia.org/wiki/X.509), [SDSI/SPKI](https://en.wikipedia.org/wiki/Simple_public-key_infrastructure) or [Macaroons](https://storage.googleapis.com/pub-tools-public-publication-data/pdf/41892.pdf). These delegations are typically time limited.
+
+## Scenario
 
 * The user discovers abuse of a delegation \(e.g. stolen laptop, memory hack, etc\)
-* They want to revoke that key, and thus also any sub-delegations
-* The sub-delegations may be used anywhere
-* The signatures are still valid, but the token should not be
+* They want to revoke that key, and thus also any subdelegations
+* The subdelegations may have been used anywhere
+* While the signatures are still valid, but the token should not be
 
-### Discussion / Sketch
+## Solution
 
-We're using a proactive authorization model for mutations \(OCAP\). This works very well offline and fully P2P, takes our servers out of the equation completely, and puts all the power in the user's hands. Today these authorization tokens are fully self-contained. However, the downside is what to do when you've found misuse of these tokens, it would be good to be able to revoke them.
+Revocation is done by placing the offending token in a modified Merkle Patricia tree \("MMPT"\) as close to the resource as possible. In the case of Fission, this generally means in a well known, immutable location on WNFS. These can be copied and merged widely, since each token is unique and there is little overhead to maintaining large lists.
 
-A naive approach is token "generations" — essentially version the tokens and publish the latest generation somewhere. Everyone should disallow anything below the current generation. We don't want to rotate _all_ of these tokens if _one_ is bad. In fact, it may not even be possible \(or at least very messy\) if you no longer have access to the original root key, only keys with full delegated access.
+### Revoker Authentication
 
-The good news is that we only need to worry about potentially revoking tokens haven't expired. Proactive auth means that these tokens _should_ be short lived, but that's not enforceable.
+Revocation is an implicit right to any DID used in the proof section of a UCAN. Essentially if you delegated, you can revoke that delegation, even if it was further subdelegated.
 
-The solution should be fully decentralized, not depend on our servers, be quick to look up, and not require downloading oodles of data.
+### Performance
+
+#### Lookup
+
+Proofs of non-inclusion in an MMPT are very efficient, and you are not required to actually keep the revoked UCAN itself, just the CID. Lookup performance can be further improved with a Bloom filter acting as a lookup cache.
+
+#### Distribution
+
+Aggressively replicating from peers is known as a gossip network. In an idealized case, it takes `log n` time to concurrently address everyone in a network. This ideal case is not generally what you see in practice, since some peers may be partitioned from the rest of the network. Further, the topology of our network is uneven, with large hubs including the Fission server. 
+
+Fission itself being a large, well known hub that participants generally interact with is an advantage: it's an easy place to get a performant update on revocation without depending on strict centralization.
+
+Partitioned nodes may make changes with outdated certificates prior to rejoining the main network. This is fine, as any updates with invalid credentials will be rejected by the broader network. Being immutable and versioned means that this is entirely solvable in an eventually consistent manner.
+
+#### Space
+
+These revocation trees grow with the number of entries. UCANs are always time bound, and can be evicted or moved to slower storage as the UCAN becomes expired, since they can self-invalidating at that point.
+
+The agent perfor
+
+Interested parties are encouraged to aggressively replicate revoked CIDs, signed by the revoker.
+
+This approach is fully decentralized, self-sovereign, and \_\_\_
 

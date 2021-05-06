@@ -1,6 +1,6 @@
 # Differences from OAuth
 
-Token authorization on the web is generally associated with OAuth. A typical OAuth flow today looks something like this:
+Token authorization on the web is generally associated with OAuth. A typical OAuth 2 flow looks something like this:
 
 ![](../../.gitbook/assets/oauth-vs-macaroons-2x-3.png)
 
@@ -21,7 +21,7 @@ Token authorization on the web is generally associated with OAuth. A typical OAu
 
 ### UCAN
 
-In a self-signed system such as a UCAN, this flow shortened as follows:
+In a self-signed system such as a UCAN. This closely related to a self-signed OAuth/OIDC token. Since the token is stateless, the flow is be shortened as follows:
 
 ![](../../.gitbook/assets/oauth-vs-macaroons-2x-2.png)
 
