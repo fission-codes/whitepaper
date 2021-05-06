@@ -26,7 +26,7 @@ Includes Capability 1.
 
 #### Why is there no CREATE capability?
 
-Apps can always be created; it is not possible to restict the ability to deploy an app, only updates to an existing app.
+Apps can always be created; it is not possible to restrict the ability to deploy an app, only updates to an existing app.
 
 #### How do I create an app alias? \(e.g. alias foo.fission.app at example.com\)
 
