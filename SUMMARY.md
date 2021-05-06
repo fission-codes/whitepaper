@@ -26,7 +26,6 @@
 * [Object Capability Model](access-control/cap-authz.md)
 * [Query Access](access-control/query-and-read.md)
 * [Command & Mutation](access-control/ucan/README.md)
-  * [UCAN Tokens](access-control/ucan/ucan-tokens.md)
   * [Concepts](access-control/ucan/concepts.md)
   * [JWT Structure](access-control/ucan/jwt-authentication.md)
   * [Attenuation](access-control/ucan/webnative-attenuation/README.md)
