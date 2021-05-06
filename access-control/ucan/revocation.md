@@ -27,27 +27,39 @@ Revocation is done by placing the offending token in a modified Merkle Patricia 
 
 Revocation is an implicit right to any DID used in the proof section of a UCAN. Essentially if you delegated, you can revoke anything below in the delegation chain. This applies to any depth, from the direct delegation to the a deeply nested one.
 
-Authorization needs to be passed along with the invalidated UCAN. This is done by wrapping the UCAN in question with the a signature, the DID in the chain used to sign, and the CID of the UCAN in question. The signature is formatted in base64. The key `revoke` is taken as a check that the intention was to revoke rather than simply sign.
+Authorization needs to be passed along with the invalidated UCAN. This is done by wrapping the UCAN in question with the a signature, the DID in the chain used to sign, and the CID of the UCAN in question. The values are formatted with [multiformats](https://multiformats.io/). Including the key `revoke` in the signature is taken as a check that the intention was to revoke rather than simply sign some arbitrary data.
 
 ```javascript
 {
   "revoke": {
-    "iss": "did:key:zStEksDrxkwYmpzqBdAQjjx1PRbHG3fq4ChGeJcYUYU44a4CBUExTTjeCbop6Uur",
+    "iss": "did:key:z6MzEksDrxkwYmpzqBdAQjjx1PRbHG3fq4ChGeJcYUYU44a4CBUExTTjeCbop6Uur",
     "cid": "QmT78zSuBmuS4z925WZfrqQ1qHaJ56DQaTfyMUF7F8ff5o"
   },
-  "sig": "0zcEmIwarhV11B9sDDsSJ1qJQqLDsjzPVrfXGSjsuT0="
+  "sig": "U0zcEmIwarhV11B9sDDsSJ1qJQqLDsjzPVrfXGSjsuT0="
 }
+
+// `sig` is calculated by (pseudocode)
+"U" + base64(0x13 + sign(secretKey, JSON.stringify(
+  {
+    "revoke": {
+      "iss": "did:key:zStEksDrxkwYmpzqBdAQjjx1PRbHG3fq4ChGeJcYUYU44a4CBUExTTjeCbop6Uur",
+      "cid": "QmT78zSuBmuS4z925WZfrqQ1qHaJ56DQaTfyMUF7F8ff5o"
+    }
+  }
+))
 ```
 
 It is indexed by the CID, and then broken out into DIDs. We can always reconstruct the above format to check the signature, so we only need to store the signature at the leaf
 
 ```javascript
-// {CID => DID => signature}
+// {CID => DID => {base64revocation}}
 
 {
   "QmT78zSuBmuS4z925WZfrqQ1qHaJ56DQaTfyMUF7F8ff5o": {
-    "did:key:zStEksDrxkwYmpzqBdAQjjx1PRbHG3fq4ChGeJcYUYU44a4CBUExTTjeCbop6Uur": 
-      "0zcEmIwarhV11B9sDDsSJ1qJQqLDsjzPVrfXGSjsuT0="
+    "did:key:zStEksDrxkwYmpzqBdAQjjx1PRbHG3fq4ChGeJcYUYU44a4CBUExTTjeCbop6Uur": {
+      "claim": "UeyJyZXZva2UiOnsiaXNzIjoiZGlkOmtleTp6U3RFa3NEcnhrd1ltcHpxQmRBUWpqeDFQUmJIRzNmcTRDaEdlSmNZVVlVNDRhNENCVUV4VFRqZUNib3A2VXVyIiwiY2lkIjoiUW1UNzh6U3VCbXVTNHo5MjVXWmZycVExcUhhSjU2RFFhVGZ5TVVGN0Y4ZmY1byJ9fQ",
+      "sig": "U0zcEmIwarhV11B9sDDsSJ1qJQqLDsjzPVrfXGSjsuT0="
+    }
   }
 }
 ```
