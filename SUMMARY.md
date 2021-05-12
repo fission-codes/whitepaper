@@ -34,7 +34,6 @@
     * [File System](access-control/ucan/webnative-attenuation/file-system.md)
     * [Web Application](access-control/ucan/webnative-attenuation/app.md)
   * [Revocation](access-control/ucan/revocation.md)
-  * [Legacy Interop](access-control/ucan/legacy-interop.md)
   * [Differences from OAuth](access-control/ucan/differences-from-oauth.md)
 
 ## Accounts
