@@ -4,7 +4,7 @@
 
 A user must be able to recover their account and file system in a privacy-preserving way that reveals no information to Fission.
 
-* **Read Access:** By decrypting a root AES key that reveals access to the `/private` branch of the filesystem 
+* **Read Access:** By decrypting a root AES key that reveals access to the `/private` branch of the filesystem
 * **Write Access:** By delegating full write access to a new DID through a UCAN
 
 ### Constraints
@@ -85,7 +85,7 @@ _Note: we separate the read & write flows here for clarity, but they will be don
   username: alice.fission.name,
   rootAesReadKey: R_root,
   recoveryPartnerBlsPublicKey: PK_f,
-  delegatedUcan: UCAN_recovery,
+  delegatedUcan: UCAN_recovery
 }
 ```
 
@@ -98,21 +98,21 @@ _Note: we separate the read & write flows here for clarity, but they will be don
 #### **Read Recovery**
 
 * Alice
-  * enters one of her recovery codes, `SK_a` 
-  * sends a request to the server including `SHA256(SK_a)` 
+  * Enters one of her recovery codes, `SK_a` 
+  * Sends a request to the server including `SHA256(SK_a)` 
 * The server 
-  * looks up the relevant key to `SK_a` in the database: `SK_f` 
+  * Looks up the relevant key to `SK_a` in the database: `SK_f` 
     * _Note: We can add a time delay on this part for added security. If a user reports their device missing or their security breached, this is also where we can halt an attacker._
-  * alerts Alice if the key does not exist
-  * otherwise, signs the original `challenge` with `SK_f` to obtain `sig_f`
-  * sends `sig_f` to Alice
-  * deletes the key pair from the DB
+  * Alerts Alice if the key does not exist
+    * Otherwise, signs the original `challenge` with `SK_f` to obtain `sig_f`
+  * Sends `sig_f` to Alice
+  * Deletes the key pair from the DB
 * Alice
-  * signs `challenge` with `SK_a` and combines the result with `sig_f` to obtain `sig_agg` 
-  * takes the SHA256 hash of `sig_agg` to obtain  AES256 key `R_recovery` 
-  * retrieves the encrypted `AccessFile` from `/recovery/{sha256(R_recovery)}` 
-  * decrypts `AccessFile` with `R_recovery` 
-  * uses `R_root` from the decrypted `AccessFile` to decrypt her `/private` filesystem
+  * Signs `challenge` with `SK_a` and combines the result with `sig_f` to obtain `sig_agg` 
+  * Takes the SHA256 hash of `sig_agg` to obtain  AES256 key `R_recovery` 
+  * Retrieves the encrypted `AccessFile` from `/recovery/{sha256(R_recovery)}` 
+  * Decrypts `AccessFile` with `R_recovery` 
+  * Uses `R_root` from the decrypted `AccessFile` to decrypt her `/private` filesystem
 
 ![](../.gitbook/assets/screenshot-from-2021-01-08-15-22-23.png)
 

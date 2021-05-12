@@ -18,5 +18,5 @@ This first image above shows a scenariothat you may be familiar with. The circle
 
 ![](../../.gitbook/assets/screen-shot-2021-04-30-at-6.05.28-pm.png)
 
-This image has only changed the labels. Here, Alice, Bob, and Carol have overlapping capabilities in the same relationship as seen earlier. Alice is able to do everything that Carol can, but not vice versa. From the pont of view of an application that Carol has access to, Alice is _functionally equivalent_ to Carol. On the other hand, Carol is unable to access all of Alice's resources. Bob has some shared resources with both Alice and Carol, but far more that are unshared.
+This image has only changed the labels. Here, Alice, Bob, and Carol have overlapping capabilities in the same relationship as seen earlier. Alice is able to do everything that Carol can, but not vice versa. From the point of view of an application that Carol has access to, Alice is _functionally equivalent_ to Carol. On the other hand, Carol is unable to access all of Alice's resources. Bob has some shared resources with both Alice and Carol, but far more that are unshared.
 
