@@ -16,7 +16,7 @@ The temporality of mutable pointers implies some unavoidable latency \(speed of 
 
 There are many approaches to this, including key networks and blockchains. The only of these methods that is universally supported today is the Domain Name System \(DNS\). DNS is a decentralized, global key/value store with support from every internet connected device.
 
-The mapping of names to DIDs is provided by [DID-in-DNS](https://datatracker.ietf.org/doc/draft-mayrhofer-did-dns/), with extensions for large self-describing keys.
+The mapping of names to DIDs is provided by [DID-in-DNS](https://datatracker.ietf.org/doc/draft-mayrhofer-did-dns/), with extensions for large self-describing keys \(e.g. 2048-bit RSA public keys\).
 
 The mapping of the data root \(CID\) of a Merkle tree is stored in a [DNSLink](https://dnslink.io/). At time of writing, Fission represents this at `_dnslink.${username}.files.fission.name`.
 
