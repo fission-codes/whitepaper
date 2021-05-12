@@ -2,11 +2,15 @@
 
 ## Background
 
-UCAN relies on a form of [PKI](https://en.wikipedia.org/wiki/Public_key_infrastructure). This is not a new idea, and has a long history with many attempts. This is a form of proactive authorization for mutations \(OCAP\). This works very well offline and fully P2P, takes our servers out of the equation completely, and puts all the power in the user's hands. Today these authorization tokens are fully self-contained. However, the downside is what to do when you've found misuse of these tokens, it would be good to be able to revoke them.
+UCAN relies on [public key infrastructure \(PKI\)](https://en.wikipedia.org/wiki/Public_key_infrastructure). This is not a new idea, and has a long history with many attempts, including [X.509](https://en.wikipedia.org/wiki/X.509), [SPKI/SDSI](https://en.wikipedia.org/wiki/Simple_public-key_infrastructure), and \(to some degree\) [OIDC SIOP](https://identity.foundation/did-siop/). This is a form of proactive authorization for mutations \([OCAP](https://en.wikipedia.org/wiki/Object-capability_model)\). This works very well offline and fully P2P, removes the reliance on a provider's servers, and puts all the power in the user's hands. Today these authorization tokens are fully self-contained. However, the downside is what to do when you've found misuse of these tokens, it is necessary to revoke them.
 
-Our design constraints include maximizing user-controlled \(self-sovereign\) identity, in a vanilla browser, in the presence of network partitions. This requires the ability to communicate state, and to roll back incorrect changes in an eventually consistent way. These constraints also prohibits relying on a central authority such as a CA or blockchain, since these sources fail when not reachable.
+### Goals
 
-Sibyl resistance is NOT a design goal. In fact, this is an anti-goal. A user should be able to create and destroy DIDs at will, and endow them with granular capabilities on a temporary or ongoing basis. Root user DIDs distribution is channel agnostic. As a first step, Fission has started with DNS `TXT` records to associate a human-readable name with a DID. This helps find an acceptable balance for [Zooko's Triangle](https://en.wikipedia.org/wiki/Zooko%27s_triangle).
+Our design constraints include maximizing user-controlled \(self-sovereign\) identity, in a vanilla browser, in the presence of network partitions. This requires the ability to communicate state, and to roll back incorrect changes in an eventually consistent way. These constraints also prohibit relying on a central authority such as a CA or blockchain, since these sources fail when not reachable.
+
+### Antigoals
+
+Pseudonymity is a goal, and thus Sibyl resistance is an anti goal. A user should be able to create and destroy DIDs at will, and endow them with granular capabilities on a temporary or ongoing basis. Root user DID distribution is channel agnostic. As a first step, Fission has started with DNS `TXT` records to associate a human-readable name with a DID. This helps find an acceptable balance for [Zooko's Triangle](https://en.wikipedia.org/wiki/Zooko%27s_triangle).
 
 ![Fission&apos;s trilemma tradeoffs](../../.gitbook/assets/screen-shot-2021-05-05-at-10.41.27-pm.png)
 
