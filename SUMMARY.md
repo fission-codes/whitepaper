@@ -43,7 +43,7 @@
 * [Login](accounts/login/README.md)
   * [AWAKE](accounts/login/quake.md)
 * [Recovery](accounts/recovery.md)
-* [MFA](accounts/mfa.md)
+* [Multifactor Authentication](accounts/mfa.md)
 
 ## File System
 
