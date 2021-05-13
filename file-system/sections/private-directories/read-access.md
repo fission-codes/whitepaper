@@ -75,7 +75,7 @@ Bare filters do not include the version number, or fill out the filter to a part
 
 ### Saturated Name Filters
 
-To futher obscure the information in a name filter, we want to deterinistically fill the space to a predetermined amount. This obscures the position of the node in the DAG. The bare filter \(above\) is of varying length, so we want to saturate it equally.
+To futher obscure the information in a name filter, we want to deterministically fill the space to a predetermined amount. This obscures the position of the node in the DAG. The bare filter \(above\) is of varying length, so we want to saturate it equally.
 
 All name filters must be unique \(since storage is append-only\). We gain uniqueness by including the revision number in XOR filter. However, we only want to reveal revision numbers to authorized users. We use the AES key itself as a cryptographic pepper, and append to the version, and add that hash to the XOR filter.
 
