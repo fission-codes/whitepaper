@@ -4,9 +4,9 @@ WNFS is a DAG where the terminal nodes are _either_ empty directories or files. 
 
 ## Layer
 
-The term "layer" refers exclusively to the stack of abstractions, with concrete or low-level constructs at the bottom, and progressivley more abstract and ”human” as we go up. 
+The term "layer" refers exclusively to the stack of abstractions, with concrete or low-level constructs at the bottom, and progressively more abstract and ”human” as we go up. 
 
-WNFS is built up from Merkle linked structures, and needs to operate at several layers within the stack. At time of writing, WNMFS runs on top of IPFS, but that may not always be the case. As such, we use slightly different abstractions from that project.
+WNFS is built up from Merkle-linked structures, and needs to operate at several layers within the stack. At time of writing, WNMFS runs on top of IPFS, but that may not always be the case. The core requirement is content addressing. As such, the abstractions are slightly different from the IPFS ecosystem.
 
 ### Protocol Layer
 
