@@ -1,16 +1,16 @@
 # Anatomy
 
-WNFS is a DAG where the terminal nodes are _either_ empty directories or files. It is also a Merkle DAG to aid in low level operations \(e.g. deduplication, sync\), and to increase the performance of write access control.
+WNFS is a Merkle DAG where the terminal nodes are _either_ empty directories or files. It is efficient in low-level operations \(e.g. deduplication, network sync\).
 
 ## Layer
 
 The term "layer" refers exclusively to the stack of abstractions, with concrete or low-level constructs at the bottom, and progressively more abstract and ”human” as we go up. 
 
-WNFS is built up from Merkle-linked structures, and needs to operate at several layers within the stack. At time of writing, WNMFS runs on top of IPFS, but that may not always be the case. The core requirement is content addressing. As such, the abstractions are slightly different from the IPFS ecosystem.
+WNFS is built up from Merkle-linked structures, and needs to operate at several layers within the stack. WNFS is built on top of IPFS, but that may not always be the case. The core requirement is [content addressing](https://en.wikipedia.org/wiki/Content-addressable_storage). As such, many of the abstractions are slightly different from the raw IPFS ecosystem.
 
 ### Protocol Layer
 
-This layer describes how we need to concretely represent our data to the network. This is a data layer to be consumed by whichever substrate WMFS is running on.
+This layer describes how we need to concretely represent our data to the network. This is a data layer to be consumed by whichever substrate WNFS is running on.
 
 ### Application Layer
 

@@ -64,6 +64,7 @@
   * [Unlisted](file-system/sections/unlisted-directories.md)
   * [Share](file-system/sections/shared.md)
 * [Consistency](file-system/consistency/README.md)
+  * [Events](file-system/consistency/events.md)
   * [Transactions](file-system/consistency/transactions-1.md)
   * [Event Sourcing](file-system/consistency/event-sourcing.md)
   * [Transactions](file-system/consistency/transactions.md)
