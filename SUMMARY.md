@@ -73,9 +73,13 @@
   * [App Hosting](file-system/distribution/app-hosting.md)
 * [Multiuser](file-system/multiuser.md)
 
+## Key-Value
+
+* [WNKV](key-value/untitled-1.md)
+
 ## Database
 
-* [Untitled](database/untitled.md)
+* [WNDB](database/wndb.md)
 
 ## Dynamic FaaS
 
