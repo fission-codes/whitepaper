@@ -8,21 +8,19 @@ The term "layer" refers exclusively to the stack of abstractions, with concrete 
 
 WNFS is built up from Merkle hash-linked structures, and needs to operate at several layers within the stack. WNFS is built on top of the [Interplanetary File System \(IPFS\)](https://ipfs.io/), but that may not always be the case. The core requirement is [content addressing](https://en.wikipedia.org/wiki/Content-addressable_storage). As such, many of the abstractions are slightly different from the raw IPFS ecosystem.
 
-### Block Layer
+### Block Layer 🧱
 
-This layer describes how we need to concretely represent our data in memory or to the network. This is roughly analogous to the disk representation in a typical local file system. The nouns of this layer are content addresses, merkle trees, raw bytes, and the like.
+This layer describes how we need to concretely represent our data in memory or to the network. This is roughly analogous to the disk representation in a typical local file system. The nouns of this layer are content addresses, Merkle structures, raw bytes, and the like.
 
-This layer is also responsible for the exact low-level storage layout of the file system tree, but has no knowledge about the kind of data contained in it. This is in effect raw block storage.
+### File Layer 📑
 
-### File Layer
+The file layer adds additional structure over the protocol layer, with richer semantics that describe standard low-level filesystem metaphors. This includes files, directories, headers, access control, and so on. This abstracts over various storage layouts and providers, from lazy-loaded in-memory structures and durable network storage.
 
-The file layer adds additional structure over the protocol layer, with richer semantics that describe standard low-level filesystem metaphors. This includes vnodes, public and private files, 
-
-### API Layer
+### API Layer 🗄
 
 The File System Layer is an abstraction  abstraction over the protocol
 
-### Application Layer
+### Application Layer 📊
 
 The application layer is fully in userland. This is where users or applications may rely on specific file types, and includes their business logic.
 
