@@ -8,13 +8,19 @@ The term "layer" refers exclusively to the stack of abstractions, with concrete 
 
 WNFS is built up from Merkle hash-linked structures, and needs to operate at several layers within the stack. WNFS is built on top of the [Interplanetary File System \(IPFS\)](https://ipfs.io/), but that may not always be the case. The core requirement is [content addressing](https://en.wikipedia.org/wiki/Content-addressable_storage). As such, many of the abstractions are slightly different from the raw IPFS ecosystem.
 
-### Protocol Layer
+### Block Layer
 
-This layer describes how we need to concretely represent our data to the network. This is a data layer to be consumed by whichever substrate WNFS is running on. For example, various IPLD structures, cryptographic primitives, and so on.
+This layer describes how we need to concretely represent our data in memory or to the network. This is roughly analogous to the disk representation in a typical local file system. The nouns of this layer are content addresses, merkle trees, raw bytes, and the like.
 
-### Platform Layer
+This layer is also responsible for the exact low-level storage layout of the file system tree, but has no knowledge about the kind of data contained in it. This is in effect raw block storage.
 
-The platform layer is an abstraction over the protocol layer, with richer semantics that describe standard filesystem metaphors. Having the full power of computation at runtime means that we can subordinate extraneous detail, and provide a familiar model and clean interface to end users.
+### File Layer
+
+The file layer adds additional structure over the protocol layer, with richer semantics that describe standard low-level filesystem metaphors. This includes vnodes, public and private files, 
+
+### API Layer
+
+The File System Layer is an abstraction  abstraction over the protocol
 
 ### Application Layer
 
