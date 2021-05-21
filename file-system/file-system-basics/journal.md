@@ -4,13 +4,13 @@ description: Journal / events / logs
 
 # Journal
 
-A variant on a typical filesystem journal, each vnode inludes a description of the state transition that got it into the current state from its previous version. Depending on your background, this can also be viewed as an event source or an audit log. Unlike most common file system journals, the entries are permanent, and form a linked list across vnodes.
+A variant on a typical filesystem journal, each vnode includes a description of the state transition that got it into the current state from its previous version. Depending on your background, this can also be viewed as an event source or an audit log. Unlike most common file system journals, the entries are permanent, and form a linked list across vnodes.
 
 While the file system itself only logs events about its own structure, the program that makes the request may additionally include information about what it did with richer semantics that ”file changed”.
 
-FLOOFS features delegated write access. The user instance that performed the update must include their instance DID, and a hard link to their UCAN.
+WNFS features delegated write access. The user instance that performed the update must include their instance DID, and a hard link to their UCAN.
 
-The exact format of the event isstill under deveopment, but will look something along these lines:
+The exact format of the event is still under development, but will look something along these lines:
 
 {% tabs %}
 {% tab title="Haskell" %}

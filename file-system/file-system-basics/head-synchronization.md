@@ -10,7 +10,7 @@ There is nothing special about the "broadcast" part of this setup. For all inten
 As such, we will name the current pair being compared as "local" and "remote".
 {% endhint %}
 
-In a fully mutable setting, this can become tricky since data is dropped — you diverge _immediately_.You can work around this by comparing a history log \(as we do for the private section\). Persistent Merkle data structures have several nice properties that make approaching the problem more tractable.
+In a fully mutable setting, this can become tricky since data is dropped — you diverge _immediately_. You can work around this by comparing a history log \(as we do for the private section\), but a record of force-push is included in the tree to record that this is a forced , lossy point of synchronization. Persistent Merkle data structures have several nice properties that make approaching the problem more tractable.
 
 ## Comparison Algorithm
 
@@ -20,7 +20,7 @@ In all cases, we can think of the history as a set of CIDs \(only how they're st
 
 1. In sync \(the heads are equal\)
 2. Ahead of remote \(remote's head CID is contained in local's history\)
-3. Behind remote \(local's head CID iscontained in remote's history\)
+3. Behind remote \(local's head CID is contained in remote's history\)
 4. Diverged with a shared history \(local and remote share a common ancestor\)
 
 Or, if you prefer:
@@ -62,7 +62,7 @@ compareHistories locals@(localHead : _) remotes@(remoteHead : _) =
 
 ## WNFS Root
 
-The root of the file system itself is designed to be very flexible, and support many different versioning metds below it, specifically:
+The root of the file system itself is designed to be very flexible, and support many different versioning methods below it, specifically:
 
 * Structural \(`public`\)
 * Log \(`private` for security\)
@@ -74,7 +74,7 @@ As such, you need to look at  the sections themselves to determine priority. If 
 
 ### Structural Versioning
 
-This is the most inutitive: walk the tree backwards along the `previous` links. This can be done lazily.
+This is the most intuitive: walk the tree backwards along the `previous` links. This can be done lazily.
 
 ### Version Log
 
