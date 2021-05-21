@@ -1,12 +1,12 @@
 # Versioning
 
-WNFS is a nondestructive, versioned file system. This is a lot like how git history works: files that are unchanged remain unchanged, but parents need to change to accomodate any altered children.
+WNFS is a nondestructive, versioned file system. This is similar to Git history: files that are unchanged \(shared bwteen versions\) remain unchanged, but parents include links to them, their previous version, and to new or altered altered children.
 
-We are using a temporal DAG with fuctional persistence. Unlike Git, it is curretly designed to be ”single writer” — new patches must be applied in order, and conflicts are not automatically resolvable. It’s like only having only one branch. That is on the roadmap, but there’s a lot of bootstrap in the meantime.
+WNFS uses a temporal graph with functional persistence. It is designed to be ”single writer” — new patches must be applied in order, and conflicts are automatically resolvable with a rebase / last-writer-wins \(LWW\) strategy, or with software transaction memory \(STM, see relevant section\).
 
-This is versioning at the file system level only. Subfile versioning can be implemented on top of WNFS, but does not come baked-in. This is already an improvement over what most uses expect, and each committed version of the file can be stepped through to retrieve old history \(e.g. what was the state 3 weeks ago?\).
+This is versioning at the file system level only. Subfile versioning can be implemented on top of WNFS with STM, or separately with techniques such as CRDTs \(coming baked in to the database layer\). This is an improvement over what most uses expect, and each committed version of the file can be stepped through to retrieve old history \(e.g. retrieve the state of a file from many weeks ago\).
 
-Versioning is quite simple at present: properties such as confluence are being left in favour of easy comprehension for less technical users. A single linear history is wel understood to most people. Advanced merging and split histories are possible down the road. Collaboration is also being pushed to another layer that looks more like system memory as opposed to the WNFS ”disk.”
+Temporality / versioning is intentionally quite straightforward. As such, properties such as confluence are being left in favour of easy comprehension and performance. A single linear history is well understood by most people. Advanced merging and split histories are possible, but there is no current plan to support them at the file system layer \(though it can be achieved with the Datalog-driven database\).
 
 ## Diffs, Revisions, and Generations
 
