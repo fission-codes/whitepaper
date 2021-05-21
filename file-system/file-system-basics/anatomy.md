@@ -12,9 +12,19 @@ WNFS is built up from Merkle hash-linked structures, and needs to operate at sev
 
 This layer describes how we need to concretely represent our data in memory or to the network. This is roughly analogous to the disk representation in a typical local file system. The nouns of this layer are content addresses, Merkle structures, raw bytes, and the like.
 
+Here is how storage looks to the block layer:
+
+![](../../.gitbook/assets/screen-shot-2021-05-21-at-8.20.07-am.png)
+
 ### File Layer 📑
 
 The file layer adds additional structure over the protocol layer, with richer semantics that describe standard low-level filesystem metaphors. This includes files, directories, headers, access control, and so on. This abstracts over various storage layouts and providers, from lazy-loaded in-memory structures and durable network storage.
+
+Rather than CIDs and Merkle structures, we speak of files, directory hierarchy, and versioning. It presents a much richer view of the same data:
+
+The example from the block layer would be interpreted as follows \(where `Photos@1` is the root node at the top of the block layer\)
+
+![](../../.gitbook/assets/screen-shot-2021-05-21-at-8.22.03-am.png)
 
 ### API Layer 🗄
 
@@ -22,7 +32,7 @@ The File System Layer is an abstraction  abstraction over the protocol
 
 ### Application Layer 📊
 
-The application layer is fully in userland. This is where users or applications may rely on specific file types, and includes their business logic.
+The application layer is fully in userland. This is where users or applications may rely on specific file formats, and includes their business logic.
 
 ## Section
 
