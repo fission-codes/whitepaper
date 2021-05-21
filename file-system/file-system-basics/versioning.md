@@ -69,7 +69,7 @@ B...\..........B   \
 At the protocol layer, this is viewed as an ever increasing, recursively nested set of DAGs with lots of shaerd structure. At the application layer, each generation is seen as a single ”slice”, and the use can pan backwards through time to previous slices — of the entire structure, some subgraph, or a single file.
 
 {% hint style="danger" %}
-This matter is somewhat complicated by the additional abstraction of an Encrypted Node, specifically the information hiding therein. Once in plaintext, it functions the same way, but there are some speical details.
+This matter is somewhat complicated by the additional abstraction of an Encrypted Node, specifically the information hiding therein. Once in plaintext, it functions the same way, but there are some special details.
 
 Please refer to the private section docs for more.
 {% endhint %}
