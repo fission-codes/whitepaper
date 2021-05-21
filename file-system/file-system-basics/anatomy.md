@@ -14,21 +14,21 @@ This layer describes how we need to concretely represent our data in memory or t
 
 Here is how storage looks to the block layer:
 
-![](../../.gitbook/assets/screen-shot-2021-05-21-at-8.20.07-am.png)
+![](../../.gitbook/assets/screen-shot-2021-05-21-at-8.27.14-am.png)
 
 ### File Layer 📑
 
 The file layer adds additional structure over the protocol layer, with richer semantics that describe standard low-level filesystem metaphors. This includes files, directories, headers, access control, and so on. This abstracts over various storage layouts and providers, from lazy-loaded in-memory structures and durable network storage.
 
-Rather than CIDs and Merkle structures, we speak of files, directory hierarchy, and versioning. It presents a much richer view of the same data:
+Rather than CIDs and Merkle structures, we speak of files, directory hierarchy, and versioning. This layer also handles automated conflict resolution.
 
-The example from the block layer would be interpreted as follows \(where `Photos@1` is the root node at the top of the block layer\)
+It presents a much richer view of the Block Layer data. The example given above would be interpreted as follows, where `Photos@1` is the root node \(at the top of the Block Layer diagram\).
 
-![](../../.gitbook/assets/screen-shot-2021-05-21-at-8.22.03-am.png)
+![](../../.gitbook/assets/screen-shot-2021-05-21-at-8.25.55-am.png)
 
 ### API Layer 🗄
 
-The File System Layer is an abstraction  abstraction over the protocol
+The File System Layer is an abstraction abstraction over the File Layer. This contains many analogies to the common Unix filesystem interfaces \(e.g. `ls`, `cat`, `mkdir`\), the transactional interface, and browser events.
 
 ### Application Layer 📊
 
