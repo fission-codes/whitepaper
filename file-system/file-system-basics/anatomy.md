@@ -10,11 +10,11 @@ WNFS is built up from Merkle hash-linked structures, and needs to operate at sev
 
 ### Protocol Layer
 
-This layer describes how we need to concretely represent our data to the network. This is a data layer to be consumed by whichever substrate WNFS is running on.
+This layer describes how we need to concretely represent our data to the network. This is a data layer to be consumed by whichever substrate WNFS is running on. For example, various IPLD structures, cryptographic primitives, and so on.
 
 ### Platform Layer
 
-The platform layer is an abstraction over . Having the full power of computation at runtime means that we can subordinate extraneous detail, and provide a familiar model and clean interface to end users.
+The platform layer is an abstraction over the protocol layer, with richer semantics that describe standard filesystem metaphors. Having the full power of computation at runtime means that we can subordinate extraneous detail, and provide a familiar model and clean interface to end users.
 
 ### Application Layer
 
