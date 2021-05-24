@@ -111,8 +111,8 @@ saturateTo threshold hashSeed namefilter =
     saturatedBy  filter = Binary.sum filter - threshold
     isSaturated  filter = saturatedBy filter >= 0
     
-    -- 15 = k / 2, where k is number of bits per entry
-    inTollerance filter = saturatedBy filter - 15 == 0
+    -- 10 = k / 3, where k is number of bits per entry
+    inTollerance filter = (saturatedBy filter - 10) <= 0
     
     namefilter' = namefilter .|. toBloom hashSeed'
     hashSeed'   = sha256 hashSeed -- Recursively hash
