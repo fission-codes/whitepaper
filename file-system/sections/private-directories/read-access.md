@@ -112,7 +112,7 @@ saturateTo threshold hashSeed namefilter =
     isSaturated  filter = saturatedBy filter >= 0
     
     -- 10 = k / 3, where k is number of bits per entry
-    inTollerance filter = (saturatedBy filter - 10) <= 0
+    inTollerance filter = saturatedBy filter <= 10
     
     namefilter' = namefilter .|. toBloom hashSeed'
     hashSeed'   = sha256 hashSeed -- Recursively hash
