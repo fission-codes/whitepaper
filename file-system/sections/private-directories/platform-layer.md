@@ -33,15 +33,6 @@ data PrivateDirectory = PrivateDirectory
   , revision       :: Natural -- Version counter for this exact AES key
   , previous       :: EncryptedLink
   , links          :: Map Text PrivateLink
-  , skeleton       :: Skeleton
-  }
-
-type Skeleton = Map TextPath SkeletonInfo
-
-data SkeletonInfo = SkeletonInfo 
-  { cid         :: CID
-  , key         :: AES256
-  , subSkeleton :: SkeletonInfo
   }
 
 data PrivateLink = PrivateLink

@@ -61,7 +61,7 @@ Fully zero knowledge methods do exist for this, but are quite new and do not \(y
 
 ## Name Filters
 
-To facilitate a deterministic-but-highly-obsfucated naming scheme, as well as give a verifier that doesn’t have read access the ability to check that the writer can submit updates to that path.
+To facilitate a deterministic-but-highly-obfuscated naming scheme, as well as give a verifier that doesn’t have read access the ability to check that the writer can submit updates to that path.
 
 This is achieved with Bloom Filters. These structures allow validation that an element is in some compressed/obfuscated set.
 
@@ -75,29 +75,47 @@ Bare filters do not include the version number, or fill out the filter to a part
 
 ### Saturated Name Filters
 
-To futher obscure the information in a name filter, we want to deterministically fill the space to a predetermined amount. This obscures the position of the node in the DAG. The bare filter \(above\) is of varying length, so we want to saturate it equally.
+To further obscure the information in a name filter, we want to deterministically fill the space to a predetermined amount. This obscures the position of the node in the DAG. The bare filter \(above\) is of varying length, so we want to saturate it equally.
 
-All name filters must be unique \(since storage is append-only\). We gain uniqueness by including the revision number in XOR filter. However, we only want to reveal revision numbers to authorized users. We use the AES key itself as a cryptographic pepper, and append to the version, and add that hash to the XOR filter.
+All name filters must be unique \(since storage is append-only\). We gain uniqueness by including the revision number in Bloom filter. However, we only want to reveal revision numbers to authorized users. We use the AES key itself as a cryptographic pepper, and append to the version, and add that hash to the Bloom filter.
 
 ```haskell
-pepperedRevision = hash (revision <> aesKey)
-versionedNameFilter = bareFilter .&. peppredRevision
+bareParent = 0x01010101 -- parent, unless is root
+currentKey = sha256(aesKey)
+version    = sha256(revision <> aesKey)
+bare       = bareParent .|. current .|. version
 ```
 
 Saturation is then achieved by iteratively hashing the filter into its successor until a certain number of bits are set to 1.
 
 ```haskell
-makeNameFilter :: XORFilter
-makeNameFilter = saturate aesKey 320 (bareFilter .&. pepperedRevision)
+makeNameFilter :: BloomFilter -> BloomFilter
+makeNameFilter bare = saturateTo 1410 aesKey bare
 
-saturateTo :: Natural -> AES256 -> XORFilter -> XORFilter
-saturateTo threshold key xorFilter =
-  if Binary.sum xorFilter >= threashold
-    then xorFilter
-    else saturate aesKey threshold (xorFilter .&. step)
+saturateTo :: Natural -> SHA256 -> BloomFilter -> BloomFilter
+saturateTo threshold hashSeed namefilter =
+  case (isSaturated namefilter, isSaturated namefilter') of
+    (True, _) ->
+      namefilter
+      
+    (_, True) ->
+      -- Err on the side of slightly too few bits
+      if inTollerance namefilter'
+        then namefilter'
+        else namefilter
+        
+    _ ->
+      saturateTo threshold hashSeed' namefilter'
     
   where
-    step = hash (key <> xorFilter)
+    saturatedBy  filter = Binary.sum filter - threshold
+    isSaturated  filter = saturatedBy filter >= 0
+    
+    -- 15 = k / 2, where k is number of bits per entry
+    inTollerance filter = saturatedBy filter - 15 == 0
+    
+    namefilter' = namefilter .|. toBloom hashSeed'
+    hashSeed'   = sha256 hashSeed -- Recursively hash
 ```
 
 In this way, we can deterministically generate very different looking filters for the same node, varying over the version number. The base filter stays inside the longer structure, . With an appropriately configured filter, this provides multiple features:
