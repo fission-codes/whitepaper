@@ -33,7 +33,7 @@ data VersionOrder
   | DivergedAt CID
 ```
 
-To give us a base case, we consider the genesis filesystem to be blank in all cases \(`Qmc5m94Gu7z62RC8waSKkZUrCCBJPyHbkpmGzEePxy2oXJ`\). From intuition: every file system began blank before we added something to it.
+To give us a base case, we consider the genesis filesystem to be blank in all cases \(`QmbFMke1KXqnYyBBWxB74N4c5SBnJMVAiMNRcGu6x1AwQH`\). From intuition: every file system began blank before we added something to it.
 
 Once we have the history, we can walk back one at a time, looking for the head CID of the other system. In principle we can do this one at a time \(`O(m + n)`\), but for performance we do this simultaneously on both local and remote file systems \(`O(2 * min(m, n))`\)
 
