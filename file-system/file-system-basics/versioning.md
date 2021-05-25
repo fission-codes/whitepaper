@@ -1,10 +1,12 @@
 # Versioning
 
-WNFS is a nondestructive, versioned file system. This is similar to Git history: files that are unchanged \(shared bwteen versions\) remain unchanged, but parents include links to them, their previous version, and to new or altered altered children.
+WNFS is a nondestructive, versioned file system. This is similar to Git history: files that are unchanged \(shared between versions\) remain unchanged. Parents include links to them, their previous version, and to new or altered altered children.
 
-WNFS uses a temporal graph with functional persistence. It is designed to be ”single writer” — new patches must be applied in order, and conflicts are automatically resolvable with a rebase / last-writer-wins \(LWW\) strategy, or with software transaction memory \(STM, see relevant section\).
+![](../../.gitbook/assets/screen-shot-2021-05-21-at-8.25.55-am.png)
 
-This is versioning at the file system level only. Subfile versioning can be implemented on top of WNFS with STM, or separately with techniques such as CRDTs \(coming baked in to the database layer\). This is an improvement over what most uses expect, and each committed version of the file can be stepped through to retrieve old history \(e.g. retrieve the state of a file from many weeks ago\).
+WNFS uses a temporal graph with functional persistence. This is ”single writer” — new patches must be applied in order, and conflicts are automatically resolvable with a rebase / last-writer-wins \(LWW\) strategy, or with software transaction memory \(STM, see relevant section\).
+
+This is versioning at the file system level only. Sub-file versioning can be implemented on top of WNFS with STM, or separately with techniques such as CRDTs \(which is baked-in to the separate database layer\). This is an improvement over what most uses expect, and each committed version of the file can be stepped through to retrieve old history \(e.g. retrieve the state of a file from many weeks ago\).
 
 Temporality / versioning is intentionally quite straightforward. As such, properties such as confluence are being left in favour of easy comprehension and performance. A single linear history is well understood by most people. Advanced merging and split histories are possible, but there is no current plan to support them at the file system layer \(though it can be achieved with the Datalog-driven database\).
 
@@ -40,7 +42,7 @@ This is a new generation, which we can name after the sequence \(”generation 1
 
 There is one diff here: `<A’, C’, E’>`. The rest is shared structurally. Thus, `B` originated in Generation 0, but is a member of both Generations 0 and 1.
 
-Given that WNFS is nondestructive, we can easily gain history by simply adding an edge named `previous` to the older version of the vnode. This also makes validation that the DAG has been nondestructively appended with a Merkle proof that `A` exists inside `A’`.
+Given that WNFS is nondestructive, we can easily gain history by simply adding an edge named `previous` to the older version of the vnode. This also makes validation that the DAG has been non-destructively appended with a Merkle proof that `A` exists inside `A’`.
 
 ```text
 ==========
@@ -66,7 +68,7 @@ B...\..........B   \
         E<—————————————E’
 ```
 
-At the protocol layer, this is viewed as an ever increasing, recursively nested set of DAGs with lots of shaerd structure. At the application layer, each generation is seen as a single ”slice”, and the use can pan backwards through time to previous slices — of the entire structure, some subgraph, or a single file.
+At the protocol layer, this is viewed as an ever increasing, recursively nested set of DAGs with lots of shared structure. At the application layer, each generation is seen as a single ”slice”, and the use can pan backwards through time to previous slices — of the entire structure, some subgraph, or a single file.
 
 {% hint style="danger" %}
 This matter is somewhat complicated by the additional abstraction of an Encrypted Node, specifically the information hiding therein. Once in plaintext, it functions the same way, but there are some special details.
