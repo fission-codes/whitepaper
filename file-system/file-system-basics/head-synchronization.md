@@ -42,7 +42,7 @@ Once we have the history, we can walk back one at a time, looking for the head C
 localHistory  = [localCID0,  localCID1,  localCID2]
 remoteHistory = [remoteCID0, remoteCID1, remoteCID2, remoteCID3]
 
-compareHistories :: [CID] -> VersionOrder
+compareHistories :: [CID] -> [CID] -> VersionOrder
 compareHistories [] [] = InSync
 compareHistories [] _  = BehindRemote
 compareHistories _  [] = AhedOfRemote
