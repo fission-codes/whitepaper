@@ -49,7 +49,7 @@
 
 * [Basics](file-system/file-system-basics/README.md)
   * [Layers](file-system/file-system-basics/layers.md)
-  * [Node Types](file-system/file-system-basics/anatomy.md)
+  * [Virtual Nodes](file-system/file-system-basics/vnodes.md)
   * [Reduction Caches](file-system/file-system-basics/reduction-caches.md)
   * [Versioning](file-system/file-system-basics/versioning.md)
   * [Head Synchronization](file-system/file-system-basics/head-synchronization.md)
