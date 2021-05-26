@@ -19,7 +19,7 @@ data Event appAction = Event
   { writer    :: DID
   , action    :: FSAction
   , signature :: Signature
-  , appAction  :: appAction
+  , appAction :: appAction
   }
   
 type FSEvent = Event ()
