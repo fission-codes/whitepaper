@@ -82,11 +82,9 @@ root
         - app.js
 ```
 
-Standard FFS are named in the plural and snake case. All names MUST be [URL safe](https://www.ietf.org/rfc/rfc3986.txt)\(!\)
+Standard WNFS are named in the plural and snake case. All names MUST be [URL safe](https://www.ietf.org/rfc/rfc3986.txt)\(!\)
 
-
-
-Files do not have a canonical path. This is a DAG, not a tree. They DO have a canonical hash \(content addressing\).
+Files \(leaves\) do not have a canonical path. This is a DAG, not a tree. They DO have a canonical hash \(content addressing\).
 
 ## Internal Structure
 
