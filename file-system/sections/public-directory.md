@@ -1,5 +1,5 @@
 ---
-description: Globally visible and addressable plaintext
+description: Globally visible and addressable cleartext
 ---
 
 # Public
@@ -59,17 +59,17 @@ data IPFSLink = IPFSLink
   }
 ```
 
-## Protocol Layer
+## Data Layer
 
-The protocol layer strips out muh of the above structure, and reduces it to as eries of `IPFSLink`s. This is fundamentally acheived by a function:
+The data layer strips out much of the above structure, boiling it down to a series of `IPFSLink`s. This is fundamentally achieved by a function:
 
 ```haskell
 serializeForProtcol :: VirtualNode -> IPFSNode
 ```
 
-In this function, much of the metadata is compacted into CBOR files \(for efficiency\).
+In this function, much of the metadata is compacted into CBOR files, for efficiency and convenience with the IPFS-supported `dag-cbor`.
 
-Here is an intermedate abstraction to help describe the layout:
+Here is an intermediate abstraction to help describe the layout:
 
 ```haskell
 data IPFSSerialized = IPFSSerialized
@@ -119,7 +119,7 @@ Note that the prev link SHOULD be reified in a protocol link rather than in the 
 
 ## DAG Cache \(Skeleton\)
 
-The protocol layer is the source of truth for linked data. However, to improve performance, FLOOFS keeps a \(recursive\) cache of the entire sub-DAG in the protocol layer. We are told that this optimization is being worked on at the protocol layer, but this is our performance optimization in the meantime. We name this cache `skeleton`
+The protocol layer is the source of truth for linked data. However, to improve performance, WNFS keeps a \(recursive\) cache of the entire sub-DAG in the protocol layer. We are told that this optimization is being worked on at the protocol layer, but this is our performance optimization in the meantime. We name this cache `skeleton`
 
 The insight is that describing even a very large DAG in JSON or CBOR is more efficient over the network than is following a series of links in ”pass the bucket” linear traversal \(where each iteration may be a network request\).
 
