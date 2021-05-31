@@ -30,9 +30,9 @@ data Directory protocol = Directory
   }
   
 data Metadata = Metadata
-  { history       :: Maybe History
-  , unixMeta      :: UnixMeta
-  , floofsVersion :: SemVer
+  { history     :: Maybe History
+  , unixMeta    :: UnixMeta
+  , wnfsVersion :: SemVer
   }
   
 data History = History
@@ -117,50 +117,11 @@ Note that links are NOT flattened into a single node. WNFS maintains a sepacial 
 Note that the prev link SHOULD be reified in a protocol link rather than in the cache to ensure that the link is real, the file will never be dropped \(if the root user breaks a layer\), and make it faster to verify.
 {% endhint %}
 
-## DAG Cache \(Skeleton\)
-
-The protocol layer is the source of truth for linked data. However, to improve performance, WNFS keeps a \(recursive\) cache of the entire sub-DAG in the protocol layer. We are told that this optimization is being worked on at the protocol layer, but this is our performance optimization in the meantime. We name this cache `skeleton`
-
-The insight is that describing even a very large DAG in JSON or CBOR is more efficient over the network than is following a series of links in ”pass the bucket” linear traversal \(where each iteration may be a network request\).
-
-### Trees Not DAGs
-
-Th purpose of the cache is to help improve perfomance of deep link lookups. While the structure is fundamentally a DAG, the encoding of non-trees is less streamlined in CBOR or JSON. There are very simple path methods available for there formats if they’re represented directly as trees. The other option requires much jumping around lookup tables, rather than simply following a nested path.
-
-This is a minor space/time tradeoff: in the cache all DAGs are converted to trees, with duplication in place of shared pointers. Since the structure is Merkelized, we don’t run the risk of mistaking disparate nodes for each other, and representing the structure as a tree is equally correct \(if more verbose\).
-
-### Schema
-
-The cache describes the platform layer, not the protocol layer. This means that it is not constrained by the needs of the Merkle DAG.
-
-```haskell
-data Skeleton
-  = File CID
-  | Directory SkeletonDirectory
-  | Symlink   DNSLink
-
-data SkeletonInfo = SkeletonDirectory
-  { cid         :: CID
-  , userland    :: CID
-  , metadata    :: CID
-  , isFile      :: Bool
-  , subSkeleton :: Map Text Skeleton
-  }
-```
-
-### Interaction with Versioning
-
-This cache records a single generation only. It does not include references to previous versions. Temporal operations aways occur on the protocol-level DAG, or abstractly accessed through the WNFS platform layer. The DAG cache should be kept as thin as possible, as this may become quite large. Users do not expect history to be a  lightening fast operation. It is still accessible by looking at the concrete \(uncached\) virtual node.
-
-### FAQ
-
-Why not only keep this cache at the file system root? Deep linking performance is greatly improved by being able to pull a single file off the network, and inspecting it locally.
-
 ## Write Access
 
-Write access may be granted via UCAN. In this case, the platform-layer \(pretty\) path to the node is updatable arbitraily, as are its nested contents. However, this necessitates updating the links in the merkle structure above, as well as portions of metadata \(such as size of contents\). This is a rote mechanical procedure, and will be checked by the verifier.
+Write access may be granted via UCAN. In this case, the platform-layer \(pretty\) path to the node is updatable arbitrarily, as are its nested contents. However, this necessitates updating the links in the merkle structure above, as well as portions of metadata \(such as size of contents\). This is a rote mechanical procedure, and will be checked by the verifier.
 
 {% hint style="warning" %}
-It bears repeating that while this does create updated parent nodes, it wil lbe handled mecanically by the FLOOFS client. The verifier is able to easily and mechanically confirm these updates, and will reject them if submitted incorrectly.
+It bears repeating that while this does create updated parent nodes, it wil lbe handled mechanically by the WNFS client. The verifier is able to easily and mechanically confirm these updates, and will reject them if submitted incorrectly.
 {% endhint %}
 
