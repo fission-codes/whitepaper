@@ -9,30 +9,27 @@ description: FLOOFS required top-level links
 ```text
 ${username}.fission.codes
   |
-  +——about
-  |
   +——public
   |
   +——pretty
   |
   +——private
-  |
-  +——shared
 ```
 
-* \`\`
-* /pretty
+* `/public`
+  * Unencrypted data, visible by anyone
+  * History encoded directly in the hash-linked structure
+* `/pretty`
   * A cached reduction of the `/public` tree
   * Exists to make short, friendly _relative_ links
     * Relative is relative to some root
     * Permalinked if the root is a CID
     * Latest link if the root is a mutable pointer such as DNSLink
 * `/private`
-  * Encrypted data
-* `/shared_by_me`
-  * Sha
-* `/shared_with_me`
-  * Pointers to other FLOOFS trees that are owned by multiple users
+  * Encrypted data, with contents fully encrypted
+  * Includes:
+    * Private files
+    * Key sharing
 
 ## Common Structure
 
