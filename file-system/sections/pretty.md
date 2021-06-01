@@ -4,11 +4,11 @@ description: A reduction cache of the pubic tree for better links
 
 # Pretty
 
-One aesthetic problem that arises from the multi-segment approach of the `public` section is that paths become cluttered with extraneous detail. Ideally we’d like to ignore the header section when giving relative paths to a file in web contexts. We achieve this by maintaining a reduction off the FS root.
+One aesthetic problem that arises from the multi-segment approach of the `public` section is that paths become cluttered with extraneous detail. Ideally we’d like to ignore the header section when giving relative paths to a file in web contexts. We achieve this while retaining compatability with the standard `go-ipfs` by maintaining a reduction of the WNFS root \(see the reduction section for more\).
 
 ## Reduction
 
-This reduction only selects for userland paths, discarding headers, metadata, and so on. It encodes directly as protocol nodes to be legible to as many system as possible without needing to understand the FLOOFS schemata or application.
+This reduction only selects for userland paths, discarding headers, metadata, and so on. It encodes directly as protocol nodes to be legible to as many system as possible without needing to understand the WNFS schemata or application.
 
 The leaves of the pretty section MUST match the leaves of the public section _at the protocol layer_. This is to say, we count the raw data index of a file, or the userland segment of the DAG as a leaf, but never a header segment or 
 

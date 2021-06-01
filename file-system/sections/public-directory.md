@@ -4,7 +4,7 @@ description: Globally visible and addressable cleartext
 
 # Public
 
-The public directory contains regular, unencrypted, structured data. Each VNode contains more This includes previous versions, metadata, symlinks, and so on. This lives in the top-level `/public` directory. All of the content is publicly viewable, including previous versions.
+The public directory contains regular, unencrypted, structured data. This includes previous versions, metadata, symlinks, and so on. This lives in the top-level `/public` directory. All of the content is publicly viewable, including previous versions.
 
 ## Platform Layer
 
@@ -26,7 +26,6 @@ data File = File
 data Directory protocol = Directory
   { metadata :: Metadata
   , index    :: Map Text VirtualNode
-  , skeleton :: JSON
   }
   
 data Metadata = Metadata
@@ -119,7 +118,7 @@ Note that the prev link SHOULD be reified in a protocol link rather than in the 
 
 ## Write Access
 
-Write access may be granted via UCAN. In this case, the platform-layer \(pretty\) path to the node is updatable arbitrarily, as are its nested contents. However, this necessitates updating the links in the merkle structure above, as well as portions of metadata \(such as size of contents\). This is a rote mechanical procedure, and will be checked by the verifier.
+Write access may be granted via UCAN. In this case, the platform-layer \(pretty\) path to the node is updatable arbitrarily, as are its nested contents. However, this necessitates updating the links in the Merkle structure above, as well as portions of metadata \(such as size of contents\). This is a rote mechanical procedure, and will be checked by the verifier.
 
 {% hint style="warning" %}
 It bears repeating that while this does create updated parent nodes, it wil lbe handled mechanically by the WNFS client. The verifier is able to easily and mechanically confirm these updates, and will reject them if submitted incorrectly.
