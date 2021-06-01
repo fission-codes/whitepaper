@@ -1,5 +1,5 @@
 ---
-description: FLOOFS required top-level links
+description: WNFS required top-level links
 ---
 
 # Sections
@@ -11,7 +11,7 @@ ${username}.fission.codes
   |
   +——public
   |
-  +——pretty
+  +——p[retty]
   |
   +——private
 ```
@@ -19,7 +19,7 @@ ${username}.fission.codes
 * `/public`
   * Unencrypted data, visible by anyone
   * History encoded directly in the hash-linked structure
-* `/pretty`
+* `/p`
   * A cached reduction of the `/public` tree
   * Exists to make short, friendly _relative_ links
     * Relative is relative to some root

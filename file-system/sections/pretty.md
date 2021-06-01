@@ -16,7 +16,7 @@ Being a reduction, this index cache can always be dropped and rebuilt determinis
 
 ## Versioning
 
-Because the root of the file system can be selected as an absolute reference \(by CID\), WNFS still maintains versioning by adding one system-controlled directory at the top of the DAG. Paths loose the ability to seek by file version, and rather page back one full generation at a time. To draw an analogy from git, this is like asking for `HEAD^`.
+The pretty paths are not versioned. It acts as a mutable file system.
 
 ## Layout
 

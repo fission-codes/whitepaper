@@ -2,7 +2,11 @@
 
 ## Storage Layout
 
-The protocol layer for the private section is filled exclusively with “locked“ /encrypted private virtual nodes \(“ENode”s\). They have 1024-bit \(128 byte\) names hased to 256-bits, arranged in an append-only Modified Merkle Patricia tree \(MMPT\). The names are deterministic, and collisions extrememly unlikely in the resulting 2^256 \(~1.16 x 10^77\) namespace. More detail on the naming system is available in its own section.
+At the IPFS layer for the private section is filled exclusively with “locked“ / encrypted private virtual nodes \(“ENode”s\). They have 2048-bit \(256 byte\) names, encoded in base64URL, for a 32-character UTF8 name.
+
+
+
+ hased to 256-bits, arranged in an append-only Modified Merkle Patricia tree \(MMPT\). The names are deterministic, and collisions extrememly unlikely in the resulting 2^256 \(~1.16 x 10^77\) namespace. More detail on the naming system is available in its own section.
 
 The MPT layout allows for efficient validation that an update is append-only \(and thus nondestructive\).
 
