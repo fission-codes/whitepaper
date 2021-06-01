@@ -4,11 +4,10 @@ There are three cases where we need to exchange data in an offline manner. Funda
 
 1. Shared By Me
 2. Shared With Me
-3. Self-shared
 
 ## Shared By Me \(authz\_out\)
 
-Sharing information with a user that’s offline is easy thanks to Diffie Helman key exchange. All Fission users widely distribute a list of public 2048-bit RSA keys \(their ”exchange keys”\). This is generally exposed in DNS, but also written to their file system. With these keys, exchanging read keys, UCAN credentials, and other information is possible.
+Sharing information with a user that’s offline is easy thanks to authenticated key exchange. All Fission users widely distribute a list of public 2048-bit RSA keys \(their ”exchange keys”\). This is generally exposed in DNS, but also written to their file system. With these keys, exchanging read keys, UCAN credentials, and other information is possible.
 
 The `authz_out` section of FLOOFS contains information being shared by the root user of that file system with other users. The most common case is a read key.
 
