@@ -12,6 +12,29 @@ This layer is completely agnostic about file contents. By default, encyption is 
 To see more about what is found _inside_ an SNode when unencrypted, please see the Private File Layer section.
 {% endhint %}
 
+## Storage Tree
+
+Unlike the public file system, the private file system is stored as a tree. More specifically, this is a SHA256-based [Modified Merkle Patricia Tree \(MMPT\)](https://eth.wiki/en/fundamentals/patricia-tree), with a branching factor of 16.
+
+The weight was chosen to balance search depth with Merkle witness size, caching, and concurrent merge performance. This trie can hold over a million elements in 5 layers.
+
+
+
+The leaves of this tree   
+
+
+Collisions
+
+
+
+At the IPFS layer for the private section is filled exclusively with “locked“ / virtual secret nodes \(“SNode”s\). They have 2048-bit names, encoded in [base64URL](https://datatracker.ietf.org/doc/html/rfc4648#section-5), for a 32-character UTF8 name.
+
+
+
+ hased to 256-bits, arranged in an append-only SHA256 [Modified Merkle Patricia Tree \(MMPT\)](https://eth.wiki/en/fundamentals/patricia-tree). The names are deterministic, and collisions extrememly unlikely in the resulting 2^256 \(~1.16 x 10^77\) namespace. More detail on the naming system is available in its own section.
+
+The MPT layout allows for efficient validation that an update is append-only \(and thus nondestructive\).
+
 ## Namefilters
 
 Each SNode is stored not with a human readable name, but with a _namefilter_. This is a [generalized combinatoric accumulator](https://www.jstage.jst.go.jp/article/transinf/E91.D/5/E91.D_5_1489/_pdf/-char/en) \(GCA\), which in turn is essentially the Bloom construction of the better known [Nyberg hash accumulator](https://link.springer.com/content/pdf/10.1007%2F3-540-60865-6_45.pdf).
@@ -115,28 +138,9 @@ Due to distinguishability, GCAs potentially leak some information about related,
 
 We considered using XOR or Cuckoo filters instead of class Bloom filters. XOR is very close to the theoretic efficiency limit, but is very new and the library untested. Cuckoo filters would provide around an additional 4 path segments with the same false-positive rate, but we lose the single-bit-collision of Bloom filters which is actually an advantage for obfuscation.
 
-## Storage Tree
+## SNode Content
 
-MMPT
-
-Unlike the public file system, the private file system is stored as a tree. More specifically, this is a SHA256-based [Modified Merkle Patricia Tree \(MMPT\)](https://eth.wiki/en/fundamentals/patricia-tree).  
-
-
-Collisions
-
-
-
-At the IPFS layer for the private section is filled exclusively with “locked“ / virtual secret nodes \(“SNode”s\). They have 2048-bit names, encoded in [base64URL](https://datatracker.ietf.org/doc/html/rfc4648#section-5), for a 32-character UTF8 name.
-
-
-
- hased to 256-bits, arranged in an append-only SHA256 [Modified Merkle Patricia Tree \(MMPT\)](https://eth.wiki/en/fundamentals/patricia-tree). The names are deterministic, and collisions extrememly unlikely in the resulting 2^256 \(~1.16 x 10^77\) namespace. More detail on the naming system is available in its own section.
-
-The MPT layout allows for efficient validation that an update is append-only \(and thus nondestructive\).
-
-## ENode Content
-
-A vnode that has been secured in this way is called an ”encrypted virtual node”. The contents of these nodes is largely the same as their plaintext counterparts, plus a key table for their children.
+An SNode that has been secured in this way is called an ”secure virtual node”. The contents of these nodes is largely the same as their plaintext counterparts, plus a key table for their children.
 
 The core difference is the encrypted storage \(protocol layer\), and secrecy of the key used to start the decryption process. The key is always external to the ENode, and its not aware of whch key was used to create it. Here at the protocol layer, we are not directly concerned with the contents.
 
