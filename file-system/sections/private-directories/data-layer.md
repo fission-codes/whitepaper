@@ -12,11 +12,13 @@ This layer is completely agnostic about file contents. By default, encyption is 
 To see more about what is found _inside_ an SNode when unencrypted, please see the Private File Layer section.
 {% endhint %}
 
-## Secure Content Tree
+## Secure Content Prefix Tree
 
 Unlike the public file system DAG, the private file system is stored as a tree. More specifically, this is a SHA256-based [Modified Merkle Patricia Tree \(MMPT\)](https://eth.wiki/en/fundamentals/patricia-tree), with a branching factor of 16. The weight was chosen to balance search depth with Merkle witness size, caching, and concurrent merge performance. This tree can hold over a million elements in 5 layers.
 
-As we will explore in later sections, collisions are not possible in this tree thanks to content addressing, so clients can aggressively cache intermediate nodes. Insertions have worst-case performance of O\(log n\). This is an append-only structure, so deletions are not supported. Practically, merges will overwhelmingly contain shared intermediate nodes and leaves, but the worst-case for a heavily diverged tree is linear relative to the smaller tree. Being a prefix tree, there are no rotations, so merging concurrently is straightforward.
+As we will explore in later sections, collisions are not possible in this tree thanks to content addressing, so clients can aggressively cache intermediate nodes. This is an append-only structure, so deletions are not supported. 
+
+Practically, merges overwhelmingly contain shared intermediate nodes and leaves, but the worst-case for a heavily diverged tree is linear relative to the smaller tree. Being a prefix tree, there are no rotations. Tree merging forms a monoid, so concurrent merges are straightforward.
 
 $$
 \begin{array} {|r|r|}\hline Lookup & O(log\ n) \\ \hline Insert & O(log\ n) \\ \hline Merge & O(min(n, m)) \\ \hline Delete & ⊥ \\ \hline  \end{array}
@@ -32,9 +34,19 @@ This is a concurrent tree. Many contexts may be updating it at the same time wit
 
 Being an append-only data structure, merging in absence of namespace conflicts is very straightforward: place the new names in their appropriate positions in the tree. This can be done in high-parallel to further improve runtime performance.
 
-#### Anti-Entropy & Fractional Indexing
+#### Multivalues & Fractional Indexing
 
-In the case of namespace conflicts, store both leaves. In absence of other selection criteria \(such as hardcoded choice\), pick the lowest \(in binary\) CID.
+In the case of namespace conflicts, store both leaves. In absence of other selection criteria \(such as hardcoded choice\), pick the lowest \(in binary\) CID. In other words, pick the longest causal chain, and deterministically select an arbitrary element when the event numbers overlap. This is a mix of causal order last-writer-wins \(LWW\), and multivalue.
+
+![Multivalue example, https://bartoszsypytkowski.com/operation-based-crdts-registers-and-sets/](../../../.gitbook/assets/multi-value-register-timeline.png)
+
+WNFS uses 
+
+> Last, let's consider the case where it is truly ambiguous what order to apply changes using the same example but with different visibility \[...\] Here, we have no "right" answer. Alice and Bob both have made changes without the other's knowledge and now as they synchronize data we have to decide what to do. Importantly, there isn't a _right_ answer here. Different systems resolve this in different ways.
+>
+> ~[ Hypermerge's Architecture Documentation](https://github.com/automerge/hypermerge/blob/master/ARCHITECTURE.md)
+
+One way of seeing this mechanism is that 
 
 IMAGE HERE
 
