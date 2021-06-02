@@ -33,12 +33,6 @@ $$
 
 If required, doubling `n` and `m` leaves `p` and `k` constant. See [here for pretty graphs](https://hur.st/bloomfilter/?n=47&p=&m=2048&k=30) \(useful for parameter tuning, verified by hand\).
 
-#### Bare / Unsaturated Namefilter
-
-The bare namefilter for any node is the parent's bare namefilter plus the current node's read key. This bare namefilter is passed down to the child SNodes and encrypted along with other header information.
-
-The root node has no parent, so its bare namefilter is merely the SHA-256 hash of its key placed in a Bloom filter. A child node is passed its parent's bare namefilter, and includes it with the SHA-256 of its key to generate its namefilter.
-
 #### Private Versioning
 
 WNFS is a persistent, versioned file system. Including the version is essential for many parts of the system \(seen throughout the rest of this section\). In principle this can be any counter, including simple natural numbers, depending on the design goals of the broader system.
@@ -47,13 +41,67 @@ WNFS uses a forward secret positional hash clock, which is described in its own 
 
 This version is hashed and added to the private namefilter.
 
+#### Bare / Unsaturated Namefilter
+
+The bare namefilter for any node is the parent's bare namefilter plus the current node's read key. This bare namefilter is passed down to the child SNodes and encrypted along with other header information.
+
+The root node has no parent, so its bare namefilter is merely the SHA-256 hash of its key placed in a Bloom filter. A child node is passed its parent's bare namefilter, and includes it with the SHA-256 of its key to generate its namefilter.
+
+```haskell
+bareParent = 0x01010101 -- parent, unless is root
+currentKey = sha256(aesKey)
+version    = sha256(hash_clock)
+bare       = bareParent .|. current .|. version
+```
+
 #### Hamming Saturation
 
 By default, Bloom filters admit \(roughly\) how many elements they contain, and are relatively easy to correlate by their Hamming distance. To work around this issue, namefilters deterministically saturate the remaining space, filling roughly _half_ of the available filter, while maintaining a very low false positive rate. The idea is to fill the namefilter with a constant Hamming weight, but still be easily constructable by someone with the bare namefilter.
 
-### Pseudocode
+#### Pseudocode Algorithm
 
-dsa
+Saturation is then achieved by iteratively hashing the filter into its successor until a certain number of bits are set to 1.
+
+```haskell
+makeNameFilter :: BloomFilter -> BloomFilter
+makeNameFilter bare = saturateTo 1410 aesKey bare
+
+saturateTo :: Natural -> SHA256 -> BloomFilter -> BloomFilter
+saturateTo threshold hashSeed namefilter =
+  case (isSaturated namefilter, isSaturated namefilter') of
+    (True, _) ->
+      namefilter
+      
+    (_, True) ->
+      -- Err on the side of slightly too few bits
+      if inTollerance namefilter'
+        then namefilter'
+        else namefilter
+        
+    _ ->
+      saturateTo threshold hashSeed' namefilter'
+    
+  where
+    saturatedBy filter = Binary.sum filter - threshold
+    isSaturated filter = saturatedBy filter >= 0
+    
+    -- 10 = k / 3, where k is number of bits per entry
+    inTollerance filter = saturatedBy filter <= 10
+    
+    namefilter' = namefilter .|. toBloom hashSeed'
+    hashSeed'   = sha256 hashSeed -- Recursively hash
+```
+
+In this way, we can deterministically generate very different looking filters for the same node, varying over the version number. The base filter stays inside the longer structure, . With an appropriately configured filter, this provides multiple features:
+
+* Privacy
+  * File names are never exposed
+  * Statistical methods may be able to reveal probable DAG structures
+* Deterministic pointers to the future
+  * O\(log n\) search for updated nodes
+* Minimal knowledge write access verification 
+  * A UCAN + a hash of the read key to the highest node the user can write to
+  * Match on cryptographically blind set membership
 
 ### UCAN
 
