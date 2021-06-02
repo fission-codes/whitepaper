@@ -18,6 +18,16 @@ Unlike the public file system, the private file system is stored as a tree. More
 
 The weight was chosen to balance search depth with Merkle witness size, caching, and concurrent merge performance. This trie can hold over a million elements in 5 layers.
 
+As we will explore in later sections, collisions are not possible in this tree, so clients can aggressivley cache intermediate nodes. Insertions have worst-case performance of O\(log n\), deletions are not supported.
+
+$$
+\begin{array} {|r|r|}\hline Lookup & O(log\ n) \\ \hline Insert & O(log\ n) \\ \hline Merge & O(min(n, m)) \\ \hline Delete & ⊥ \\ \hline  \end{array}
+$$
+
+### Concurrency & Conflicts
+
+This is a concurrent tree. 
+
 
 
 The leaves of this tree   
