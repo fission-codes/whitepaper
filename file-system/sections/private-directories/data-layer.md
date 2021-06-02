@@ -50,7 +50,7 @@ The root node has no parent, so its bare namefilter is merely the SHA-256 hash o
 ```haskell
 bareParent = 0x01010101 -- parent, unless is root
 currentKey = sha256(aesKey)
-version    = sha256(hash_clock)
+version    = sha256(hashClock)
 bare       = bareParent .|. current .|. version
 ```
 
