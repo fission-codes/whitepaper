@@ -70,6 +70,7 @@
   * [Transactions](file-system/consistency/transactions-1.md)
   * [Event Sourcing](file-system/consistency/event-sourcing.md)
   * [Transactions](file-system/consistency/transactions.md)
+  * [BFT](file-system/consistency/bft.md)
 * [Distribution](file-system/distribution/README.md)
   * [Backstop](file-system/distribution/backstop.md)
   * [Performance](file-system/distribution/performance.md)
