@@ -22,7 +22,16 @@ Namefilters are _not_ a content address. They are based on the _keys_ used to co
 
 ### Parameters
 
-Namefilters are 2048-bits, encoded in [base64URL](https://datatracker.ietf.org/doc/html/rfc4648#section-5), yielding a consistent 32-character UTF8 string.
+Namefilters are 2048-bit Bloom filters, encoded in [base64URL](https://datatracker.ietf.org/doc/html/rfc4648#section-5), yielding a consistent 32-character UTF-8 string. These hold 47 path segments, and achieve a 1-in-1.2 billion false positive rate with 30 hashes. Formally:
+
+$$
+n = 47\\
+p = 0.000000001\\
+m = 2048\\
+k = 30
+$$
+
+See [here for pretty graphs](https://hur.st/bloomfilter/?n=47&p=&m=2048&k=30) \(useful for parameter tuning, verified by hand\).
 
 #### Bare / Unsaturated Namefilter
 
@@ -32,11 +41,19 @@ The root node has no parent, so its bare namefilter is merely the SHA-256 hash o
 
 #### Private Versioning
 
-WNFS is a persistent, versioned file system. Including the version is essential for many parts of the system \(seen throughout the rest of this section\).
+WNFS is a persistent, versioned file system. Including the version is essential for many parts of the system \(seen throughout the rest of this section\). In principle this can be any counter, including simple natural numbers, depending on the design goals of the broader system.
+
+WNFS uses a forward secret positional hash clock, which is described in its own section.
+
+This version is hashed and added to the private namefilter.
 
 #### Hamming Saturation
 
-By default, Bloom filters admit how many elements they contain, and are relatively easy to correlate by their Hamming distance. To work around this issue, namefilters deterministically saturate the remaining space. The idea is to fill the namefilter with a constant Hamming weight, but still be easily constructable by someone with the bare namefilter.
+By default, Bloom filters admit \(roughly\) how many elements they contain, and are relatively easy to correlate by their Hamming distance. To work around this issue, namefilters deterministically saturate the remaining space, filling roughly _half_ of the available filter, while maintaining a very low false positive rate. The idea is to fill the namefilter with a constant Hamming weight, but still be easily constructable by someone with the bare namefilter.
+
+### Pseudocode
+
+dsa
 
 ### UCAN
 
@@ -56,6 +73,8 @@ MMPT
 
 Unlike the public file system, the private file system is stored as a tree. More specifically, this is a SHA256-based [Modified Merkle Patricia Tree \(MMPT\)](https://eth.wiki/en/fundamentals/patricia-tree).  
 
+
+Collisions
 
 
 
