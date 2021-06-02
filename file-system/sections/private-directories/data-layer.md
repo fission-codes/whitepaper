@@ -16,38 +16,19 @@ To see more about what is found _inside_ an SNode when unencrypted, please see t
 
 Unlike the public file system, the private file system is stored as a tree. More specifically, this is a SHA256-based [Modified Merkle Patricia Tree \(MMPT\)](https://eth.wiki/en/fundamentals/patricia-tree), with a branching factor of 16. The weight was chosen to balance search depth with Merkle witness size, caching, and concurrent merge performance. This trie can hold over a million elements in 5 layers.
 
-As we will explore in later sections, collisions are not possible in this tree thanks to content addressing, so clients can aggressivley cache intermediate nodes. Insertions have worst-case performance of O\(log n\), deletions are not supported.
+As we will explore in later sections, collisions are not possible in this tree thanks to content addressing, so clients can aggressivley cache intermediate nodes. Insertions have worst-case performance of O\(log n\). This is an append-only structure, so deletions are not supported. Practically, merges will overwhelminly contain shared intermediate nodes and leaves, but the worst-case for a heavily diverged tree is linear relative to the smaller tree. Being a prefix tree, there are no rotations, so merging concurrently is straightforward.
 
 $$
 \begin{array} {|r|r|}\hline Lookup & O(log\ n) \\ \hline Insert & O(log\ n) \\ \hline Merge & O(min(n, m)) \\ \hline Delete & ⊥ \\ \hline  \end{array}
 $$
 
-The prefixes are not the CIDs of the data, but rather the namefilter \(see relevant section\). CIDs are kept as leaves in this tree, but all intermediate nodes refer to the set of \(hased\) keys used for access control.
+The prefixes are not the CIDs of the data, but rather the namefilter \(see relevant section\). CIDs are kept as leaves in this tree, but all intermediate nodes refer to the set of \(hashed\) keys used for access control. Intermediate nodes are lightweight and SHOULD be aggressivley cached.
 
 ### Concurrency & Conflict Avoidance
 
 #### AKA "Private Trie CRDT"
 
-This is a concurrent tree. Many contexts may be updating it at the same time without the ability to communicate directly \(e.g. network partition\).
-
-These MMPTs 
-
-
-
-The leaves of this tree   
-
-
-Collisions
-
-
-
-At the IPFS layer for the private section is filled exclusively with “locked“ / virtual secret nodes \(“SNode”s\). They have 2048-bit names, encoded in [base64URL](https://datatracker.ietf.org/doc/html/rfc4648#section-5), for a 32-character UTF8 name.
-
-
-
- hased to 256-bits, arranged in an append-only SHA256 [Modified Merkle Patricia Tree \(MMPT\)](https://eth.wiki/en/fundamentals/patricia-tree). The names are deterministic, and collisions extrememly unlikely in the resulting 2^256 \(~1.16 x 10^77\) namespace. More detail on the naming system is available in its own section.
-
-The MPT layout allows for efficient validation that an update is append-only \(and thus nondestructive\).
+This is a concurrent tree. Many contexts may be updating it at the same time without the ability to communicate directly \(e.g. network partition\)
 
 ## Namefilters
 
