@@ -31,7 +31,7 @@ m = 2048\\
 k = 30
 $$
 
-See [here for pretty graphs](https://hur.st/bloomfilter/?n=47&p=&m=2048&k=30) \(useful for parameter tuning, verified by hand\).
+If required, doubling `n` and `m` leaves `p` and `k` constant. See [here for pretty graphs](https://hur.st/bloomfilter/?n=47&p=&m=2048&k=30) \(useful for parameter tuning, verified by hand\).
 
 #### Bare / Unsaturated Namefilter
 
