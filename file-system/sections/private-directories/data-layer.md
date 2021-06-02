@@ -16,13 +16,39 @@ To see more about what is found _inside_ an SNode when unencrypted, please see t
 
 Each SNode is stored not with a human readable name, but with a _namefilter_. This is a [generalized combinatoric accumulator](https://www.jstage.jst.go.jp/article/transinf/E91.D/5/E91.D_5_1489/_pdf/-char/en) \(GCA\), which in turn is essentially the Bloom construction of the better known [Nyberg hash accumulator](https://link.springer.com/content/pdf/10.1007%2F3-540-60865-6_45.pdf).
 
+### Construction
+
+Namefilters are _not_ a content address. They are based on the _keys_ used to construct that path. This is important for validating if a namefilter is allowed to be constructed \(via UCAN, see below\). They are essentially a set of hashes of the keys used to encrypt this node and all of the parents in the cyptree. The set-like property of forgetting the order is important: it should be very hard \(read: impossible except edge cases\) to infer the hierarchical relationship between any two nodes.
+
+### Parameters
+
+Namefilters are 2048-bits, encoded in [base64URL](https://datatracker.ietf.org/doc/html/rfc4648#section-5), yielding a consistent 32-character UTF8 string.
+
+#### Bare / Unsaturated Namefilter
+
+The bare namefilter for any node is the parent's bare namefilter plus the current node's read key. This bare namefilter is passed down to the child SNodes and encrypted along with other header information.
+
+The root node has no parent, so its bare namefilter is merely the SHA-256 hash of its key placed in a Bloom filter. A child node is passed its parent's bare namefilter, and includes it with the SHA-256 of its key to generate its namefilter.
+
+#### Private Versioning
+
+WNFS is a persistent, versioned file system. Including the version is essential for many parts of the system \(seen throughout the rest of this section\).
+
+#### Hamming Saturation
+
+By default, Bloom filters admit how many elements they contain, and are relatively easy to correlate by their Hamming distance. To work around this issue, namefilters deterministically saturate the remaining space. The idea is to fill the namefilter with a constant Hamming weight, but still be easily constructable by someone with the bare namefilter.
+
+### UCAN
+
+dsa
+
 ### Design Considerations
 
 GCAs were chosen over other [arguably more sophisticated](https://www.fim.uni-passau.de/fileadmin/dokumente/fakultaeten/fim/forschung/mip-berichte/MIP_1210.pdf) options for three main reasons reasons: witness side, raw performance, and ease of implementation for web browsers. For example, we were unable to find a widely-used RSA accumulator library on NPM or Crates, but implementing a GCA is very straightforward.
 
 Due to distinguishability, GCAs potentially leak some information about related, deeply-nested sibling nodes as the Hamming approaches zero. Our namefilter GCAs have a cardinality of 47 by default, which is much deeper than most file paths.
 
-We considered using XOR or Cuckoo filters instead of class Bloom filters. XOR is very close to the theoretic efficiency limit, but is very new and the library untested. Cuckoo filters would provide around an additional 4 path segments with the same false-positive rate, but we lose the single-bit-collision of Bloom filters which is actually an advantage for obsfucation.
+We considered using XOR or Cuckoo filters instead of class Bloom filters. XOR is very close to the theoretic efficiency limit, but is very new and the library untested. Cuckoo filters would provide around an additional 4 path segments with the same false-positive rate, but we lose the single-bit-collision of Bloom filters which is actually an advantage for obfuscation.
 
 ## Storage Tree
 
