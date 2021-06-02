@@ -58,8 +58,8 @@
   * [Public](file-system/sections/public-directory.md)
   * [Pretty](file-system/sections/pretty.md)
   * [Private](file-system/sections/private-directories/README.md)
-    * [Protocol Structure](file-system/sections/private-directories/protocol-layer.md)
-    * [Platform Structure](file-system/sections/private-directories/platform-layer.md)
+    * [Data Layer](file-system/sections/private-directories/data-layer.md)
+    * [File Layer](file-system/sections/private-directories/platform-layer.md)
     * [Read Access](file-system/sections/private-directories/read-access.md)
     * [Append Access](file-system/sections/private-directories/append-access.md)
   * [Unlisted](file-system/sections/unlisted-directories.md)
@@ -87,9 +87,4 @@
 ## Dynamic FaaS
 
 * [Distributed & Edge FaaS](dynamic-faas/distributed-functions-as-a-service.md)
-
-## Conclusion
-
-* [Recapitulation](conclusion/recapitulation.md)
-* [Afterward](conclusion/afterward.md)
 
