@@ -48,9 +48,15 @@ By default, WNFS will automatically pick the the highest version, or in the case
 
 ![](../../../.gitbook/assets/screen-shot-2021-06-02-at-20.04.00.png)
 
+## Accumulating Positional Hash Counter
+
+The positional hash calendar is related to [hash calendars](https://en.wikipedia.org/wiki/Hash_calendar), the [Lamport OTP](http://www.cs.cornell.edu/courses/cs513/2004SP/NL11Lamport.html) scheme, and [Solana's Proof of History](https://solana.com/news/proof-of-history---a-clock-for-blockchain). The basic idea is that repeatedly hashing a value creates a kind of forward-secret clock. When you start watching the clock, you can generate the hash for any arbitrary future steps, but not steps from prior to observation since that requires computing the SHA preimage.
+
+This also ensures that the writer knows at least one previous \_\_\_.
+
 ## Namefilters
 
-Each SNode is stored not with a human readable name, but with a _namefilter_. This is a [generalized combinatoric accumulator](https://www.jstage.jst.go.jp/article/transinf/E91.D/5/E91.D_5_1489/_pdf/-char/en) \(GCA\), which in turn is essentially the Bloom construction of the better known [Nyberg hash accumulator](https://link.springer.com/content/pdf/10.1007%2F3-540-60865-6_45.pdf).
+Each SNode is stored not with a human readable name, but with a _namefilter_. This is a [generalized combinatoric accumulator](https://www.jstage.jst.go.jp/article/transinf/E91.D/5/E91.D_5_1489/_pdf/-char/en) \(GCA\), which in turn is essentially the Bloom construction of the [Nyberg hash accumulator](https://link.springer.com/content/pdf/10.1007%2F3-540-60865-6_45.pdf).
 
 ### Construction
 
