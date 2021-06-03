@@ -34,23 +34,19 @@ This is a concurrent tree. Many contexts may be updating it at the same time wit
 
 Being an append-only data structure, merging in absence of namespace conflicts is very straightforward: place the new names in their appropriate positions in the tree. This can be done in high-parallel to further improve runtime performance.
 
-#### Multivalues & Fractional Indexing
-
-In the case of namespace conflicts, store both leaves. In absence of other selection criteria \(such as hardcoded choice\), pick the lowest \(in binary\) CID. In other words, pick the longest causal chain, and deterministically select an arbitrary element when the event numbers overlap. This is a mix of causal order last-writer-wins \(LWW\), and multivalue.
-
-![Multivalue example, https://bartoszsypytkowski.com/operation-based-crdts-registers-and-sets/](../../../.gitbook/assets/multi-value-register-timeline.png)
-
-WNFS uses 
-
 > Last, let's consider the case where it is truly ambiguous what order to apply changes using the same example but with different visibility \[...\] Here, we have no "right" answer. Alice and Bob both have made changes without the other's knowledge and now as they synchronize data we have to decide what to do. Importantly, there isn't a _right_ answer here. Different systems resolve this in different ways.
 >
 > ~[ Hypermerge's Architecture Documentation](https://github.com/automerge/hypermerge/blob/master/ARCHITECTURE.md)
 
-One way of seeing this mechanism is that 
+#### LWW & Multivalues
 
-IMAGE HERE
+In the case of namespace conflicts, store both leaves. In absence of other selection criteria \(such as hardcoded choice\), pick the lowest \(in binary\) CID. In other words, pick the longest causal chain, and deterministically select an arbitrary element when the event numbers overlap. This is a mix of causal order last-writer-wins \(LWW\), and multivalues.
 
-There is no need to manually track primacy. 
+![Multivalue example, https://bartoszsypytkowski.com/operation-based-crdts-registers-and-sets/](../../../.gitbook/assets/multi-value-register-timeline.png)
+
+By default, WNFS will automatically pick the the highest version, or in the case of multiple values at a single version, the lowest namefilter number. Here is one such exmaple, where the algorithm would automatically chose `QmbX21...` as the default variant. The user can override this choice by pointing at `Qmr18U...` from the parent directory, or directly in the link.
+
+![](../../../.gitbook/assets/screen-shot-2021-06-02-at-20.04.00.png)
 
 ## Namefilters
 
