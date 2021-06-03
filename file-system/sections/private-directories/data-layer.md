@@ -50,9 +50,19 @@ By default, WNFS will automatically pick the the highest version, or in the case
 
 ## Accumulating Positional Hash Counter
 
+WRONG LAYER!!
+
 The positional hash calendar is related to [hash calendars](https://en.wikipedia.org/wiki/Hash_calendar), the [Lamport OTP](http://www.cs.cornell.edu/courses/cs513/2004SP/NL11Lamport.html) scheme, and [Solana's Proof of History](https://solana.com/news/proof-of-history---a-clock-for-blockchain). The basic idea is that repeatedly hashing a value creates a kind of forward-secret clock. When you start watching the clock, you can generate the hash for any arbitrary future steps, but not steps from prior to observation since that requires computing the SHA preimage.
 
-This also ensures that the writer knows at least one previous \_\_\_.
+SHA-256 is native to the WebCypto API, is a very fast operation, and commonly hardware accelerated. Anecdotally, running 10k recursive SHA256s in Firefox on an Apple M1 completes in around 300ms. The problem with a single hash counter is threefold:
+
+1. the root of the unencrypted tree updates with with every atomic operation, and thus accrues a lot of changes  
+2. an actor may be many months since their last sync, and need to fast forward their clock by some huge number of elements  
+3. Seeking ahead by 100ks or millions takes very noticable time
+
+We still want small step changes to very fast, but also be able to determinstically tune how quickly we jump ahead, without revealing previous counter hashes. Positional counting does exactly this in many numeral systems, including our familiar decimal system \(AKA "base-ten positional numerals"\).
+
+
 
 ## Namefilters
 
