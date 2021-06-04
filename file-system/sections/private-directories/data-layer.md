@@ -48,7 +48,7 @@ By default, WNFS will automatically pick the the highest version, or in the case
 
 ![](../../../.gitbook/assets/screen-shot-2021-06-02-at-20.04.00.png)
 
-## Accumulating Positional Hash Counter
+## Accumulating Positional Hash Counter / Jump Ratchet
 
 WRONG LAYER!!
 
@@ -75,19 +75,114 @@ s = 22J55fqnMjce3zjkY3Yw3Cr/s6g3MYDiN0h4wZMhBLE=
 
 ```haskell
 data Counter = Counter
-  { epoch       :: SHA256
+  { large     :: SHA256
 
-  , large       :: SHA256
-  , largeBound  :: SHA256
+  , medium    :: SHA256
+  , mediumMax :: SHA256
   
-  , small       :: SHA256
-  , smallSmall  :: SHA256
+  , small     :: SHA256
+  , smallMax  :: SHA256
   }
 ```
 
-The large and small are bounded at 256 elements. We achieve this by keeping a record of the max bound of these numbers. This is found by hashing that number 255 times. As we increment each number, we check if it matches the max bound.
+The large and small are bounded at 256 elements. We achieve this by keeping a record of the max bound of these numbers. This is found by hashing that number 255 times \(0 is the unchanged value\). As we increment each number by taking its SHA256, we check if it matches the max bound. If it does, we increment the next-highest value, and reset the smaller values.
 
+Incrementing a larger value resets all smaller values. This is done by taking the complement and taking its SHA256.
 
+```haskell
+let
+  seed       = 0x600b56e66b7d12e08fd58544d7c811db0063d7aa467a1f6be39990fed0ca5b33
+  large      = sha256 seed -- 0x8e2023cc8b9b279c5f6eb03938abf935dde93be9bfdc006a0f570535fda82ef8
+  
+  mediumSeed = sha256 $ mask seed
+  medium     = sha256 mediumSeed
+  mediumMax  = 0x
+   
+  smallSeed  = sha256 $ mask mediumSeed
+  small      = sha256 smallSeed
+  smallMax   = 0x
+```
+
+```haskell
+-- large (0..), medium (0-255), small (0-255)
+
+toVersionHash :: SHA256
+toVersionHash CryptoCounter {..} = sha256 (large <> medium <> small)
+
+advance :: CryptoCounter -> CryptoCounter
+advance CryptoCounter {..} =
+  case (nextSmall == smallCeiling, nextMedium == mediumCeiling) of
+    (False, _)    -> advanceSmall
+    (True, False) -> advanceMedium
+    (_,    True)  -> advanceLarge
+    (False, True) -> error "PROBLEM (fix in smart constructor?)"
+
+  where
+    nextSmall  = sha256 small
+    nextMedium = sha256 medium
+
+    advanceSmall :: CryptoCounter
+    advanceSmall = CryptoCounter {small = nextSmall, ..}
+
+    advanceMedium :: CryptoCounter
+    advanceMedium =
+      let
+        resetSmall  = sha256 $ compliment nextMedium
+        resetMedium = sha256 $ compliment nextLarge
+
+      in
+        CryptoCounter
+          { large      = large
+
+          , medium     = nextMedium
+          , mediumCeil = recursiveSHA 256 nextMedium
+
+          , small      = resetSmall
+          , smallCeil  = recursiveSHA 256 resetSmall
+          }
+
+    advanceLarge :: CryptoCounter
+    advanceLarge =
+      let
+        nextLarge   = sha256 large
+        resetMedium = sha256 $ compliment nextLarge
+        resetSmall  = sha256 $ compliment resetMedium
+
+      in
+        CryptoCounter
+          { large      = nextLarge
+
+          , medium     = resetMedium
+          , mediumCeil = recursiveSHA 256 resetMedium
+
+          , small      = resetSmall
+          , smallCeil  = recursiveSHA 256 resetSmall
+          }
+```
+
+The setup
+
+```haskell
+setup :: CryptoCounter
+setup = do
+  largePreimage <- random
+  mediumAdvance <- randomBetween 0 254
+  smallAdvance  <- randomBetween 0 254
+
+  let
+    large       = sha256 largePreimage
+    masked bits = bits `xor` mask
+
+    mediumPreimage = sha256 $ maked largePreimage
+    medium         = recursiveSHA mediumAdvance mediumSeed
+    mediumCeiling  = recursiveSHA 255           mediumPreimage
+
+    smallPreimage = sha256 $ masked mediumPreimage
+    small         = recursiveSHA smallAdvance smallPreimage
+    smallCeiling  = recursiveSHA 255          smallPreimage
+
+  return CryptoCounter {..}
+```
 
 
 
