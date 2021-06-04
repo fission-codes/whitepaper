@@ -11,7 +11,7 @@ Self-share
 
 Sharing information with a user that’s offline is easy thanks to authenticated key exchange. All Fission users widely distribute a list of public 2048-bit RSA keys \(their ”exchange keys”\). This is generally exposed in DNS, but also written to their file system. With these keys, exchanging read keys, UCAN credentials, and other information is possible.
 
-The `authz_out` section of FLOOFS contains information being shared by the root user of that file system with other users. The most common case is a read key.
+W
 
 ### Layout
 

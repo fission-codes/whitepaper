@@ -1,6 +1,6 @@
 # File Layer
 
-The platform layer has decypted \(or ”unlocked”\) access to private vnodes.
+The platform layer has decypted \(or ”unlocked”\) access to SNodes.
 
 ### Unlocking
 
@@ -21,14 +21,14 @@ data DecryptedNode
   | DecryptedSymlink   Symlink
   | DecryptedMovedTo   PathFilter -- Must maintain the same key to work
 
-data PrivateFile = PrivateFile
+data SecretFile = SecretFile
   { metadata   :: Metadata
   , key        :: AES256
   , revision   :: SpiralRatchet
   , rawContent :: CID  -- can be split across many sections if we want to obscure files
   }
 
-data PrivateDirectory = PrivateDirectory
+data SecretDirectory = SecretDirectory
   { metadata       :: Metadata
   , bareNameFilter :: BareNameFilter
   , revision       :: SpiralRatchet
@@ -36,13 +36,14 @@ data PrivateDirectory = PrivateDirectory
   , links          :: Map Text PrivateLink
   }
 
-data PrivateLink = PrivateLink
-  { name    :: Text -- Just the last segment in the path
-  , key     :: AES256
-  , pointer :: NameFilter -- Small overhead for consistency
-  , size    :: Natural
-  , mtime   :: UTCTime
-  , isFile  :: Bool
+data Pointer 
+  = ByName NameFilter -- preferred by default because of multi-values
+  | ByContent CID
+
+data SecretLink = SecretLink
+  { key       :: Bytes
+  , algorithm :: CryptoAlgorithm
+  , pointer   :: Pointer
   }
 ```
 
@@ -55,7 +56,7 @@ The private section is recursively protected with AES-256 encryption. This is to
 Read access revocation is achieved by changing the AES key and linking to a higher node. As such, it is not recommended for a user with write permissions to rotate the key of the root of their subgraph, unless they’re able to redistribute that key somehow. For example, the root user is able to update the key for the root of the graph, and distribute that key to their other user instances by the `shared_by_me` mechanism.
 
 {% hint style="danger" %}
-A node with no valid key pointing at it is said to be orphaned, since it has no parents that are capable of acessing the data locked in the node. It may be marked for garbase collection by the root user.
+A node with no valid key pointing at it is said to be orphaned, since it has no parents that are capable of accessing the data locked in the node. It may be marked for garbage collection by the root user.
 {% endhint %}
 
 ### Decrypted Nodes
@@ -68,9 +69,9 @@ The protocol layer describes encrypted nodes, with a special naming scheme and o
 
 Encrypted virtual nodes are kept in a Merkle Patricia tree \(MPT\), organized by a blinded file name \(see more in the naming section below\).
 
-The probabilistic nature of XOR filter filenames does mean that related files are more likely to be placed near each other in the MPT, while not giving away why they are placed in that part of the tree. Some direct descendants or siblings will be in far other parts of the tree, depending on the position of the first different bit. The filter is fixed-size, which further simplifies this layout.
+The probabilistic nature of Bloom filter filenames does mean that related files are more likely to be placed near each other in the MPT, while not giving away why they are placed in that part of the tree. Some direct descendants or siblings will be in far other parts of the tree, depending on the position of the first different bit. The filter is fixed-size, which further simplifies this layout.
 
-This layout greatly improves write access verification time, while eliminating the plaintext tree structure. An authorized user reconstructs the human-readable DAG at runtime by following links in decrypted nodes. Their links point to files in the MPT \(or faster via the cache\).
+This layout greatly improves write access verification time, while eliminating the plaintext tree structure. An authorized user reconstructs the human-readable DAG at runtime by following links in decrypted nodes. Their links point to files in the MMPT \(or faster via the cache\).
 
 ## Move Markers
 

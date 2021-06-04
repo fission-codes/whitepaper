@@ -1,7 +1,5 @@
 # Data Layer
 
-
-
 {% hint style="info" %}
 This section describes how the `/private` segment would look to an **unauthorized** user. This is how the data is stored and propagated through the network only.
 {% endhint %}
@@ -42,7 +40,7 @@ Being an append-only data structure, merging in absence of namespace conflicts i
 
 #### LWW & Multivalues
 
-In the case of namespace conflicts, store both leaves. In absence of other selection criteria \(such as hardcoded choice\), pick the lowest \(in binary\) CID. In other words, pick the longest causal chain, and deterministically select an arbitrary element when the event numbers overlap. This is a mix of causal order last-writer-wins \(LWW\), and multivalues.
+In the case of namespace conflicts, store both leaves. In absence of other selection criteria \(such as hardcoded choice\), pick the lowest \(in binary\) CID. In other words, pick the longest causal chain, and deterministically select an arbitrary element when the event numbers overlap. This is a varaint of multivalues, with nondestructive last-writer-wins \(LWW\) semantics in the case of a longest chain.
 
 ![Multivalue example, https://bartoszsypytkowski.com/operation-based-crdts-registers-and-sets/](../../../.gitbook/assets/multi-value-register-timeline.png)
 

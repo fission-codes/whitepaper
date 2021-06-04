@@ -4,7 +4,7 @@ description: Forward-secret versioning
 
 # Spiral Ratchet
 
-Every node in the private tree is encrypted with a different key. This is done randomly for child nodes \(y-axis\), and deterministically with a cryptographic ratchet for increasing versions.
+Every node in the private tree is encrypted with a different key. This is done randomly for child nodes \(along the y-axis\), and deterministically with a cryptographic ratchet for increasing versions \(along the z-axis\).
 
 The basic idea for cryptographic ratchets is that repeatedly hashing a value creates a kind of forward-secret clock. When you start watching the clock, you can generate the hash for any arbitrary future steps, but not steps from prior to observation since that requires computing the SHA preimage.
 
