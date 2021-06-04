@@ -33,6 +33,8 @@ The large and small are bounded at 256 elements. We achieve this by keeping a re
 
 The metaphor is a spiral. You can ratchet one at a time, or deterministically skip to the start of the next ring in the spiral.
 
+![https://commons.wikimedia.org/wiki/File:Ulam\_spiral\_howto\_all\_numbers.svg](../../../../.gitbook/assets/532px-ulam_spiral_howto_all_numbers.svg.png)
+
 ```haskell
 data SpiralRatchet = SpiralRatchet
   { large     :: SHA256
