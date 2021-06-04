@@ -65,16 +65,18 @@ We still want small step changes to very fast, but also be able to deterministic
 This involves three hashes, two of which are bounded. We call these the epoch, large, and small numbers. Positionally this look like:
 
 ```text
-epoch large small
+large medium small
 
 # Example as base64
-e = CEx5nNVR3R2NXF+aXVk7LpMfXjYSLuXHk8HQihmDnMA=
-l = TpVf6gJoUYy6pQBAnfvsiPDs660o2E7L4lC67ZfbqIk=
-s = 22J55fqnMjce3zjkY3Yw3Cr/s6g3MYDiN0h4wZMhBLE=
+l = 0x600b56e66b7d12e08fd58544d7c811db0063d7aa467a1f6be39990fed0ca5b33
+m = 0x5d58264a09dce1f2676e729d0ea1db4bf90b9be463d7fc1aa9b43b358e514599
+s = 0xc8633540cabdf591e07918a2595964cc1b692d0f9392f079f2f110c08b67c6f4
 ```
 
+The large and small are bounded at 256 elements. We achieve this by keeping a record of the max bound of these numbers. This is found by hashing that number 255 times \(0 is the unchanged value\). As we increment each number by taking its SHA256, we check if it matches the max bound. If it does, we increment the next-highest value, and reset the smaller values.
+
 ```haskell
-data Counter = Counter
+data JumpRatchet = JumpRatchet
   { large     :: SHA256
 
   , medium    :: SHA256
@@ -83,34 +85,47 @@ data Counter = Counter
   , small     :: SHA256
   , smallMax  :: SHA256
   }
+  
+exampleJR = JumpRatchet
+  { large     = 0x600b56e66b7d12e08fd58544d7c811db0063d7aa467a1f6be39990fed0ca5b33
+  
+  , medium    = 0x5d58264a09dce1f2676e729d0ea1db4bf90b9be463d7fc1aa9b43b358e514599
+  , mediumMax = 0x5aae7b2b881d21863292a1556eafd2a3b21527f64f33c6fcc2beaa9d9cf1fe5f
+  
+  , small     = 0xc8633540cabdf591e07918a2595964cc1b692d0f9392f079f2f110c08b67c6f4
+  , smallMax  = 0xb95c5d8851daff6204eb227f56d8c6af1c11a80d46d17eb0aa219a9d2ec109af
+  }
 ```
 
-The large and small are bounded at 256 elements. We achieve this by keeping a record of the max bound of these numbers. This is found by hashing that number 255 times \(0 is the unchanged value\). As we increment each number by taking its SHA256, we check if it matches the max bound. If it does, we increment the next-highest value, and reset the smaller values.
+Incrementing a larger value resets all smaller values. This is done by taking the SHA256 of the \(one's\) complement. This cascades from larger to all smaller positions.
 
-Incrementing a larger value resets all smaller values. This is done by taking the complement and taking its SHA256.
+{% hint style="danger" %}
+Please note that JavaScript's basic inverse function behaves unexpectedly. The `~` operator casts values to their one's compliment _integer_. This means that `~ 0b11 !== 0b00`, but rather `~ 0b11 === -4`. `-4` is not expresible in JS binary, since it interprets binary notation as being a natural number only. To keep this from happening, XOR a 1-mask of equal length `0b1111...`.
+{% endhint %}
+
+The small and medium values are base-256. This means that the first position increments in ones, the second position increments in 256s, and the third position by 65,536s. Looking at a triple does not admit which number it is, only which number relative to the max bounds of the medium and small numbers. It is not possible to determine which of epoch \(large number\) you are in. Here is a \_\_\_\_\_\_\_\_\_\_\_\_.
 
 ```haskell
-let
-  seed       = 0x600b56e66b7d12e08fd58544d7c811db0063d7aa467a1f6be39990fed0ca5b33
-  large      = sha256 seed -- 0x8e2023cc8b9b279c5f6eb03938abf935dde93be9bfdc006a0f570535fda82ef8
+seed       = 0x600b56e66b7d12e08fd58544d7c811db0063d7aa467a1f6be39990fed0ca5b33
+large      = sha256 seed -- 0x8e2023cc8b9b279c5f6eb03938abf935dde93be9bfdc006a0f570535fda82ef8
   
-  mediumSeed = sha256 $ mask seed
-  medium     = sha256 mediumSeed
-  mediumMax  = 0x
+mediumSeed = sha256 $ Binary.complement seed
+medium     = sha256 mediumSeed
+mediumMax  = iterate sha256 medium !! 255
    
-  smallSeed  = sha256 $ mask mediumSeed
-  small      = sha256 smallSeed
-  smallMax   = 0x
+smallSeed  = sha256 $ Binary.complement mediumSeed
+small      = sha256 smallSeed
+smallMax   = iterate sha256 small !! 256
 ```
 
 ```haskell
 -- large (0..), medium (0-255), small (0-255)
 
 toVersionHash :: SHA256
-toVersionHash CryptoCounter {..} = sha256 (large <> medium <> small)
+toVersionHash JumpRatchet {..} = sha256 (large `xor` medium `xor` small)
 
-advance :: CryptoCounter -> CryptoCounter
-advance CryptoCounter {..} =
+advance :: JumpRatchet -> JumpRatchet
+advance JumpRatchet {..} =
   case (nextSmall == smallCeiling, nextMedium == mediumCeiling) of
     (False, _)    -> advanceSmall
     (True, False) -> advanceMedium
@@ -121,17 +136,17 @@ advance CryptoCounter {..} =
     nextSmall  = sha256 small
     nextMedium = sha256 medium
 
-    advanceSmall :: CryptoCounter
-    advanceSmall = CryptoCounter {small = nextSmall, ..}
+    advanceSmall :: JumpRatchet
+    advanceSmall = JumpRatchet {small = nextSmall, ..}
 
-    advanceMedium :: CryptoCounter
+    advanceMedium :: JumpRatchet
     advanceMedium =
       let
         resetSmall  = sha256 $ compliment nextMedium
         resetMedium = sha256 $ compliment nextLarge
 
       in
-        CryptoCounter
+        JumpRatchet
           { large      = large
 
           , medium     = nextMedium
@@ -141,7 +156,7 @@ advance CryptoCounter {..} =
           , smallCeil  = recursiveSHA 256 resetSmall
           }
 
-    advanceLarge :: CryptoCounter
+    advanceLarge :: JumpRatchet
     advanceLarge =
       let
         nextLarge   = sha256 large
@@ -149,7 +164,7 @@ advance CryptoCounter {..} =
         resetSmall  = sha256 $ compliment resetMedium
 
       in
-        CryptoCounter
+        JumpRatchet
           { large      = nextLarge
 
           , medium     = resetMedium
