@@ -72,3 +72,11 @@ The probabilistic nature of XOR filter filenames does mean that related files ar
 
 This layout greatly improves write access verification time, while eliminating the plaintext tree structure. An authorized user reconstructs the human-readable DAG at runtime by following links in decrypted nodes. Their links point to files in the MPT \(or faster via the cache\).
 
+## Move Markers
+
+Rotated ratchet.
+
+## Root Self-Storage
+
+Store the namefilter and/or CID and key. Keep cache mapping all seen namefilter =&gt; keys?
+

@@ -104,14 +104,14 @@ exampleSR = SpiralRatchet
 Incrementing a larger value resets all smaller values. This is done by taking the SHA-256 of the \(one's\) complement. This cascades from larger to all smaller positions.
 
 {% hint style="danger" %}
-Please note that JavaScript's basic inverse function behaves unexpectedly. The `~` operator casts values to their one's compliment _integer_. This means that `~0b11 !== 0b00`, but rather `~0b11 === -4`. `-4` is not expressible in JS binary, since it interprets binary notation as being a natural number only \(rather than its two's compliment\). To keep this from happening, use a toggle mask of equal length: `val ^ b1111...`.
+Please note that JavaScript's basic inverse function behaves unexpectedly. The `~` operator casts values to their one's compliment _integer_. This means that `~0b11 !== 0b00`, but rather `~0b11 === -4`. `-4` can not be directly expressed in JS binary, since it interprets binary notation as being a natural number only \(rather than its two's compliment\). To keep this from happening, use a toggle mask of equal length: `val ^ b1111...`.
 {% endhint %}
 
 The small and medium values are base-256. This means that the first position increments in ones \(2^0\), the second position increments in 256s \(2^8\), and the third position by 65,536s \(2^16\). Looking at a triple does not admit which number it is, only which number relative to the max bounds of the medium and small numbers. It is not possible to determine which of epoch \(large number\) you are in. Here is an example of a spiral ratchet being constructed from a seed value.
 
 ```haskell
 seed       = 0x600b56e66b7d12e08fd58544d7c811db0063d7aa467a1f6be39990fed0ca5b33
-large      = sha256 seed -- 0x8e2023cc8b9b279c5f6eb03938abf935dde93be9bfdc006a0f570535fda82ef8
+large      = sha256 seed -- e.g. 0x8e2023cc8b9b279c5f6eb03938abf935dde93be9bfdc006a0f570535fda82ef8
   
 mediumSeed = sha256 $ Binary.complement seed
 medium     = sha256 mediumSeed
@@ -225,9 +225,9 @@ $$
 
 If required, doubling `n` and `m` leaves `p` and `k` constant. See [here for pretty graphs](https://hur.st/bloomfilter/?n=47&p=&m=2048&k=30) \(useful for parameter tuning, verified manually\).
 
-#### Name Epoch
+#### File Descriptor
 
-The identity hash is a random SHA256 value
+The identity of a file is a random 256-bit value. This fills the role of a standard file descriptor. This value must be present in the namefilter for write access to work \(see private file UCAN write semantics\).
 
 #### Bare / Unsaturated Namefilter
 
