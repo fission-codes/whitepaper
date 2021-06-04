@@ -58,9 +58,36 @@ SHA-256 is native to the WebCypto API, is a very fast operation, and commonly ha
 
 1. the root of the unencrypted tree updates with with every atomic operation, and thus accrues a lot of changes  
 2. an actor may be many months since their last sync, and need to fast forward their clock by some huge number of elements  
-3. Seeking ahead by 100ks or millions takes very noticable time
+3. Seeking ahead by 100ks or millions takes very noticeable time
 
-We still want small step changes to very fast, but also be able to determinstically tune how quickly we jump ahead, without revealing previous counter hashes. Positional counting does exactly this in many numeral systems, including our familiar decimal system \(AKA "base-ten positional numerals"\).
+We still want small step changes to very fast, but also be able to deterministically tune how quickly we jump ahead, without revealing previous counter hashes. Positional counting does exactly this in many numeral systems, including our familiar decimal system \(AKA "base-ten positional numerals"\). Here we use a mixed radix to achieve a balance between the speed and determinism of positional systems, and the ability to constrain how much history a user can see.
+
+This involves three hashes, two of which are bounded. We call these the epoch, large, and small numbers. Positionally this look like:
+
+```text
+epoch large small
+
+# Example as base64
+e = CEx5nNVR3R2NXF+aXVk7LpMfXjYSLuXHk8HQihmDnMA=
+l = TpVf6gJoUYy6pQBAnfvsiPDs660o2E7L4lC67ZfbqIk=
+s = 22J55fqnMjce3zjkY3Yw3Cr/s6g3MYDiN0h4wZMhBLE=
+```
+
+```haskell
+data Counter = Counter
+  { epoch       :: SHA256
+
+  , large       :: SHA256
+  , largeBound  :: SHA256
+  
+  , small       :: SHA256
+  , smallSmall  :: SHA256
+  }
+```
+
+The large and small are bounded at 256 elements. We achieve this by keeping a record of the max bound of these numbers. This is found by hashing that number 255 times. As we increment each number, we check if it matches the max bound.
+
+
 
 
 
