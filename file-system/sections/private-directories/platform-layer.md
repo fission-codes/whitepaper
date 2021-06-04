@@ -9,7 +9,7 @@ To read a node, the user needs to have the key either available from another nod
 To read or ”unlock“ a private node, you need the node and its key:
 
 ```haskell
-read :: AES256 -> EncryptedNode -> DecryptedNode
+read :: AES256 -> SecretNode -> DecryptedNode
 ```
 
 ### Unlocked Private Node Schema
@@ -24,13 +24,14 @@ data DecryptedNode
 data PrivateFile = PrivateFile
   { metadata   :: Metadata
   , key        :: AES256
+  , revision   :: SpiralRatchet
   , rawContent :: CID  -- can be split across many sections if we want to obscure files
   }
 
 data PrivateDirectory = PrivateDirectory
   { metadata       :: Metadata
   , bareNameFilter :: BareNameFilter
-  , revision       :: Natural -- Version counter for this exact AES key
+  , revision       :: SpiralRatchet
   , previous       :: EncryptedLink
   , links          :: Map Text PrivateLink
   }

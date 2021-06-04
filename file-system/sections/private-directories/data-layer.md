@@ -44,15 +44,17 @@ In the case of namespace conflicts, store both leaves. In absence of other selec
 
 ![Multivalue example, https://bartoszsypytkowski.com/operation-based-crdts-registers-and-sets/](../../../.gitbook/assets/multi-value-register-timeline.png)
 
-By default, WNFS will automatically pick the the highest version, or in the case of multiple values at a single version, the lowest namefilter number. Here is one such exmaple, where the algorithm would automatically chose `QmbX21...` as the default variant. The user can override this choice by pointing at `Qmr18U...` from the parent directory, or directly in the link.
+By default, WNFS will automatically pick the the highest revision, or in the case of multiple values at a single version, the highest namefilter number. Here is one such exmaple, where the algorithm would automatically chose `QmbX21...` as the default variant. The user can override this choice by pointing at `Qmr18U...` from the parent directory, or directly in the link.
 
 ![](../../../.gitbook/assets/screen-shot-2021-06-02-at-20.04.00.png)
 
-## Spiral Ratchet
+## Forward-Secret Spiral Ratchet
+
+Every node in the MMPT is encrypted with a different key. This is done randomly for child nodes \(y-axis\), and deterministically with a cryptographic ratchet for increasing versions.
 
 The basic idea for cryptographic ratchets is that repeatedly hashing a value creates a kind of forward-secret clock. When you start watching the clock, you can generate the hash for any arbitrary future steps, but not steps from prior to observation since that requires computing the SHA preimage.
 
-SHA-256 is native to the WebCypto API, is a very fast operation, and commonly hardware accelerated. Anecdotally, running 10k recursive SHA256s in Firefox on an Apple M1 completes in around 300ms. The problem with a single hash counter is threefold:
+SHA-256 is native to the WebCypto API, is a very fast operation, and commonly hardware accelerated. Anecdotally, running 10k recursive SHA-256s in Firefox on an Apple M1 completes in around 300ms. The problem with a single hash counter is threefold:
 
 1. The root of the unencrypted tree updates with with every atomic operation, and thus accrues a lot of changes  
 2. An actor may be many months since their last sync, and need to fast forward their clock by some huge number of elements  
@@ -60,20 +62,22 @@ SHA-256 is native to the WebCypto API, is a very fast operation, and commonly ha
 
 We still want small step changes to very fast, but also be able to deterministically tune how quickly we jump ahead, without revealing previous counter hashes, while maintaining the same security properties as a single ratchet counter.
 
-Positional counting does exactly this in many numeral systems, including our familiar decimal system \(AKA "base-ten positional numerals"\). Here we use a mixed radix to achieve a balance between the speed and determinism of positional systems, and the ability to constrain how much history a user can see.
+Positional counting does exactly this in the most common numeral systems. Our design involves three positions, two of which are bounded. We call these the large \(or epoch\), medium, and small numbers. 
 
-Our design involves three hashes, two of which are bounded. We call these the large \(or epoch\), medim, and small numbers. Positionally this look like:
+Positionally this look like:
 
 ```text
-large medium small
+large   medium  small
+l*2^16  m*2^8   s*2^0
 
-# Example as base64
 l = 0x600b56e66b7d12e08fd58544d7c811db0063d7aa467a1f6be39990fed0ca5b33
 m = 0x5d58264a09dce1f2676e729d0ea1db4bf90b9be463d7fc1aa9b43b358e514599
 s = 0xc8633540cabdf591e07918a2595964cc1b692d0f9392f079f2f110c08b67c6f4
 ```
 
 The large and small are bounded at 256 elements. We achieve this by keeping a record of the max bound of these numbers. This is found by hashing that number 255 times \(0 is the unchanged value\). As we increment each number by taking its SHA256, we check if it matches the max bound. If it does, we increment the next-highest value, and reset the smaller values.
+
+The metaphor is a spiral. You can ratchet one at a time, or deterministically skip to the start of the next ring in the spiral.
 
 ```haskell
 data SpiralRatchet = SpiralRatchet
@@ -100,10 +104,10 @@ exampleSR = SpiralRatchet
 Incrementing a larger value resets all smaller values. This is done by taking the SHA-256 of the \(one's\) complement. This cascades from larger to all smaller positions.
 
 {% hint style="danger" %}
-Please note that JavaScript's basic inverse function behaves unexpectedly. The `~` operator casts values to their one's compliment _integer_. This means that `~0b11 !== 0b00`, but rather `~0b11 === -4`. `-4` is not expresible in JS binary, since it interprets binary notation as being a natural number only \(rather than its two's compliment\). To keep this from happening, use a toggle mask of equal length: `val ^ b1111...`.
+Please note that JavaScript's basic inverse function behaves unexpectedly. The `~` operator casts values to their one's compliment _integer_. This means that `~0b11 !== 0b00`, but rather `~0b11 === -4`. `-4` is not expressible in JS binary, since it interprets binary notation as being a natural number only \(rather than its two's compliment\). To keep this from happening, use a toggle mask of equal length: `val ^ b1111...`.
 {% endhint %}
 
-The small and medium values are base-256. This means that the first position increments in ones, the second position increments in 256s \(2^8\), and the third position by 65,536s \(2^16\). Looking at a triple does not admit which number it is, only which number relative to the max bounds of the medium and small numbers. It is not possible to determine which of epoch \(large number\) you are in. Here is a \_\_\_\_\_\_\_\_\_\_\_\_.
+The small and medium values are base-256. This means that the first position increments in ones \(2^0\), the second position increments in 256s \(2^8\), and the third position by 65,536s \(2^16\). Looking at a triple does not admit which number it is, only which number relative to the max bounds of the medium and small numbers. It is not possible to determine which of epoch \(large number\) you are in. Here is an example of a spiral ratchet being constructed from a seed value.
 
 ```haskell
 seed       = 0x600b56e66b7d12e08fd58544d7c811db0063d7aa467a1f6be39990fed0ca5b33
@@ -117,6 +121,8 @@ smallSeed  = sha256 $ Binary.complement mediumSeed
 small      = sha256 smallSeed
 smallMax   = iterate sha256 small !! 256
 ```
+
+Here is how to increment the ratchet by one:
 
 ```haskell
 -- large (0..), medium (0-255), small (0-255)
@@ -175,31 +181,28 @@ advance SpiralRatchet {..} =
           }
 ```
 
-The setup starts at a random point in this scheme.
+Many files will have few revisions. To prevent leaking this information, we take advantage of the fact that the setup starts at a random point in the ratchet:
 
 ```haskell
-setup :: CryptoCounter
+setup :: SpiralRatchet
 setup = do
-  largePreimage <- random
-  mediumAdvance <- randomBetween 0 254
-  smallAdvance  <- randomBetween 0 254
+  largePre   <- random -- ratchet seed
+  mediumSkip <- randomBetween 0 254
+  smallSkip  <- randomBetween 0 254
 
   let
-    large       = sha256 largePreimage
-    masked bits = compliment bits
+    large = sha256 largePre
 
-    mediumPreimage = sha256 $ compliment largePreimage
-    medium         = recursiveSHA mediumAdvance mediumSeed
-    mediumCeiling  = recursiveSHA 255           mediumPreimage
+    mediumPre = sha256 $ compliment largePre
+    medium    = recursiveSHA mediumSkip mediumPre
+    mediumMax = recursiveSHA 255 mediumPre
 
-    smallPreimage = sha256 $ compliment mediumPreimage
-    small         = recursiveSHA smallAdvance smallPreimage
-    smallCeiling  = recursiveSHA 255          smallPreimage
+    smallPre = sha256 $ compliment mediumPre
+    small    = recursiveSHA smallSkip smallPre
+    smallMax = recursiveSHA 255 smallPre
 
-  return CryptoCounter {..}
+  return SpiralRatchet {..}
 ```
-
-
 
 ## Namefilters
 
@@ -222,19 +225,15 @@ $$
 
 If required, doubling `n` and `m` leaves `p` and `k` constant. See [here for pretty graphs](https://hur.st/bloomfilter/?n=47&p=&m=2048&k=30) \(useful for parameter tuning, verified manually\).
 
-#### Private Versioning
+#### Name Epoch
 
-WNFS is a persistent, versioned file system. Including the version is essential for many parts of the system \(seen throughout the rest of this section\). In principle this can be any counter, including simple natural numbers, depending on the design goals of the broader system.
-
-WNFS uses a forward secret positional hash clock, which is described in its own section.
-
-This version is hashed and added to the private namefilter.
+The identity hash is a random SHA256 value
 
 #### Bare / Unsaturated Namefilter
 
 The bare namefilter for any node is the parent's bare namefilter plus the current node's read key. This bare namefilter is passed down to the child SNodes and encrypted along with other header information.
 
-The root node has no parent, so its bare namefilter is merely the SHA-256 hash of its key placed in a Bloom filter. A child node is passed its parent's bare namefilter, and includes it with the SHA-256 of its key to generate its namefilter.
+The root node has no parent, so its bare namefilter is merely the SHA-256 hash of its identity hash placed in a Bloom filter. A child node is passed its parent's bare namefilter, and includes it with the SHA-256 of its key to generate its namefilter.
 
 ```haskell
 bareParent = 0x01010101 -- parent, unless is root
@@ -243,9 +242,15 @@ version    = sha256(hashClock)
 bare       = bareParent .|. current .|. version
 ```
 
+#### Private Versioning
+
+WNFS is a persistent, versioned file system. Including the version is essential for many parts of the system \(seen throughout the rest of this section\). In principle this can be any counter, including simple natural numbers, depending on the design goals of the broader system.
+
+WNFS uses a forward-secret spiral ratchet for versioning, which is described in its own section. This ratchet is hashed and added to the bare namefilter.
+
 #### Hamming Saturation
 
-By default, Bloom filters admit \(roughly\) how many elements they contain, and are relatively easy to correlate by their Hamming distance. To work around this issue, namefilters deterministically saturate the remaining space, filling roughly _half_ of the available filter, while maintaining a very low false positive rate. The idea is to fill the namefilter with a constant Hamming weight, but still be easily constructable by someone with the bare namefilter.
+Bloom filters admit \(roughly\) how many elements they contain, and are relatively easy to correlate by their Hamming distance. To work around this issue with obsfucation, namefilters deterministically saturate the remaining space, filling just over _half_ of the available filter, while maintaining a very low false positive rate. The idea is to fill the namefilter with a constant Hamming weight, but still be easily constructable by someone with the bare namefilter.
 
 #### Pseudocode Algorithm
 
@@ -292,10 +297,6 @@ In this way, we can deterministically generate very different looking filters fo
   * A UCAN + a hash of the read key to the highest node the user can write to
   * Match on cryptographically blind set membership
 
-### UCAN
-
-dsa
-
 ### Design Considerations
 
 GCAs were chosen over other [arguably more sophisticated](https://www.fim.uni-passau.de/fileadmin/dokumente/fakultaeten/fim/forschung/mip-berichte/MIP_1210.pdf) options for three main reasons reasons: witness side, raw performance, and ease of implementation for web browsers. For example, we were unable to find a widely-used RSA accumulator library on NPM or Crates, but implementing a GCA is very straightforward.
@@ -308,77 +309,22 @@ We considered using XOR or Cuckoo filters instead of class Bloom filters. XOR is
 
 An SNode that has been secured in this way is called an ”secure virtual node”. The contents of these nodes is largely the same as their plaintext counterparts, plus a key table for their children.
 
-The core difference is the encrypted storage \(protocol layer\), and secrecy of the key used to start the decryption process. The key is always external to the ENode, and its not aware of whch key was used to create it. Here at the protocol layer, we are not directly concerned with the contents.
+The core difference is the encrypted storage \(protocol layer\), and secrecy of the key used to start the decryption process. The key is always external to the SNode, and its not aware of which key was used to create it. Here at the protocol layer, we are not directly concerned with the contents.
 
 ```haskell
-data EncryptedNode 
-  = EncryptedNode CID -- simple!
+data SecretNode 
+  = SecretNode CID -- simple!
 
-data ETree 
-  = ETreeNode 
-  | ETreeLeaf
+data STree 
+  = STreeNode 
+  | STreeLeaf
 
-data ETreeLeaf 
-  = ETreeLeaf CID
+data STreeLeaf 
+  = STreeLeaf CID
 
-data ETreeNode = ETreeNode
-  { zero :: (HashFilter512, ETree) -- NOTEThese are *sides*, and may terminate directly
-  , one  :: (HashFilter512, ETree)
+data STreeNode = STreeNode
+  { zero :: (Namefilter, STree) -- NOTEThese are *sides*, and may terminate directly
+  , one  :: (namefilter, STree)
   }
-```
-
-## SNode Naming
-
-Files names are a consistent legth: 512-bits. They are XOR filters, and have a consistent number of bits flipped \(e.g. 320\). For instance \(expressed in base58\):
-
-```text
-yP4cqy7jmaRDzC2bmcGNZkuQb3VdftMk6YH7ynQ2Qw4zktKsyA9fk52xghNQNAdkpF9iFmFkKh2bNVG4kDWhsok
-```
-
-The method of generating these names is explained in the decrypted node section.
-
-## Node Cache
-
-{% hint style="info" %}
-It’s concievable that this structure could be implemented ”natively” in IPFS by using the `Links` array, but would require investigating the bounds and performance characteristics of the protocol itself.
-
-Another, option would be to store these as records in a SQLite database written to WNFS. This will probaby has better performance characteristics, even if it only has one table. It will also likely be able to do very efficient substring matching on keys \(file names\). Also:
-
-> SQLite Is Public Domain
-
-If SQLite works for our use case, we can ignore the hashing and whatnot below to better facilitate lookups by string match.
-{% endhint %}
-
-Currently traversing an MPT over the network of \(max\) depth 512 can take a while. Following paths in a decrypted node \(see below\) requires doing a large number of lookups, and having an in-memory structure to do this with speeds things up significantly.
-
-A totally flat, append-only namespace with unique names has a number of nice properties. For one, it can be represented as a simple sorted array, which we do here.
-
-{% hint style="warning" %}
-Please note that this cache is just that: a cache. It can be destroyed and reconstituded at any time \(for example if it were to become corrupted\). That said, given that it’s publicly viewable, a validator can check that it conforms to the updates in the MPT.
-{% endhint %}
-
-The file namespace is larger than we could ever use. It includes many redundant bits to aid in private access control \(more below\), but need not exist in this lookup table. Instead we use a SHA-256 to reduce the size by nearly half in the hash table. Between the hash and CID, each record occupies ~64 bytes \(depending on generation of CID\). This table can store ~15k entries / MB. Most of the underlying blocks will stay the same size, so syncing updates is very efficient in the normal case.
-
-```text
-sha256(name)cid
-```
-
-There is additionally a compact cache, stored as a simple DSV file. Since the filenames are a consistent length, we don’t need a delimiter between the name and CID. As an example, with entries separated by newlines.
-
-```text
-2fFhPSYcgauRHumcQJqLvTxALipgmRLrAyYMDgmDVHU9QmfYStuhL72tdXoQWzicdzEehYaeXvhUNCrawBEWNP7DYX
-33UrmA5tdPd4m97gB8FxRnwrErd3z2iKnU1W87zJqkMCQmetjBvK1M7STBSgauk1WaLHhzRG6mZpMeWZpEjYJXZcBi
-7jRXo2LwMyUpgUuzkiKdNzFV4ZSZCbg5hjd3Ka7zsap5QmXvdZoqpPbsN6UQHomFtMiCm8C4VZZb8KBBUBapEB8LHP
-9EHKSbWZQfgRtCowkNtQosmC6CeQajvpvUTK4zJixjEKQmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ
-```
-
-An update to this is simply adding an entry at the correct \(ordered\) position in the file:
-
-```bash
-2fFhPSYcgauRHumcQJqLvTxALipgmRLrAyYMDgmDVHU9QmfYStuhL72tdXoQWzicdzEehYaeXvhUNCrawBEWNP7DYX
-33UrmA5tdPd4m97gB8FxRnwrErd3z2iKnU1W87zJqkMCQmetjBvK1M7STBSgauk1WaLHhzRG6mZpMeWZpEjYJXZcBi
-7jRXo2LwMyUpgUuzkiKdNzFV4ZSZCbg5hjd3Ka7zsap5QmXvdZoqpPbsN6UQHomFtMiCm8C4VZZb8KBBUBapEB8LHP
-7B275X26t46NXcgxxBQc1x5QQHx9rULSn6aBb7yrc9b5QmfYStuhL72tdXoQWzicdzEehYaeXvhUNCrawBEWNP7DYX # New!
-9EHKSbWZQfgRtCowkNtQosmC6CeQajvpvUTK4zJixjEKQmW2WQi7j6c7UgJTarActp7tDNikE4B2qXtFCfLPdsgaTQ
 ```
 
