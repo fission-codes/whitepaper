@@ -67,17 +67,17 @@ The protocol layer describes encrypted nodes, with a special naming scheme and o
 
 ## Storage Layout
 
-Encrypted virtual nodes are kept in a Merkle Patricia tree \(MPT\), organized by a blinded file name \(see more in the naming section below\).
+Encrypted virtual nodes are kept in a Modified Merkle Patricia tree \(MMPT\), organized by a blinded file name \(see more in the naming section below\).
 
-The probabilistic nature of Bloom filter filenames does mean that related files are more likely to be placed near each other in the MPT, while not giving away why they are placed in that part of the tree. Some direct descendants or siblings will be in far other parts of the tree, depending on the position of the first different bit. The filter is fixed-size, which further simplifies this layout.
+The probabilistic nature of Bloom filter filenames does mean that related files are more likely to be placed near each other in the MMPT, while not giving away why they are placed in that part of the tree. Some direct descendants or siblings will be in far other parts of the tree, depending on the position of the first different bit. The filter is fixed-size, which further simplifies this layout.
 
-This layout greatly improves write access verification time, while eliminating the plaintext tree structure. An authorized user reconstructs the human-readable DAG at runtime by following links in decrypted nodes. Their links point to files in the MMPT \(or faster via the cache\).
+This layout greatly improves write access verification time, while eliminating the plaintext tree structure. An authorized user reconstructs the human-readable DAG at runtime by following links in decrypted nodes. Their links point to files in the MMPT.
 
 ## Key Rotation
 
 While the ratchet revision maintains forward-secrecy, backwards-secrecy is achieved with a ratchet reset \(which is equivalent to a key rotation\). This involves:
 
-1. Placing a `MovedTo` node contaning a pointer to the new namefilter
+1. Placing a `MovedTo` node containing a pointer to the new namefilter
 2. Re-sharing the rotated ratchet with all authorized users
 3. Adding the file descriptor to the file descriptor graveyard
 
