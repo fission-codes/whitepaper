@@ -48,21 +48,21 @@ By default, WNFS will automatically pick the the highest version, or in the case
 
 ![](../../../.gitbook/assets/screen-shot-2021-06-02-at-20.04.00.png)
 
-## Accumulating Positional Hash Counter / Jump Ratchet
+## Spiral Ratchet
 
-WRONG LAYER!!
-
-The positional hash calendar is related to [hash calendars](https://en.wikipedia.org/wiki/Hash_calendar), the [Lamport OTP](http://www.cs.cornell.edu/courses/cs513/2004SP/NL11Lamport.html) scheme, and [Solana's Proof of History](https://solana.com/news/proof-of-history---a-clock-for-blockchain). The basic idea is that repeatedly hashing a value creates a kind of forward-secret clock. When you start watching the clock, you can generate the hash for any arbitrary future steps, but not steps from prior to observation since that requires computing the SHA preimage.
+The basic idea for cryptographic ratchets is that repeatedly hashing a value creates a kind of forward-secret clock. When you start watching the clock, you can generate the hash for any arbitrary future steps, but not steps from prior to observation since that requires computing the SHA preimage.
 
 SHA-256 is native to the WebCypto API, is a very fast operation, and commonly hardware accelerated. Anecdotally, running 10k recursive SHA256s in Firefox on an Apple M1 completes in around 300ms. The problem with a single hash counter is threefold:
 
-1. the root of the unencrypted tree updates with with every atomic operation, and thus accrues a lot of changes  
-2. an actor may be many months since their last sync, and need to fast forward their clock by some huge number of elements  
+1. The root of the unencrypted tree updates with with every atomic operation, and thus accrues a lot of changes  
+2. An actor may be many months since their last sync, and need to fast forward their clock by some huge number of elements  
 3. Seeking ahead by 100ks or millions takes very noticeable time
 
-We still want small step changes to very fast, but also be able to deterministically tune how quickly we jump ahead, without revealing previous counter hashes. Positional counting does exactly this in many numeral systems, including our familiar decimal system \(AKA "base-ten positional numerals"\). Here we use a mixed radix to achieve a balance between the speed and determinism of positional systems, and the ability to constrain how much history a user can see.
+We still want small step changes to very fast, but also be able to deterministically tune how quickly we jump ahead, without revealing previous counter hashes, while maintaining the same security properties as a single ratchet counter.
 
-This involves three hashes, two of which are bounded. We call these the epoch, large, and small numbers. Positionally this look like:
+Positional counting does exactly this in many numeral systems, including our familiar decimal system \(AKA "base-ten positional numerals"\). Here we use a mixed radix to achieve a balance between the speed and determinism of positional systems, and the ability to constrain how much history a user can see.
+
+Our design involves three hashes, two of which are bounded. We call these the large \(or epoch\), medim, and small numbers. Positionally this look like:
 
 ```text
 large medium small
@@ -76,7 +76,7 @@ s = 0xc8633540cabdf591e07918a2595964cc1b692d0f9392f079f2f110c08b67c6f4
 The large and small are bounded at 256 elements. We achieve this by keeping a record of the max bound of these numbers. This is found by hashing that number 255 times \(0 is the unchanged value\). As we increment each number by taking its SHA256, we check if it matches the max bound. If it does, we increment the next-highest value, and reset the smaller values.
 
 ```haskell
-data JumpRatchet = JumpRatchet
+data SpiralRatchet = SpiralRatchet
   { large     :: SHA256
 
   , medium    :: SHA256
@@ -86,7 +86,7 @@ data JumpRatchet = JumpRatchet
   , smallMax  :: SHA256
   }
   
-exampleJR = JumpRatchet
+exampleSR = SpiralRatchet
   { large     = 0x600b56e66b7d12e08fd58544d7c811db0063d7aa467a1f6be39990fed0ca5b33
   
   , medium    = 0x5d58264a09dce1f2676e729d0ea1db4bf90b9be463d7fc1aa9b43b358e514599
@@ -97,13 +97,13 @@ exampleJR = JumpRatchet
   }
 ```
 
-Incrementing a larger value resets all smaller values. This is done by taking the SHA256 of the \(one's\) complement. This cascades from larger to all smaller positions.
+Incrementing a larger value resets all smaller values. This is done by taking the SHA-256 of the \(one's\) complement. This cascades from larger to all smaller positions.
 
 {% hint style="danger" %}
-Please note that JavaScript's basic inverse function behaves unexpectedly. The `~` operator casts values to their one's compliment _integer_. This means that `~ 0b11 !== 0b00`, but rather `~ 0b11 === -4`. `-4` is not expresible in JS binary, since it interprets binary notation as being a natural number only. To keep this from happening, XOR a 1-mask of equal length `0b1111...`.
+Please note that JavaScript's basic inverse function behaves unexpectedly. The `~` operator casts values to their one's compliment _integer_. This means that `~0b11 !== 0b00`, but rather `~0b11 === -4`. `-4` is not expresible in JS binary, since it interprets binary notation as being a natural number only \(rather than its two's compliment\). To keep this from happening, use a toggle mask of equal length: `val ^ b1111...`.
 {% endhint %}
 
-The small and medium values are base-256. This means that the first position increments in ones, the second position increments in 256s, and the third position by 65,536s. Looking at a triple does not admit which number it is, only which number relative to the max bounds of the medium and small numbers. It is not possible to determine which of epoch \(large number\) you are in. Here is a \_\_\_\_\_\_\_\_\_\_\_\_.
+The small and medium values are base-256. This means that the first position increments in ones, the second position increments in 256s \(2^8\), and the third position by 65,536s \(2^16\). Looking at a triple does not admit which number it is, only which number relative to the max bounds of the medium and small numbers. It is not possible to determine which of epoch \(large number\) you are in. Here is a \_\_\_\_\_\_\_\_\_\_\_\_.
 
 ```haskell
 seed       = 0x600b56e66b7d12e08fd58544d7c811db0063d7aa467a1f6be39990fed0ca5b33
@@ -122,10 +122,10 @@ smallMax   = iterate sha256 small !! 256
 -- large (0..), medium (0-255), small (0-255)
 
 toVersionHash :: SHA256
-toVersionHash JumpRatchet {..} = sha256 (large `xor` medium `xor` small)
+toVersionHash SpiralRatchet {..} = sha256 (large `xor` medium `xor` small)
 
-advance :: JumpRatchet -> JumpRatchet
-advance JumpRatchet {..} =
+advance :: SpiralRatchet -> SpiralRatchet
+advance SpiralRatchet {..} =
   case (nextSmall == smallCeiling, nextMedium == mediumCeiling) of
     (False, _)    -> advanceSmall
     (True, False) -> advanceMedium
@@ -136,17 +136,17 @@ advance JumpRatchet {..} =
     nextSmall  = sha256 small
     nextMedium = sha256 medium
 
-    advanceSmall :: JumpRatchet
-    advanceSmall = JumpRatchet {small = nextSmall, ..}
+    advanceSmall :: SpiralRatchet
+    advanceSmall = SpiralRatchet {small = nextSmall, ..}
 
-    advanceMedium :: JumpRatchet
+    advanceMedium :: SpiralRatchet
     advanceMedium =
       let
         resetSmall  = sha256 $ compliment nextMedium
         resetMedium = sha256 $ compliment nextLarge
 
       in
-        JumpRatchet
+        SpiralRatchet
           { large      = large
 
           , medium     = nextMedium
@@ -156,7 +156,7 @@ advance JumpRatchet {..} =
           , smallCeil  = recursiveSHA 256 resetSmall
           }
 
-    advanceLarge :: JumpRatchet
+    advanceLarge :: SpiralRatchet
     advanceLarge =
       let
         nextLarge   = sha256 large
@@ -164,7 +164,7 @@ advance JumpRatchet {..} =
         resetSmall  = sha256 $ compliment resetMedium
 
       in
-        JumpRatchet
+        SpiralRatchet
           { large      = nextLarge
 
           , medium     = resetMedium
@@ -175,7 +175,7 @@ advance JumpRatchet {..} =
           }
 ```
 
-The setup
+The setup starts at a random point in this scheme.
 
 ```haskell
 setup :: CryptoCounter
@@ -186,13 +186,13 @@ setup = do
 
   let
     large       = sha256 largePreimage
-    masked bits = bits `xor` mask
+    masked bits = compliment bits
 
-    mediumPreimage = sha256 $ maked largePreimage
+    mediumPreimage = sha256 $ compliment largePreimage
     medium         = recursiveSHA mediumAdvance mediumSeed
     mediumCeiling  = recursiveSHA 255           mediumPreimage
 
-    smallPreimage = sha256 $ masked mediumPreimage
+    smallPreimage = sha256 $ compliment mediumPreimage
     small         = recursiveSHA smallAdvance smallPreimage
     smallCeiling  = recursiveSHA 255          smallPreimage
 
