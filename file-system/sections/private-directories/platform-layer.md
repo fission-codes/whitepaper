@@ -9,7 +9,7 @@ To read a node, the user needs to have the key either available from another nod
 To read or ”unlock“ a private node, you need the node and its key:
 
 ```haskell
-read :: AES256 -> SecretNode -> DecryptedNode
+read :: (Bytes, CryptoAlgorithm) -> CID -> DecryptedNode
 ```
 
 ### Unlocked Private Node Schema
@@ -73,11 +73,21 @@ The probabilistic nature of Bloom filter filenames does mean that related files 
 
 This layout greatly improves write access verification time, while eliminating the plaintext tree structure. An authorized user reconstructs the human-readable DAG at runtime by following links in decrypted nodes. Their links point to files in the MMPT \(or faster via the cache\).
 
-## Move Markers
+## Key Rotation
 
-Rotated ratchet.
+While the ratchet revision maintains forward-secrecy, backwards-secrecy is achieved with a ratchet reset \(which is equivalent to a key rotation\). This involves:
+
+1. Placing a `MovedTo` node contaning a pointer to the new namefilter
+2. Re-sharing the rotated ratchet with all authorized users
+3. Adding the file descriptor to the file descriptor graveyard
+
+### File Descriptor Graveyard
+
+The graveyard is an RECOMMENDED safeguard against writing to a file that will no longer be followed. It is a prefix tree containing hashes of all file descriptors that have been retired. MMPT merges must include all files even if they fail this check; it is only here as a convenience to prevent agents with imperfect knowledge to be aware that a particular path is no longer followed.
 
 ## Root Self-Storage
 
 Store the namefilter and/or CID and key. Keep cache mapping all seen namefilter =&gt; keys?
+
+
 

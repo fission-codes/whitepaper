@@ -44,7 +44,7 @@ In the case of namespace conflicts, store both leaves. In absence of other selec
 
 ![Multivalue example, https://bartoszsypytkowski.com/operation-based-crdts-registers-and-sets/](../../../.gitbook/assets/multi-value-register-timeline.png)
 
-By default, WNFS will automatically pick the the highest revision, or in the case of multiple values at a single version, the highest namefilter number. Here is one such exmaple, where the algorithm would automatically chose `QmbX21...` as the default variant. The user can override this choice by pointing at `Qmr18U...` from the parent directory, or directly in the link.
+By default, WNFS will automatically pick the the highest revision, or in the case of multiple values at a single version, the highest namefilter number. Here is one such example, where the algorithm would automatically chose `QmbX21...` as the default variant. The user can override this choice by pointing at `Qmr18U...` from the parent directory, or directly in the link.
 
 ![](../../../.gitbook/assets/screen-shot-2021-06-02-at-20.04.00.png)
 
@@ -58,17 +58,20 @@ The core difference is the encrypted storage \(protocol layer\), and secrecy of 
 data SecretNode 
   = SecretNode CID -- simple!
 
+data STreeLeaf 
+  = STreeLeaf CID
+
 data STree 
   = STreeNode 
   | STreeLeaf
 
-data STreeLeaf 
-  = STreeLeaf CID
-
 data STreeNode = STreeNode
-  { zero :: (Namefilter, STree) -- NOTE These are branches, and may terminate directly
-  , one  :: (namefilter, STree)
+  { zero :: Maybe (Namefilter, STree) -- NOTE These are branches, and may terminate directly
+  , one  :: Maybe (namefilter, STree)
   , -- ...
+  , f    :: Maybe (namefilter, STree)
   }
 ```
+
+
 
