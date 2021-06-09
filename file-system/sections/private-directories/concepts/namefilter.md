@@ -1,6 +1,6 @@
-# Namefilter
+# Namefilter / i-number
 
-Each secret node \(SNode\) is stored not with a human readable name, but with a _namefilter_. This is a [generalized combinatoric accumulator](https://www.jstage.jst.go.jp/article/transinf/E91.D/5/E91.D_5_1489/_pdf/-char/en) \(GCA\), which in turn is essentially the Bloom construction of the [Nyberg hash accumulator](https://link.springer.com/content/pdf/10.1007%2F3-540-60865-6_45.pdf).
+At the data layer, each secret node \(SNode\) is placed in a table and named with a namefilter \(AKA a deterministic i-number\). This is a [generalized combinatoric accumulator](https://www.jstage.jst.go.jp/article/transinf/E91.D/5/E91.D_5_1489/_pdf/-char/en) \(GCA\), which in turn is essentially the Bloom construction of the [Nyberg hash accumulator](https://link.springer.com/content/pdf/10.1007%2F3-540-60865-6_45.pdf).
 
 ### Construction
 
@@ -30,7 +30,7 @@ The bare namefilter for any node is the parent's bare namefilter plus the curren
 The root node has no parent, so its bare namefilter is merely the SHA-256 hash of its identity hash placed in a Bloom filter. A child node is passed its parent's bare namefilter, and includes it with the SHA-256 of its key to generate its namefilter.
 
 ```haskell
-bareParent = 0x01010101 -- parent, unless is root
+bareParent = 0xabcdef -- parent, unless is root
 currentKey = sha256(aesKey)
 version    = sha256(hashClock)
 bare       = bareParent .|. current .|. version

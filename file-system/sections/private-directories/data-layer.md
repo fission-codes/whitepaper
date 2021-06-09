@@ -48,7 +48,7 @@ By default, WNFS will automatically pick the the highest revision, or in the cas
 
 ![](../../../.gitbook/assets/screen-shot-2021-06-02-at-20.04.00.png)
 
-## Secret VNode Content
+## Secret VNode \(SNode\) Content
 
 An SNode that has been secured in this way is called an ”secure virtual node”. The contents of these nodes is largely the same as their plaintext counterparts, plus a key table for their children.
 
@@ -56,7 +56,7 @@ The core difference is the encrypted storage \(protocol layer\), and secrecy of 
 
 ```haskell
 data SNode
-  = SLeaf Namefilter CID
+  = SLeaf Namefilter FileContent
   | STree
 
 data STree = STree

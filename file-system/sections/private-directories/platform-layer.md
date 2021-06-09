@@ -1,6 +1,6 @@
 # File Layer
 
-The platform layer has decypted \(or ”unlocked”\) access to SNodes.
+The platform layer has decrypted \(or ”unlocked”\) access to SNodes.
 
 ### Unlocking
 
@@ -81,9 +81,9 @@ While the ratchet revision maintains forward-secrecy, backwards-secrecy is achie
 2. Re-sharing the rotated ratchet with all authorized users
 3. Adding the file descriptor to the file descriptor graveyard
 
-### File Descriptor Graveyard
+### i-Graveyard
 
-The graveyard is an RECOMMENDED safeguard against writing to a file that will no longer be followed. It is a prefix tree containing hashes of all file descriptors that have been retired. MMPT merges must include all files even if they fail this check; it is only here as a convenience to prevent agents with imperfect knowledge to be aware that a particular path is no longer followed.
+The i-graveyard is a RECOMMENDED safeguard against writing to a file that will no longer be followed. It is a prefix tree containing hashes of all file descriptors that have been retired. MMPT merges must include all files even if they fail this check; it is only here as a convenience to prevent agents with imperfect knowledge to be aware that a particular path is no longer followed.
 
 ## Root Self-Storage
 

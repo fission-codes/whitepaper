@@ -9,7 +9,7 @@ Since name filters are deterministic, we can look up a version in constant time 
 If you have a pointer to a particular file, there is no way of knowing that you have been linked to the latest version of a node. The information that you do have includes everything that you need to construct a name filter.
 
 * The current node’s file descriptor
-* The revision ratchet of the current node \(stored in the node\)
+* The ratchet of the current node \(stored in the node\)
 * This parent's bare name filter \(stored in the node\)
 
 The user must always ”look ahead” to see if there have been updates to the file since they last looked. The three most common scenarios are that:
@@ -47,83 +47,13 @@ As the user traverses the private section \(down the Y-axis, across the X-axis\)
 
 Note that they only need to do this with the paths that they actually follow! Progress in revision history does not need to be in lock step, and will converge over time.
 
-Not all users with write access have the ability to write to the entire DAG. Writing to a subgraph is actually completely fine. Each traversal down a path will reach the most recently written node. The search space for that node is always smaller than its previous revisions, and can be further updated with oter links or newer child nodes.
+Not all users with write access have the ability to write to the entire DAG. Writing to a subgraph is actually completely fine. Each traversal down a path will reach the most recently written node. The search space for that node is always smaller than its previous revisions, and can be further updated with other links or newer child nodes.
 
-This contributes back collaboratively to the overall performance of the system for all usres. If a malicious user writes a bad node, they can be overwritten with a newer revision by a user with equal or higher priviledges. Nothing is ever lost in WNFS, so reconstructing all links in a file system from scratch is _possible_ \(though compute intensive\).
+This contributes back collaboratively to the overall performance of the system for all users. If a malicious user writes a bad node, they can be overwritten with a newer revision by a user with equal or higher privileges. Nothing is ever lost in WNFS, so reconstructing all links in a file system from scratch is _possible_ \(though compute intensive\).
 
 ## Secret Names
 
 Structural information can be analyzed probabilistically from a node’s name, or a tree structure. Ergo we go to some effort to hide this information from users that should not know this information.
 
-Fully zero knowledge methods do exist for this, but are quite new and do not \(yet\) perform fast enough to be practical for this use case. WNFS opts to hide as much information as possible while remaining reasable on a low-end smartphone.
-
-## Name Filters
-
-To facilitate a deterministic-but-highly-obfuscated naming scheme, as well as give a verifier that doesn’t have read access the ability to check that the writer can submit updates to that path.
-
-This is achieved with Bloom Filters. These structures allow validation that an element is in some compressed/obfuscated set.
-
-### Bare Name Filters
-
-A bare name filter includes the smallest amount of information. It can be revealed to a a user that has read access to child nodes to help them build their own filters. They can be constructed by adding the current AES key and all of the keys above this node into an XOR filter. Since this is associative, equipping the node with its  own name filter is sufficient.
-
-In WNFS, bare filters are generated for child nodes by adding the hash of the AES key to the existing filter, and storing that directly on the child for its further use. Bare filters are used in constructing names in the MPT, in the node cache, as well as by UCANs to authorize writing new nodes to a to a subgraph.
-
-Bare filters do not include the version number, or fill out the filter to a particular level. We can see each filter entry as a path segment. The need not be ordered since each is entry is unique and randomly generated.
-
-### Saturated Name Filters
-
-To further obscure the information in a name filter, we want to deterministically fill the space to a predetermined amount. This obscures the position of the node in the DAG. The bare filter \(above\) is of varying length, so we want to saturate it equally.
-
-All name filters must be unique \(since storage is append-only\). We gain uniqueness by including the revision number in Bloom filter. However, we only want to reveal revision numbers to authorized users. We use the AES key itself as a cryptographic pepper, and append to the version, and add that hash to the Bloom filter.
-
-```haskell
-bareParent = 0x01010101 -- parent, unless is root
-currentKey = sha256(aesKey)
-version    = sha256(revision <> aesKey)
-bare       = bareParent .|. current .|. version
-```
-
-Saturation is then achieved by iteratively hashing the filter into its successor until a certain number of bits are set to 1.
-
-```haskell
-makeNameFilter :: BloomFilter -> BloomFilter
-makeNameFilter bare = saturateTo 1410 aesKey bare
-
-saturateTo :: Natural -> SHA256 -> BloomFilter -> BloomFilter
-saturateTo threshold hashSeed namefilter =
-  case (isSaturated namefilter, isSaturated namefilter') of
-    (True, _) ->
-      namefilter
-      
-    (_, True) ->
-      -- Err on the side of slightly too few bits
-      if inTollerance namefilter'
-        then namefilter'
-        else namefilter
-        
-    _ ->
-      saturateTo threshold hashSeed' namefilter'
-    
-  where
-    saturatedBy  filter = Binary.sum filter - threshold
-    isSaturated  filter = saturatedBy filter >= 0
-    
-    -- 10 = k / 3, where k is number of bits per entry
-    inTollerance filter = saturatedBy filter <= 10
-    
-    namefilter' = namefilter .|. toBloom hashSeed'
-    hashSeed'   = sha256 hashSeed -- Recursively hash
-```
-
-In this way, we can deterministically generate very different looking filters for the same node, varying over the version number. The base filter stays inside the longer structure, . With an appropriately configured filter, this provides multiple features:
-
-* Privacy
-  * File names are never exposed
-  * Statistical methods may be able to reveal probable DAG structures
-* Deterministic pointers to the future
-  * O\(log n\) search for updated nodes
-* Minimal knowledge write access verification 
-  * A UCAN + a hash of the read key to the highest node the user can write to
-  * Match on cryptographically blind set membership
+Fully zero knowledge methods do exist for this, but are quite new and do not \(yet\) perform fast enough to be practical for this use case. WNFS opts to hide as much information as possible while remaining feasible on a low-end smartphone.
 
