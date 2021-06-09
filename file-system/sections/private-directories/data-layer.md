@@ -55,21 +55,15 @@ An SNode that has been secured in this way is called an ‚Äùsecure virtual node‚Ä
 The core difference is the encrypted storage \(protocol layer\), and secrecy of the key used to start the decryption process. The key is always external to the SNode, and its not aware of which key was used to create it. Here at the protocol layer, we are not directly concerned with the contents.
 
 ```haskell
-data SecretNode 
-  = SecretNode CID -- simple!
+data SNode
+  = SLeaf Namefilter CID
+  | STree
 
-data STreeLeaf 
-  = STreeLeaf CID
-
-data STree 
-  = STreeNode 
-  | STreeLeaf
-
-data STreeNode = STreeNode
-  { zero :: Maybe (Namefilter, STree) -- NOTE These are branches, and may terminate directly
-  , one  :: Maybe (namefilter, STree)
+data STree = STree
+  { x0 :: Maybe SNode -- NOTE May terminate "early" if no 
+  , x1 :: Maybe SNode
   , -- ...
-  , f    :: Maybe (namefilter, STree)
+  , xF :: Maybe SNode
   }
 ```
 
