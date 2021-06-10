@@ -8,11 +8,12 @@ Every node in the private tree is encrypted with a different key. This is done r
 
 The basic idea for cryptographic ratchets is that repeatedly hashing a value creates a kind of forward-secret clock. When you start watching the clock, you can generate the hash for any arbitrary future steps, but not steps from prior to observation since that requires computing the SHA preimage.
 
-SHA-256 is native to the WebCypto API, is a very fast operation, and commonly hardware accelerated. Anecdotally, running 10k recursive SHA-256s in Firefox on an Apple M1 completes in around 300ms. The problem with a single hash counter is threefold:
+SHA-256 is native to the WebCypto API, is a very fast operation, and commonly hardware accelerated. Anecdotally, Firefox on an Apple M1 completes each SHA ~30μs \(10k/300ms\). The problem with a single hash counter is threefold:
 
 1. The root of the unencrypted tree updates with with every atomic operation, and thus accrues a lot of changes  
 2. An actor may be many months since their last sync, and need to fast forward their clock by some huge number of elements  
-3. Seeking ahead by 100ks or millions takes very noticeable time
+3. Seeking ahead by 100ks or millions takes very noticeable time  
+4. It should be cheaper to fast forward than for an attacker to build a large history
 
 We still want small step changes to very fast, but also be able to deterministically tune how quickly we jump ahead, without revealing previous counter hashes, while maintaining the same security properties as a single ratchet counter.
 

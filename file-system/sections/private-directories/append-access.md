@@ -4,7 +4,7 @@ WNFS is nondestructive \(under normal operation\). The one exception is that the
 
 Append \(or ”write”\) access is handled via UCANs. WNFS uses path-based permissions, so if a user has write permissions to `/photos/vacation`, they also have write permissions to `/photos/vacaction/beach`. In the public section, this is done by checking that the path being written is prefixed with a path.
 
-Paths are completely obscured in the private section. UCANs reference some bare name filter \(described above\) that must be be a match \(binary OR\) for the filter being suggested. This does leak how much of the graph a user is allowed to write to, since the higher in the DAG they have access to, the fewer bits are set in the bare filter. However, and astute 
+Paths are completely obscured in the private section. UCANs reference some bare name filter \(described above\) that must be be a match \(binary `OR`\) for the filter being suggested. This does leak how much of the graph a user is allowed to write to, since the higher in the DAG they have access to, the fewer bits are set in the bare filter. However, and astute 
 
 This check is extremely quick for anyone the verifier, who may need to check a large number of updates submitted in addition to Merkle proofs that nothing else has altered besides these additions.
 

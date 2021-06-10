@@ -8,7 +8,7 @@ Since name filters are deterministic, we can look up a version in constant time 
 
 If you have a pointer to a particular file, there is no way of knowing that you have been linked to the latest version of a node. The information that you do have includes everything that you need to construct a name filter.
 
-* The current node’s file descriptor
+* The current node’s identity filter
 * The ratchet of the current node \(stored in the node\)
 * This parent's bare name filter \(stored in the node\)
 
