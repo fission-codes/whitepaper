@@ -2,9 +2,6 @@
 
 There are three cases where we need to exchange data in an offline manner. Fundamentally these are all variants on ”I need to make this update, but don’t have the other party online.”
 
-1. Shared _by_ me
-2. Shared _with_ me \(including self-share\)
-
 ## Exchange & Share Keys
 
 Sharing information with a user that’s offline is easy thanks to authenticated key exchange. All WNFS users widely distribute a list of public 2048-bit RSA public keys — their non-exportable ”exchange keys” — as DIDs at a well-known location \(`/public/.well-known/exchange/*`\). These RSA keys are used to send a symmetric key to a recipient; the "share key". This symmetric key is then used to decrypt pointers, UCANs, and other messages.
@@ -48,9 +45,9 @@ The content of these files is a very straightforward JSON array containing UCANs
 
 ```typescript
 interface SharedKey {
-  cipher:  KeyType; // e.g. "AES-256"
-  key:     Bytes;
-  pointer: NameFilter;
+  algorithm: KeyType; // e.g. "AES-256"
+  key:       Bytes;
+  pointer:   CID;
 }
 ```
 
