@@ -42,7 +42,7 @@ Being an append-only data structure, merging in absence of namespace conflicts i
 >
 > ~[ Hypermerge's Architecture Documentation](https://github.com/automerge/hypermerge/blob/master/ARCHITECTURE.md)
 
-#### LWW & Multivalues
+#### Multivalues-else-LWW
 
 In the case of namespace conflicts, store both leaves. In absence of other selection criteria \(such as hard-coded choice\), pick the highest \(in binary\) CID. In other words, pick the longest causal chain, and deterministically select an arbitrary element when the event numbers overlap. This is a variant of multivalues, with nondestructive last-writer-wins \(LWW\) semantics in the case of a longest chain.
 
@@ -51,6 +51,13 @@ In the case of namespace conflicts, store both leaves. In absence of other selec
 By default, WNFS automatically picks the the highest revision, or in the case of multiple values at a single version, the highest namefilter number. Here is one such example, where the algorithm would automatically chose `QmbX21...` as the default variant. The user can override this choice by pointing at `Qmr18U...` from the parent directory, or directly in the link. This is related to [preferred edges in a link/cut tree](https://en.wikipedia.org/wiki/Link/cut_tree#Preferred_paths).
 
 ![](../../../.gitbook/assets/screen-shot-2021-06-02-at-20.04.00.png)
+
+
+
+Any observer may perform a merge to produce a valid WNFS structure. If an agent with read/write access performs such a merge, it is strongly recommended to do the following:
+
+1. Lazily root new nodes \(see "Lazy Progress" below\)
+2. Merge conflict branches, either merge the contents semantically, or simply select a preferred winner, and writing that as a new revision
 
 ## Secret VNode \(SNode\) Content
 
@@ -120,6 +127,10 @@ Note that they only need to do this with the paths that they actually follow! Pr
 Not all users with write access have the ability to write to the entire DAG. Writing to a subgraph is actually completely fine. Each traversal down a path will reach the most recently written node. The search space for that node is always smaller than its previous revisions, and can be further updated with other links or newer child nodes.
 
 This contributes back collaboratively to the overall performance of the system for all users. If a malicious user writes a bad node, they can be overwritten with a newer revision by a user with equal or higher privileges. Nothing is ever lost in WNFS, so reconstructing all links in a file system from scratch is _possible_ \(though compute intensive\).
+
+![Partial Rooting](../../../.gitbook/assets/screen-shot-2021-06-09-at-21.45.41.png)
+
+![Complete Rooting](../../../.gitbook/assets/screen-shot-2021-06-09-at-21.47.39.png)
 
 ## Name Graveyard
 

@@ -73,5 +73,7 @@ While the ratchet revision maintains forward-secrecy, backwards-secrecy is achie
 2. Re-sharing the rotated ratchet with all authorized users
 3. Adding the file descriptor to the file descriptor graveyard
 
+See Share for more information on how to share keys with other users.
+
 
 

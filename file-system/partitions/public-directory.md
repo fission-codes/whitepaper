@@ -6,9 +6,9 @@ description: Globally visible and addressable cleartext
 
 The public directory contains regular, unencrypted, structured data. This includes previous versions, metadata, symlinks, and so on. This lives in the top-level `/public` directory. All of the content is publicly viewable, including previous versions.
 
-## Platform Layer
+## Data Layer
 
-At the platform layer, a public virtual node has the following shape:
+At the raw data layer, a public virtual node has the following shape:
 
 ```haskell
 data VirtualNode -- could be paramaterized over protocol type later
@@ -57,8 +57,6 @@ data IPFSLink = IPFSLink
   , size :: Quantity Bytes
   }
 ```
-
-## Data Layer
 
 The data layer strips out much of the above structure, boiling it down to a series of `IPFSLink`s. This is fundamentally achieved by a function:
 
@@ -121,6 +119,14 @@ Note that the prev link SHOULD be reified in a protocol link rather than in the 
 Write access may be granted via UCAN. In this case, the platform-layer \(pretty\) path to the node is updatable arbitrarily, as are its nested contents. However, this necessitates updating the links in the Merkle structure above, as well as portions of metadata \(such as size of contents\). This is a rote mechanical procedure, and will be checked by the verifier.
 
 {% hint style="warning" %}
-It bears repeating that while this does create updated parent nodes, it wil lbe handled mechanically by the WNFS client. The verifier is able to easily and mechanically confirm these updates, and will reject them if submitted incorrectly.
+It bears repeating that while this does create updated parent nodes, it will be handled mechanically by the WNFS client. The verifier is able to easily and mechanically confirm these updates, and will reject them if submitted incorrectly.
 {% endhint %}
+
+## Concurrency
+
+Concurrent writes on WNFS never overwrite each other. Multiple branches of history are allowed — and persitsed — as long as they are eventually merged. See the Consistency section for more.
+
+
+
+
 

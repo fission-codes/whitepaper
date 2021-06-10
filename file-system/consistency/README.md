@@ -1,4 +1,8 @@
 # Consistency
 
-Atomicity
+### Atomicity
+
+### Automated Confluent Merging
+
+### Non-oblivious Retroactivity
 
