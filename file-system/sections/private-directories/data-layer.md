@@ -14,7 +14,11 @@ To see more about what is found _inside_ an SNode when unencrypted, please see t
 
 ## Secure Content Prefix Tree
 
-Unlike the public file system DAG, the private file system is stored as a tree. More specifically, this is a SHA256-based [Modified Merkle Patricia Tree \(MMPT\)](https://eth.wiki/en/fundamentals/patricia-tree), with a branching factor of 16. The weight was chosen to balance search depth with Merkle witness size, caching, and concurrent merge performance. This tree can hold over a million elements in 5 layers.
+Unlike the public file system DAG, the private file system is stored as a tree. More specifically, this is a SHA256-based Merklized concurrent hash trie \(Merkle-[Ctrie](https://en.wikipedia.org/wiki/Ctrie), or "McTrie" 🍔\). The McTrie has a branching factor of 16. The weight was chosen to balance search depth with witness size, caching, and concurrent merge performance. This tree can hold over a million elements in 5 layers.
+
+{% hint style="info" %}
+Note that is the namefilters that are Merklized in the McTrie, not the file contents
+{% endhint %}
 
 As we will explore in later sections, collisions are not possible in this tree thanks to content addressing, so clients can aggressively cache intermediate nodes. This is an append-only structure, so deletions are not supported. 
 
@@ -30,7 +34,7 @@ This structure emulates a hashtable of shape `Hash Namefilter -> Namefilter -> [
 
 ### Concurrency
 
-This is a concurrent tree. Many contexts may be updating it at the same time without the ability to communicate directly \(e.g. network partition\). The namefilters themselves may have collisions, but the leaves cannot since they are hashes of the actual content. Conceptually, the same CID may live at multiple names in the MMPT, though this is extremely unlikely in practice.
+This is a concurrent tree. Many contexts may be updating it at the same time without the ability to communicate directly \(e.g. network partition\). The namefilters themselves may have collisions, but the leaves cannot since they are hashes of the actual content. Conceptually, the same CID may live at multiple names in the McTrie, though this is extremely unlikely in practice.
 
 Being an append-only data structure, merging in absence of namespace conflicts is very straightforward: place the new names in their appropriate positions in the tree. This can be done in high-parallel to further improve runtime performance.
 
@@ -55,17 +59,20 @@ An SNode that has been secured in this way is called an ”secure virtual node�
 The core difference is the encrypted storage \(protocol layer\), and secrecy of the key used to start the decryption process. The key is always external to the SNode, and its not aware of which key was used to create it. Here at the protocol layer, we are not directly concerned with the contents.
 
 ```haskell
-data SNode
-  = SLeaf Namefilter FileContent
-  | STree
+data McBranch
+  = McLeaf CID Namefilter FileContent
+  | McTree CID
 
-data STree = STree
+data McTree = McTree
   { x0 :: Maybe SNode -- NOTE May terminate "early" if no 
   , x1 :: Maybe SNode
   , -- ...
+  , xE :: Maybe SNode
   , xF :: Maybe SNode
   }
 ```
 
+## Name Graveyard
 
+The graveyard is a RECOMMENDED safeguard against writing to a file that will no longer be followed. It is a prefix tree containing hashes of all file descriptors that have been retired. McTrie merges must include all files even if they fail this check; it is only here as a convenience to prevent agents with imperfect knowledge to be aware that a particular path is no longer followed.
 

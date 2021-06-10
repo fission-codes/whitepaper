@@ -44,9 +44,9 @@ WNFS uses a forward-secret spiral ratchet for versioning, which is described in 
 
 #### Hamming Saturation
 
-Bloom filters admit \(roughly\) how many elements they contain, and are relatively easy to correlate by their Hamming distance. To work around this issue with obsfucation, namefilters deterministically saturate the remaining space, filling just over _half_ of the available filter, while maintaining a very low false positive rate. The idea is to fill the namefilter with a constant Hamming weight, but still be easily constructable by someone with the bare namefilter.
+Bloom filters admit \(roughly\) how many elements they contain, and are relatively easy to correlate by their Hamming distance. To work around this issue with obfuscation, namefilters deterministically saturate the remaining space, filling just over _half_ of the available filter, while maintaining a very low false positive rate. The idea is to fill the namefilter with a constant Hamming weight, but still be easily constructable by someone with the bare namefilter.
 
-#### Pseudocode Algorithm
+#### Algorithm \(in Pseudocode\)
 
 Saturation is then achieved by iteratively hashing the filter into its successor until a certain number of bits are set to 1.
 

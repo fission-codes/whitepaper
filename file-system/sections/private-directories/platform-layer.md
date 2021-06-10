@@ -2,7 +2,7 @@
 
 The platform layer has decrypted \(or ”unlocked”\) access to SNodes.
 
-### Unlocking
+## Unlocking
 
 To read a node, the user needs to have the key either available from another node which they have access to, in the `shared_with_me` or `shared_by_me` sections, or stored on their system directly.
 
@@ -51,7 +51,7 @@ data SecretLink = SecretLink
 
 The private section is recursively protected with AES-256 encryption. This is to say that each vnode is encrypted with an AES key, and each of its children are encrypted separately with their own randomly derived AES keys. A node holds the keys to each of its children. In this way, having a key for a node also grants read access to that entire subgraph.
 
-### Revocation
+## Revocation
 
 Read access revocation is achieved by changing the AES key and linking to a higher node. As such, it is not recommended for a user with write permissions to rotate the key of the root of their subgraph, unless they’re able to redistribute that key somehow. For example, the root user is able to update the key for the root of the graph, and distribute that key to their other user instances by the `shared_by_me` mechanism.
 
@@ -63,15 +63,7 @@ A node with no valid key pointing at it is said to be orphaned, since it has no 
 
 Since the structure of a cryptDAG is hidden completely from the outside world, there is a very strict separation between the platform layer, and how things are organized at the protocol layer. There are still two layers, but the protocol layer is more closely relied on by the platform layer.
 
-The protocol layer describes encrypted nodes, with a special naming scheme and organized in a Merkle Patricia Tree \(more below in Storage Layout\). These can be converted to a decrypted virtual node via an _external_ symmetric key.
-
-## Storage Layout
-
-Encrypted virtual nodes are kept in a Modified Merkle Patricia tree \(MMPT\), organized by a blinded file name \(see more in the naming section below\).
-
-The probabilistic nature of Bloom filter filenames does mean that related files are more likely to be placed near each other in the MMPT, while not giving away why they are placed in that part of the tree. Some direct descendants or siblings will be in far other parts of the tree, depending on the position of the first different bit. The filter is fixed-size, which further simplifies this layout.
-
-This layout greatly improves write access verification time, while eliminating the plaintext tree structure. An authorized user reconstructs the human-readable DAG at runtime by following links in decrypted nodes. Their links point to files in the MMPT.
+The protocol layer describes encrypted nodes, with a special naming scheme and organized in a MMPT \(more below in Storage Layout\). These can be converted to a decrypted virtual node via an _external_ symmetric key.
 
 ## Key Rotation
 
@@ -80,10 +72,6 @@ While the ratchet revision maintains forward-secrecy, backwards-secrecy is achie
 1. Placing a `MovedTo` node containing a pointer to the new namefilter
 2. Re-sharing the rotated ratchet with all authorized users
 3. Adding the file descriptor to the file descriptor graveyard
-
-### i-Graveyard
-
-The i-graveyard is a RECOMMENDED safeguard against writing to a file that will no longer be followed. It is a prefix tree containing hashes of all file descriptors that have been retired. MMPT merges must include all files even if they fail this check; it is only here as a convenience to prevent agents with imperfect knowledge to be aware that a particular path is no longer followed.
 
 ## Root Self-Storage
 
