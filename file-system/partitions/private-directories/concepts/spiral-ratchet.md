@@ -1,5 +1,5 @@
 ---
-description: Backwards-secret versioning
+description: Backwards-secret deterministic versioning
 ---
 
 # Spiral Ratchet
