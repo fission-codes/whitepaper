@@ -15,29 +15,44 @@ The share keys may be rotated. This is done as normal as with any other versione
 
 ### Layout
 
-This is a one-to-many exchange. Because of how account linking works, any given user will typically have a small number of exchange keys \(in the range of 1 to 5\). Each user only has access to a single key at any given time, so the sender will use a single key to share with multiple recipient keys in a tree structure:
+This is a one-to-many exchange. Because of how account linking works, any given user will typically have a small number of exchange keys \(in the range of 1 to 5\). Each user only has access to a single key at any given time, so the sender will use a single key to share with multiple recipient keys:
 
-![](../.gitbook/assets/screen-shot-2021-06-09-at-22.51.07.png)
+![](../.gitbook/assets/screen-shot-2021-06-10-at-12.32.06.png)
 
-```javascript
-saturateFilter(receiverExchangeDID, receiverExchangeDID <> version)
+The actual file pointers \(in grey above\) are only generated once per permissions group. Encrypting the share key with a group is done per key, but containing the same decryption key. Thus, the top-level key MAY shared across multiple users. Sharing with a single user is a special case of the above.
+
+The pointer keys themselves are not versioned. Looking up newer versions of particular files once the entry point is decrypted is done in the usual way from the private partition. Updating the share key is done by creating a new revision at the exchange key level.
+
+```haskell
+keyNamefilter :: DID -> DID -> Natural -> Namefilter
+keyNamefilter receiverExchangeDID senderSigningDID version =
+  Namefilter.empty
+    |> Namefilter.insert baseSHA
+    |> Namefilter.saturate
+  where
+    baseSHA = sha256 (receiverExchangeDID <> senderSigningDID <> version)
+    
+-- Pointer names are unique
+pointerNamefilter :: SymmetricKey -> Namefilter
+pointerNamefilter key =
+  Namefilter.empty
+    |> Namefilter.insert (sha256 key)
+    |> Namefilter.saturate
 ```
-
-Inside the directory are one or more encrypted files with the name of the sender’s public key which was used to encrypt it. When a recipient decrypts this file, they are expected to copy the information to their `authz_out` directory in their own FLOOFS, or at least cache the  information on their local system.
 
 ### Content
 
-The content of these files is a very straightforward JSON array containing UCANs or read keys. UCANs are described elsewhere. Read keys look like this:
+The content of these files is a very straightforward JSON array containing UCANs or read keys. UCANs are described elsewhere. A read keys look like this:
 
 ```typescript
 interface SharedKey {
-  cipher:  KeyType; // AES256
+  cipher:  KeyType; // e.g. "AES-256"
   key:     Bytes;
   pointer: NameFilter;
 }
 ```
 
-## Shared With Me \(authz\_in\)
+## Shared With Me
 
 The inverse of `authz_out` is `authz_in`, where the FLOOFS root user is the recipient. This is their cache of keys, credentials, and encrypted pointers that have been shared with them.
 
