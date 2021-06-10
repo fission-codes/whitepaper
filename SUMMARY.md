@@ -67,7 +67,7 @@
     * [Append](file-system/partitions/private-directories/append.md)
 * [Unlisted](file-system/unlisted-directories.md)
 * [Share](file-system/shared.md)
-* [Revocation Graveyard](file-system/revocation-graveyard.md)
+* [Revocation](file-system/revocation.md)
 * [Links](file-system/links.md)
 * [Consistency](file-system/consistency/README.md)
   * [Synchronization](file-system/consistency/synchronization.md)
