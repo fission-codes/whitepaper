@@ -5,9 +5,11 @@ There are three cases where we need to exchange data in an offline manner. Funda
 1. Shared _by_ me
 2. Shared _with_ me \(including self-share\)
 
-## Exchange Keys
+## Exchange & Share Keys
 
-Sharing information with a user that’s offline is easy thanks to authenticated key exchange. All WNFS users widely distribute a list of public 2048-bit RSA public keys — their non-exportable ”exchange keys” — as DIDs at a well-known location \(`/public/.well-known/exchange/*`\). These RSA keys are used to send a symmetric key to a recipient. This symmetric key is then used to decrypt pointers, UCANs, and other messages.
+Sharing information with a user that’s offline is easy thanks to authenticated key exchange. All WNFS users widely distribute a list of public 2048-bit RSA public keys — their non-exportable ”exchange keys” — as DIDs at a well-known location \(`/public/.well-known/exchange/*`\). These RSA keys are used to send a symmetric key to a recipient; the "share key". This symmetric key is then used to decrypt pointers, UCANs, and other messages.
+
+The share keys may be rotated. This is done as normal as with any other versioned file. As there's only a single recipient per key, there is no need for backwards secrecy, and so we can use a simple natural number to represent the version, and to do seek-head.
 
 ## Shared By Me
 
@@ -15,12 +17,10 @@ Sharing information with a user that’s offline is easy thanks to authenticated
 
 This is a one-to-many exchange. Because of how account linking works, any given user will typically have a small number of exchange keys \(in the range of 1 to 5\). Each user only has access to a single key at any given time, so the sender will use a single key to share with multiple recipient keys in a tree structure:
 
-
-
-In the  directory, there exists a flat space of directories. To make these addressable but not easily precomputable, these are named as as follows: 
+![](../../../.gitbook/assets/screen-shot-2021-06-09-at-22.51.07.png)
 
 ```javascript
-base58(SHA(sender_did ++ reciever_exchange_pk))
+saturateFilter(receiverExchangeDID, receiverExchangeDID <> version)
 ```
 
 This means that there will be multiple directories for every account — one per share key.
