@@ -93,7 +93,7 @@ advance SpiralRatchet {..} =
     (False, _)    -> advanceSmall
     (True, False) -> advanceMedium
     (_,    True)  -> advanceLarge
-    (False, True) -> error "PROBLEM (fix in smart constructor?)"
+    (False, True) -> error "Not possible"
 
   where
     nextSmall  = sha256 small
