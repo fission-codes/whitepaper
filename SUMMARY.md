@@ -52,7 +52,7 @@
   * [Virtual Nodes](file-system/file-system-basics/vnodes.md)
   * [Reduction Caches](file-system/file-system-basics/reduction-caches.md)
   * [Versioning](file-system/file-system-basics/versioning.md)
-  * [Journal](file-system/file-system-basics/journal.md)
+  * [Events](file-system/file-system-basics/journal.md)
 * [Partitions](file-system/partitions/README.md)
   * [Root](file-system/partitions/root.md)
   * [Public](file-system/partitions/public-directory.md)
@@ -69,17 +69,22 @@
   * [Links](file-system/partitions/links.md)
   * [Unlisted](file-system/partitions/unlisted-directories.md)
 * [Consistency](file-system/consistency/README.md)
-  * [Head Synchronization](file-system/consistency/head-synchronization.md)
-  * [Events](file-system/consistency/events.md)
-  * [Transactions](file-system/consistency/transactions-1.md)
+  * [Synchronization](file-system/consistency/synchronization.md)
   * [Event Sourcing](file-system/consistency/event-sourcing.md)
   * [Transactions](file-system/consistency/transactions.md)
-  * [BFT](file-system/consistency/bft.md)
+  * [Retroactivity](file-system/consistency/retroactivity.md)
+  * [Fault Tolerance](file-system/consistency/fault-tolerance.md)
 * [Distribution](file-system/distribution/README.md)
   * [Backstop](file-system/distribution/backstop.md)
   * [Performance](file-system/distribution/performance.md)
   * [App Hosting](file-system/distribution/app-hosting.md)
-* [Multiuser](file-system/multiuser.md)
+
+## Apps
+
+* [Hosting](apps/hosting.md)
+* [Layout](apps/layout.md)
+* [Clone](apps/clone.md)
+* [Follow](apps/follow.md)
 
 ## Key-Value
 

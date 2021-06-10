@@ -2,7 +2,7 @@
 description: Journal / events / logs
 ---
 
-# Journal
+# Events
 
 A variant on a typical filesystem journal, each vnode includes a description of the state transition that got it into the current state from its previous version. Depending on your background, this can also be viewed as an event source or an audit log. Unlike most common file system journals, the entries are permanent, and form a linked list across vnodes.
 

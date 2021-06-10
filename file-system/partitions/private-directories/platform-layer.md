@@ -33,7 +33,7 @@ data DecryptedNode
   | DecryptedMovedTo   UnlockPointer
 
 data DecryptedFile = DecryptedFile
-  { metadata   :: Metadata
+  { metadata   :: Metadata -- NOTE includes events, &c
   , bareName   :: BareNameFilter
   , revision   :: SpiralRatchet
   , rawContent :: CID | [CID] -- MAY be split across many sections to obscure files
