@@ -17,11 +17,11 @@ The share keys may be rotated. This is done as normal as with any other versione
 
 This is a one-to-many exchange. Because of how account linking works, any given user will typically have a small number of exchange keys \(in the range of 1 to 5\). Each user only has access to a single key at any given time, so the sender will use a single key to share with multiple recipient keys:
 
-![](../.gitbook/assets/screen-shot-2021-06-10-at-12.32.06.png)
+![](../.gitbook/assets/screen-shot-2021-06-10-at-13.02.58.png)
 
 The actual file pointers \(in grey above\) are only generated once per permissions group. Encrypting the share key with a group is done per key, but containing the same decryption key. Thus, the top-level key MAY shared across multiple users. Sharing with a single user is a special case of the above.
 
-The pointer keys themselves are not versioned. Looking up newer versions of particular files once the entry point is decrypted is done in the usual way from the private partition. Updating the share key is done by creating a new revision at the exchange key level.
+The pointer keys themselves are not versioned. Looking up newer versions of particular files once the entry point is decrypted is done in the usual way from the private partition. Updating the share key is done by creating a new key and placing it at the incremented version number.
 
 ```haskell
 keyNamefilter :: DID -> DID -> Natural -> Namefilter
@@ -40,6 +40,8 @@ pointerNamefilter key =
     |> Namefilter.saturate
 ```
 
+If a user from the shared group has their access revoked, they simply are excluded from the updated version share.
+
 ### Content
 
 The content of these files is a very straightforward JSON array containing UCANs or read keys. UCANs are described elsewhere. A read keys look like this:
@@ -54,25 +56,10 @@ interface SharedKey {
 
 ## Shared With Me
 
-The inverse of `authz_out` is `authz_in`, where the FLOOFS root user is the recipient. This is their cache of keys, credentials, and encrypted pointers that have been shared with them.
+The inverse of "shared by me" is "shared with me". Here the root user exchange keys are the recipient. This is used for two reasons:
 
-This is important to have in case a local cache is cleared, they link another machine, or the original copy in a remote `authz_out` is removed. The mechanism is straightforward: information is kept in a single file, encrypted with an AES256 key.
+1. Copying keys to your own file system to ensure that you have a copy in the case that the original file system gets overwritten
+2. Distribution to other linked devices
 
-This AES key is distributed to all linked instances. This key can be rotated at any time \(e.g. if comprimised\). As such, a copy is also shared with all ofthe user’s exchange keys. The sender is signaled by the name of the directory \(a hashed value for space reasons\).
-
-```text
-${username}.fission.name
-  |
-  +——authz_in
-       |
-       +——shared.json.crypt
-       |
-       +——G9N5KiVYLKbQLpTsnaTgr5E8kt95F56G7oLMhPryVz1m
-            |
-            +——4GVjkeLXt1h3xnay5dVF6Ekdjw9RqYFKYH3rUjk9CHHy.aes256.dh
-            |
-            +——7ZXatFQWw3tJsDHhozotH6V4D8vKqjenTGf2sz3XfFzA.aes256.dh
-            |
-            +——FkBvWMAy14HpwBtN9wFMmEYDErgzp5KiBragAQPsib1Z.aes256.dh
-```
+This looks nearly identical to the "shared by me" section.
 
