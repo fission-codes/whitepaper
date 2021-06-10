@@ -61,7 +61,7 @@
     * [Concepts](file-system/sections/private-directories/concepts/README.md)
       * [Spiral Ratchet](file-system/sections/private-directories/concepts/spiral-ratchet.md)
       * [Namefilter / i-number](file-system/sections/private-directories/concepts/namefilter.md)
-      * [Cryptree](file-system/sections/private-directories/concepts/cryptree.md)
+      * [CryptDAG](file-system/sections/private-directories/concepts/cryptree.md)
     * [Data Layer](file-system/sections/private-directories/data-layer.md)
     * [File Layer](file-system/sections/private-directories/platform-layer.md)
     * [Read Access](file-system/sections/private-directories/read-access.md)
