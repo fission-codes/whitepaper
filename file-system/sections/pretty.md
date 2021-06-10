@@ -4,7 +4,7 @@ description: A reduction cache of the pubic tree for better links
 
 # Pretty
 
-One aesthetic problem that arises from the multi-segment approach of the `public` section is that paths become cluttered with extraneous detail. Ideally we’d like to ignore the header section when giving relative paths to a file in web contexts. We achieve this while retaining compatability with the standard `go-ipfs` by maintaining a reduction of the WNFS root \(see the reduction section for more\).
+One aesthetic problem that arises from the multi-segment approach of the `public` partition is that paths become cluttered with extraneous detail. Ideally we’d like to ignore the header section when giving relative paths to a file in web contexts. We achieve this while retaining compatibility with the standard `go-ipfs` by maintaining a reduction of the WNFS root \(see the reduction section for more\).
 
 ## Reduction
 

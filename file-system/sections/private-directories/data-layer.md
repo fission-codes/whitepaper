@@ -1,7 +1,7 @@
 # Data Layer
 
 {% hint style="info" %}
-This section describes how the `/private` segment would look to an **unauthorized** user. This is how the data is stored and propagated through the network only.
+This section describes how the `/private` partition would look to an **unauthorized** user. This is how the data is stored and propagated through the network only.
 {% endhint %}
 
 ## Encryption

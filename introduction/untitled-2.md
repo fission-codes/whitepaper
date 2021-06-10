@@ -1,6 +1,6 @@
 # High Level Architecture
 
-The Fission architecture is made up of six modular components, which group loosely into three segments:
+The Fission architecture is made up of six modular components, which group loosely into three parts:
 
 1. Unified Storage
 

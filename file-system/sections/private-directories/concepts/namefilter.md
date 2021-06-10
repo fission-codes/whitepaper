@@ -19,7 +19,7 @@ $$
 
 If required, doubling `n` and `m` leaves `p` and `k` constant. See [here for pretty graphs](https://hur.st/bloomfilter/?n=47&p=&m=2048&k=30) \(useful for parameter tuning, verified manually\).
 
-#### File Descriptor
+#### I-Number
 
 The identity of a file is a random 256-bit value. This fills the role of a standard file descriptor. This value must be present in the namefilter for write access to work \(see private file UCAN write semantics\).
 

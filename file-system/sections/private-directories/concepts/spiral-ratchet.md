@@ -1,12 +1,12 @@
 ---
-description: Forward-secret versioning
+description: Backwards-secret versioning
 ---
 
 # Spiral Ratchet
 
 Every node in the private tree is encrypted with a different key. This is done randomly for child nodes \(along the y-axis\), and deterministically with a cryptographic ratchet for increasing versions \(along the z-axis\).
 
-The basic idea for cryptographic ratchets is that repeatedly hashing a value creates a kind of forward-secret clock. When you start watching the clock, you can generate the hash for any arbitrary future steps, but not steps from prior to observation since that requires computing the SHA preimage.
+The basic idea for cryptographic ratchets is that repeatedly hashing a value creates a kind of backwards-secret clock. When you start watching the clock, you can generate the hash for any arbitrary future steps, but not steps from prior to observation since that requires computing the SHA preimage.
 
 SHA-256 is native to the WebCypto API, is a very fast operation, and commonly hardware accelerated. Anecdotally, Firefox on an Apple M1 completes each SHA ~30μs \(10k/300ms\). The problem with a single hash counter is threefold:
 
