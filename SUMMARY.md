@@ -76,7 +76,7 @@
   * [Retroactivity](file-system/consistency/retroactivity.md)
   * [Fault Tolerance](file-system/consistency/fault-tolerance.md)
 * [Distribution](file-system/distribution/README.md)
-  * [Backstop](file-system/distribution/backstop.md)
+  * [DNSLink Backstop](file-system/distribution/backstop.md)
   * [Real Time](file-system/distribution/real-time.md)
   * [Performance](file-system/distribution/performance.md)
 
