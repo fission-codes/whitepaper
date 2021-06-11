@@ -35,7 +35,7 @@ data VersionOrder
 
 To give us a base case, we consider the genesis filesystem to be blank in all cases \(`QmbFMke1KXqnYyBBWxB74N4c5SBnJMVAiMNRcGu6x1AwQH`\). From intuition: every file system began blank before we added something to it.
 
-Once we have the history, we can walk back one at a time, looking for the head CID of the other system. In principle we can do this one at a time \(`O(m + n)`\), but for performance we do this simultaneously on both local and remote file systems \(`O(2 * min(m, n))`\)
+Once we have the history, we can walk back one at a time, looking for the head CID of the other system. In principle we can do this one at a time \(`O(m + n)`\), but for performance we do this simultaneously on both local and remote file systems or use a Bloom filter cache for`O(2 * min(m, n))` run time. This can be further performance optimized, but this gets us a large part of the way there.
 
 ```haskell
 -- newest to oldest
@@ -43,21 +43,39 @@ localHistory  = [localCID0,  localCID1,  localCID2]
 remoteHistory = [remoteCID0, remoteCID1, remoteCID2, remoteCID3]
 
 compareHistories :: [CID] -> [CID] -> VersionOrder
-compareHistories [] [] = InSync
-compareHistories [] _  = BehindRemote
-compareHistories _  [] = AhedOfRemote
-compareHistories locals@(localHead : _) remotes@(remoteHead : _) =
-  innerCompae locals remotes
+compareHistories locals remotes = innerCompare locals remotes [] mempty
+
+innerCompare :: [CID] -> [CID] -> [CID] -> BloomFilter -> VersionOrder
+innerCompare [] [] _ _ = InSync
+innerCompare [] _  _ _ = DivergedAt genesis
+innerCompare _  [] _ _ = DivergedAt genesis
+innerCompare (local : moreLocal) (remote : moreRemote) checked cache =
+  case (local == remoteHead, remote == localHead) of
+    (True, True) -> 
+      InSync
+      
+    (True, False) -> 
+      AheadOfRemote
+      
+    (False, True) -> 
+      BehindRemote
+      
+    (False, False) ->
+      case filter alreadySeen [local, remote] of
+        []        -> innerCompare moreLocal moreRemote checked' cache'
+        (cid : _) -> DivergedAt cid
+                
   where
-    innerCompare [] [] = InSync
-    innerCompare [] _  = DivergedAt genesis
-    innerCompare _  [] = DivergedAt genesis
-    innerCompare (localFocus : moreLocal) (remoteFocus : moreRemote) =
-      case (localFocus == remoteHead, remoteFocus == localHead) of
-        (True, True)   -> InSync
-        (True, False)  -> AheadOfRemote
-        (False, True)  -> BehindRemote
-        (False, False) -> innerCompare moreLocal moreRemote
+    alreadySeen cid =
+      cache `Bloom.conatins` cid && checked `List.contains` cid
+  
+    checked' = 
+      (local : remote : checked)
+              
+    cache' = 
+      cache
+        |> BloomFilter.insert remote
+        |> BloomFilter.insert checked
 ```
 
 ## WNFS Root
