@@ -100,7 +100,7 @@ When all branches are merged, publish a merge node that includes previous links 
 
 The `previous` link for files that were directly select are pointed at again \(i.e. the one without the newly created `mergeHistory`\).
 
-When walking back the history, the default behaviour is to take the `previous` link. Alternate paths may be taken if the agent prefers \(e.g. when doing error correction or searching for previous versions of files\). This can also be linearlized at runtime by any number of algorithms \(e.g. sequenced one branch after another, or interleaved by version number since divergence\).
+When walking back the history, the default behaviour is to take the `previous` link. Alternate paths may be taken if the agent prefers \(e.g. when doing error correction or searching for previous versions of files\). This can also be linearlized at runtime by any number of algorithms \(e.g. [Euler Tour](https://en.wikipedia.org/wiki/Euler_tour_technique), sequenced one branch after another, or interleaved by version number since divergence\).
 
 ### Private Merge
 
