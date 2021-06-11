@@ -16,6 +16,12 @@ In a fully mutable setting, this can become tricky since data is dropped — yo
 
 The basic comparison algorithm is the same in all cases, though some of the details change to maintain properties like security.
 
+## Private
+
+The private file system is straightforward: You are in sync if you have the same CID root for the data layer of the McTrie. Otherwise, do a direct multivalue merge. Attempt to do a fast-forward for your root node for your local pointer, and resolve any conflicts on that version \(see below\). Child resolution will happen as a natural course of use.
+
+## Public
+
 In all cases, we can think of the history as a set of CIDs \(only how they're stored is different\). If we add order \(a list instead of a set\), we can additionally tell where we diverged. There are four possible states:
 
 1. In sync \(the heads are equal\)
@@ -77,6 +83,28 @@ innerCompare (local : moreLocal) (remote : moreRemote) checked cache =
         |> BloomFilter.insert remote
         |> BloomFilter.insert checked
 ```
+
+## Reconciliation
+
+Merging in the case where one copy is strictly ahead or behind is straightforward: use the most recent version.
+
+### Public Merge
+
+WNFS has functional persistence, and this confluent history. Our Merklized layout forces  single merge point for all branches. Merges are associative, and we need a consistent order. We pick the latest CIDs for each branch, order them numerically lowest-to-highest. Working recursively bottom-up:
+
+* Files: select a file \(default: pick the highest CID\)
+* Directories: merge links by name
+  * Defaults to resurrecting deleted links from one branch
+
+When all branches are merged, publish a merge node that includes previous links to the heads of all branches under the key `mergeHistory`. Metadata is also map-merged.
+
+The `previous` link for files that were directly select are pointed at again \(i.e. the one without the newly created `mergeHistory`\).
+
+When walking back the history, the default behaviour is to take the `previous` link. Alternate paths may be taken if the agent prefers \(e.g. when doing error correction or searching for previous versions of files\). This can also be linearlized at runtime by any number of algorithms \(e.g. sequenced one branch after another, or interleaved by version number since divergence\).
+
+### Private Merge
+
+This is largely part of the regular operation of the private DAG, since we are always attempting to make progress by fast-forwarding. The merging user may not have access to previous versions of a file. Here a best-effort approach is taken: take the existing pointer, fast forward, and attempt to reconcile per the public merge. Due to secrecy constraints, the private file system does have a stronger bias towards LWW behaviour since there are cases where the reconciling agent may not have access to older history to do merges with lower-versioned nodes.
 
 ## WNFS Root
 
