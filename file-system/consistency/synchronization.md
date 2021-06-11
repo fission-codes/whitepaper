@@ -84,7 +84,7 @@ innerCompare (local : moreLocal) (remote : moreRemote) checked cache =
         |> BloomFilter.insert checked
 ```
 
-## Reconciliation
+## Confluent Reconciliation
 
 Merging in the case where one copy is strictly ahead or behind is straightforward: use the most recent version.
 
