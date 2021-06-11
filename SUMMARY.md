@@ -79,7 +79,10 @@
   * [Backstop](file-system/distribution/backstop.md)
   * [Real Time](file-system/distribution/real-time.md)
   * [Performance](file-system/distribution/performance.md)
-  * [App Hosting](file-system/distribution/app-hosting.md)
+
+---
+
+* [App Hosting](app-hosting.md)
 
 ## Apps
 
