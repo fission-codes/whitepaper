@@ -7,6 +7,7 @@ data RootNode = RootNode
   { pretty  :: BareIPFS
   , public  :: PublicNode
   , private :: McTrie
+  , revoked :: McTrie
   }
 ```
 

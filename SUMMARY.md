@@ -65,7 +65,7 @@
     * [Data Layer](file-system/partitions/private-directories/data-layer.md)
     * [File Layer](file-system/partitions/private-directories/platform-layer.md)
     * [Append](file-system/partitions/private-directories/append.md)
-  * [Revoke](file-system/partitions/revoke.md)
+  * [Revoked](file-system/partitions/revoked.md)
 * [Unlisted](file-system/unlisted-directories.md)
 * [Share](file-system/shared.md)
 * [Links](file-system/links.md)
