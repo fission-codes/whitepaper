@@ -110,8 +110,7 @@ This is largely part of the regular operation of the private DAG, since we are a
 
 The root of the file system itself is designed to be very flexible, and support many different versioning methods below it, specifically:
 
-* Structural \(`public`\)
-* Log \(`private` for security\)
+* Immutable \(`public`, `private`\)
 * Mutable \(`pretty` & `shared` since they're not versioned\)
 
 As such, you need to look at  the sections themselves to determine priority. If one section is ahead of remote, and the other is behind remote, then this is considered to have diverged, and user intervention is required. This is actually not as bad as it sounds, since the actual data content would be the same even if comparing a versioned root. It feels off because we're treating the sections differently, but they're functionally equivalent.
