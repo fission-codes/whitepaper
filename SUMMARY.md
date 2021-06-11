@@ -78,6 +78,7 @@
 * [Distribution](file-system/distribution/README.md)
   * [DNSLink Backstop](file-system/distribution/backstop.md)
   * [Real Time](file-system/distribution/real-time.md)
+  * [Ephemeral Sessions](file-system/distribution/ephemeral-sessions.md)
 
 ## Apps
 

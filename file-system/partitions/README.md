@@ -14,6 +14,8 @@ ${username}.fission.codes
   +——p[retty]
   |
   +——private
+  |
+  +--revoked
 ```
 
 * `/public`
