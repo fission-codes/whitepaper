@@ -17,5 +17,7 @@ data RevocationClaim = RevocationClaim
 type RevocationTable = Map (CidOf UCAN) RevocationClaim
 ```
 
-The `revoke` and `resolved` may be the same. We rely on the content addressed hard links to de-deuplcate storage if they're identical. If the original revoked UCAN is Merkle compressed, uncompress at least the parts that include the revoker's DID through to the genesis DID.
+The `revoke` and `resolved` may be the same. We rely on the content addressed hard links to de-deuplcate storage if they're identical. If the original revoked UCAN is Merkle compressed, dereference at least the parts that include the revoker's DID through to the genesis DID.
+
+
 
