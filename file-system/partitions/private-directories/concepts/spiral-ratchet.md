@@ -8,6 +8,10 @@ Every node in the private tree is encrypted with a different key. This is done r
 
 The basic idea for cryptographic ratchets is that repeatedly hashing a value creates a kind of backwards-secret clock. When you start watching the clock, you can generate the hash for any arbitrary future steps, but not steps from prior to observation since that requires computing the SHA preimage.
 
+
+
+![Source: https://www.quora.com/What-is-exactly-backward-secrecy-property-in-cryptography-attribute-based-encryption](https://qph.fs.quoracdn.net/main-qimg-af035257f2b37af9b24fcb3761f1870e)
+
 SHA-256 is native to the WebCypto API, is a very fast operation, and commonly hardware accelerated. Anecdotally, Firefox on an Apple M1 completes each SHA ~30μs \(10k/300ms\). The problem with a single hash counter is threefold:
 
 1. The root of the unencrypted tree updates with with every atomic operation, and thus accrues a lot of changes  
