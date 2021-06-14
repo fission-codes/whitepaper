@@ -18,7 +18,7 @@ Soft links are URLs. They are relative to a mutable pointer, such as a DNSlink. 
 | Mechanism | Copy | Reference |
 | Mutability | Immutable | Mutable |
 | Availability Guarantee | ❌ | ❌ |
-| Self-Validating | ✅ | ❌ |
+| Self-validating | ✅ | ❌ |
 | Subpaths | ✅ | ✅ |
 | Cycles | ❌ | ✅ |
 | Auto-update | ❌ | ✅ |
