@@ -87,12 +87,9 @@
 * [Clone](apps/clone.md)
 * [Follow](apps/follow.md)
 
-## Key-Value
-
-* [WNKV](key-value/untitled-1.md)
-
 ## Database
 
+* [WNKV](database/untitled-1.md)
 * [WNDB](database/wndb.md)
 
 ## Dynamic FaaS
