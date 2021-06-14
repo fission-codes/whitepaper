@@ -73,7 +73,7 @@ innerCompare (local : moreLocal) (remote : moreRemote) checked cache =
                 
   where
     alreadySeen cid =
-      cache `Bloom.conatins` cid && checked `List.contains` cid
+      cache `Bloom.contains` cid && checked `List.contains` cid
   
     checked' = 
       (local : remote : checked)

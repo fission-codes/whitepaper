@@ -73,7 +73,6 @@
 * [Events](file-system/events.md)
 * [Consistency](file-system/consistency/README.md)
   * [Synchronization](file-system/consistency/synchronization.md)
-  * [Retroactivity](file-system/consistency/retroactivity.md)
   * [Transactions](file-system/consistency/transactions.md)
   * [Fault Tolerance](file-system/consistency/fault-tolerance.md)
 * [Distribution](file-system/distribution/README.md)
