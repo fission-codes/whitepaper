@@ -13,13 +13,25 @@ $$
 $$
 
   
-
+While suspended, the local copy can continue to accept updates without creating a confluent branch. This is desirable since it avoids runtime linearlization.
 
 ## Mechanics
 
 ### Out of Order Execution
 
-### Linearization
+To achieve concurrent speedups, execution of multiple actions are performed concurretly on forks of the current finalized head, and then [linearized](https://en.wikipedia.org/wiki/Linearizability) and merged \(i.e. the well-used [fork/join model](https://en.wikipedia.org/wiki/Fork%E2%80%93join_model)\). This is less efficient in serial, but has massive improvements in wall-clock time when multiple threads are available \(as is common in IPFS\).
+
+This makes heavy use of the fact that \_\_\_
+
+![Source: https://noti.st/expede/6IcxBY/tryranny-of-structurelessness\#stLLlcf](../../.gitbook/assets/screen-shot-2021-06-14-at-11.44.22.png)
+
+This requires a 
+
+
+
+
 
 ### Compare-and-Swap
+
+WNFS avoids the ABA problem thanks to Merkelization. Instead of comparing values \(equality\), we check CIDs \(identity\).
 
