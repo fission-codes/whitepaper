@@ -32,11 +32,21 @@ There are many ways to linearize concurrent updates, all different but equally v
 
 ![Source: https://noti.st/expede/6IcxBY/tryranny-of-structurelessness\#stLLlcf](../../.gitbook/assets/screen-shot-2021-06-14-at-11.44.22.png)
 
-We believe that the best tradeoff between raw execution speed and implementation complexity is to respect the order that the user pushes tasks into a FIFO queue \(see below\). If this proves to be a bottleneck, it can be swapped for a work-stealing queue, that applies deltas as their promises complete. This seems an unlikely bottleneck as it only applies when there are many concurrent updates being blocked by a large transaction at the head of the FIFO queue, which is an edge case at best.
+#### Singleton FIFO Pipeline
 
-#### Singleton FIFO Queue
+We believe that the best tradeoff between raw execution speed and implementation complexity is to respect the order that the user pushes tasks into an optimistic FIFO queue. 
 
+New jobs are pushed into a promise at the end of the queue. Work begins immedietly, forked from the current finalized `HEAD`. Jobs at the front of the queue `await` the promise. When they complete, they check the prevoious root CID of the proposed CID \_\_\_\_\_\_\_\_\_\_\_
 
+```haskell
+data Linearizer = Linearizer
+  { fifoWNFS  :: Array (WNFS -> WNFS, Promise WNFS)
+  , openTx    :: WNFS -> WNFS
+  , finalized :: WNFS
+  }
+```
+
+If this proves to be a bottleneck, it can be swapped for a work-stealing queue, that applies deltas as their promises complete. This seems an unlikely bottleneck as it only applies when there are many concurrent updates being blocked by a large transaction at the head of the FIFO queue, which is an edge case at best.
 
 #### Compare-and-Swap
 
