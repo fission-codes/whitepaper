@@ -117,13 +117,17 @@ As such, you need to look at  the sections themselves to determine priority. If 
 
 ## Where to Find History
 
-### Structural Versioning
+### Public
+
+#### Structural Versioning
 
 This is the most intuitive: walk the tree backwards along the `previous` links. This can be done lazily.
 
-### Version Log
+### Private
 
-This style is to keep a log of versions identifiers, and walk down those lists. The logs don't need to be CIDs per se — any bijective mapping will do.
+#### Ratchet Fast Forward
 
-For instance, to avoid revealing correlated items on the private file system, we run the CIDs through a SHA256 first. This makes it impossible to discover the contents of each version unless you already have the CID. You don't learn any new information, since direct structural  analysis gives the same information if you have all previous versions available.
+The version ratchet exist to explicitly prevent an agent from seeing versions prior to an arbitrary point. Agents that have access to previous versions must build the appropriate ratchet. This often follows a zig-zag lookup: Start from your earliest, highest node, and walk down the tree matching the bare namefilter of your target node. This involves walking forwards and down, until you discover the earliest ratchet for your barefilter.
+
+Since this is all immutable, all of these keys MAY be kept in a local cache to speed up subsequent lookups. This is kept as a map of barefilters to ratchets.
 

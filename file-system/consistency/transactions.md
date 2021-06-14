@@ -1,2 +1,4 @@
 # Transactions
 
+WNFS is transactional.
+
