@@ -30,13 +30,17 @@ In the following image, the three sequences on the left are all valid linear ord
 
 ![Source: https://noti.st/expede/6IcxBY/tryranny-of-structurelessness\#stLLlcf](../../.gitbook/assets/screen-shot-2021-06-14-at-11.44.22.png)
 
-This requires a 
-
-
+### Singleton FIFO Queue
 
 
 
 ### Compare-and-Swap
 
-WNFS avoids the ABA problem thanks to Merkelization. Instead of comparing values \(equality\), we check CIDs \(identity\).
+
+
+WNFS avoids [the ABA problem](https://en.wikipedia.org/wiki/ABA_problem) thanks to Merkelization. Instead of comparing values \(equality\), we check the root CID \(identity\).
+
+### Defaults
+
+The merge operation is the same as in the 
 
