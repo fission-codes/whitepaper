@@ -21,7 +21,12 @@ While suspended, the local copy can continue to accept updates without creating 
 
 To achieve concurrent speedups, execution of multiple actions are performed concurretly on forks of the current finalized head, and then [linearized](https://en.wikipedia.org/wiki/Linearizability) and merged \(i.e. the well-used [fork/join model](https://en.wikipedia.org/wiki/Fork%E2%80%93join_model)\). This is less efficient in serial, but has massive improvements in wall-clock time when multiple threads are available \(as is common in IPFS\).
 
-This makes heavy use of the fact that \_\_\_
+This leverages two facts:
+
+1. The heavy operation is adding the leaves \(files\) to IPFS
+2. Concurrent operations are order-independent
+
+In the following image, the three sequences on the left are all valid linear orderings for the concurrent partial-order on the right:
 
 ![Source: https://noti.st/expede/6IcxBY/tryranny-of-structurelessness\#stLLlcf](../../.gitbook/assets/screen-shot-2021-06-14-at-11.44.22.png)
 
