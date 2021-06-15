@@ -1,19 +1,6 @@
 # Transactions
 
-WNFS is transactional, lock-free, and concurrent. Updates are made atomically, and bundling multiple actions together is allowed. This is achieved by maintaining a local fork of the state, and only persisting it to the network \(an irreversable comittment\) when it is certain of its state. 
-
-Bundling multiple states has many advantages, including lower synchronization overhead, 
-
-Atomic updates can be associativity merged locally before being shared with the network. These are stored as closures, and run on the \*\*\*. _Suspended_ \_\_\_\_\_\_\_. They can be re-run before being settled.
-
-This is simple function composition, and forms a monoid on transactions:
-
-$$
-(Transaction, ∘, λx.x)
-$$
-
-  
-While suspended, the local copy can continue to accept updates without creating a confluent branch. This is desirable since it avoids runtime linearlization.
+WNFS is transactional, lock-free, and concurrent. Updates are made atomically, and bundling multiple actions together is both allowed and encouraged. This is achieved by maintaining a local fork of the state, and only persisting it to the network \(an irreversible comittment\) when it is certain of its state. Bundling multiple states has many advantages, including lower synchronization overhead.
 
 ## Mechanics
 
@@ -107,15 +94,21 @@ What follows is a _sketch_ of a JavaScript API for transactions. Note that these
 It can be used to glue together multiple nested transactions, and provides all other methods are merely special cases of this method.
 
 ```typescript
-type transaction = {
+class Transaction = {
   id: string;
+  
   iteration: number;
   maxRetries: number;
+  
+  abort: (msg: string) => void;
+  failOn: (predicate: any => boolean, msg: string) => void;
 }
+
+type txConfig = {retries: number} | {rootTx: transaction}
 
 type atomic = <value>(
     fn: {fs: WNFS, tx: transaction} => value,
-    txConfig?: {retries?: number}
+    txConfig?: txConfig
   ): Promise<{tx: transaction, value: value}>
 ```
 
@@ -153,7 +146,8 @@ await wnfs.atomic({fs, tx} => {
 Insert a completely new file, rather than modifying an existing one.
 
 ```typescript
-type insert(txConfig?: )
+// The path will be the 
+type insert({data: Uint8Array, meta?: metadata, txConfig?: txConfig}): Promise<>
 ```
 
 ### update
@@ -170,9 +164,7 @@ wnfs.update(["favourites", "favs.yaml"], data => {
           })
 ```
 
-### updateBy
-
 ### delete
 
-### deleteBy
+
 
