@@ -4,19 +4,19 @@ description: Public inside private
 
 # Unlisted
 
-Unlisted files are cleartext, public vnodes stored in the private file system. The primary difference is that their their root vnodes are named merely by their UUID and numerical version. 
+Unlisted files are cleartext, public vnodes stored in the private file system. The primary difference is that their their root vnodes are named merely by their nonce ID and numerical version. 
 
 You can think of these as a public forest embedded at random positions inside the McTrie. The roots behave largely like private nodes \(see below for more detail\), but their children behave exactly like public nodes.
 
 ## Names & Versioning
 
-Much like private nodes, unlisted nodes also have a randomly generated, 256-bit UUID. Since backwards secrecy is not required, versioning is achieved with a natural number instead of a cryptographic ratchet:
+Much like private nodes, unlisted nodes also have a randomly generated, 256-bit nonce i-number. Since backwards secrecy is not required, versioning is achieved with a natural number instead of a cryptographic ratchet:
 
 ```haskell
-barename :: UUID -> Natural -> SAH256
-barename uuid version = 
+barename :: INumber -> Natural -> SAH256
+barename inumber version =
   Namefilter.empty
-    |> Namefilter.insert uuidHash
+    |> Namefilter.insert inumber
     |> Namefilter.insert versionHash
     |> Namefilter.saturate
     
@@ -33,7 +33,7 @@ Read access is trivial: the nodes themselves are in cleartext. A user will need 
 
 ## Write Access
 
-Write access is mediated by listing the UUID and an optional path. For example:
+Write access is mediated by listing the nonce and an optional path. For example:
 
 ```javascript
 {
