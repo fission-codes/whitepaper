@@ -36,15 +36,20 @@ There are many ways to linearize concurrent updates, all different but equally v
 
 We believe that the best tradeoff between raw execution speed and implementation complexity is to respect the order that the user pushes tasks into an optimistic FIFO queue. 
 
-New jobs are pushed into a promise at the end of the queue. Work begins immedietly, forked from the current finalized `HEAD`. Jobs at the front of the queue `await` the promise. When they complete, they check the prevoious root CID of the proposed CID \_\_\_\_\_\_\_\_\_\_\_
-
 ```haskell
 data Linearizer = Linearizer
-  { fifoWNFS  :: Array (WNFS -> WNFS, Promise WNFS)
-  , openTx    :: WNFS -> WNFS
-  , finalized :: WNFS
+  { pending :: Array (WNFS -> WNFS, Promise WNFS)
+  , openTX  :: WNFS -> WNFS
+  , local   :: WNFS
+  , remote  :: CID
   }
 ```
+
+New jobs are pushed into a promise at the end of the queue. Work begins immediately, forked from the current finalized `HEAD`. Jobs at the front of the queue `await` the promise. When they complete, they check the finalized root CID of the proposed WNFS's `previous` root CID. 
+
+If they match, then this is the next finalized WNFS. Place the WNFS in `local`, and \(post-\)compose the transaction's update with the `openTX`.
+
+If they're different, restart the task and push it to the back of the queue. This can lead to a lot of recomputation.
 
 If this proves to be a bottleneck, it can be swapped for a work-stealing queue, that applies deltas as their promises complete. This seems an unlikely bottleneck as it only applies when there are many concurrent updates being blocked by a large transaction at the head of the FIFO queue, which is an edge case at best.
 
