@@ -35,7 +35,7 @@ bare       = bareParent .|. inumber .|. spiralRatchet
 
 WNFS is a persistent, versioned file system. Including the version is essential for many parts of the system \(seen throughout the rest of this section\). In principle this can be any counter, including simple natural numbers, depending on the design goals of the broader system.
 
-WNFS uses a forward-secret spiral ratchet for versioning, which is described in its own section. This ratchet is hashed and added to the bare namefilter.
+WNFS uses a backward-secret spiral ratchet for versioning, which is described in its own section. This ratchet is hashed and added to the bare namefilter.
 
 #### Hamming Saturation
 
