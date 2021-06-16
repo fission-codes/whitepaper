@@ -95,9 +95,45 @@ The user must always ”look ahead” to see if there have been updates to the f
 2. There have been been a small number of changes
 3. There have substantial changes since
 
-To balance these scenarios, we progressively check for files at revision `r + 2^n` , where `r` is the current revision, and `n` is the search index. First we check the next revision. If it does not exist, we know that we have the latest version. If it does exist, check `r + 2`, then `r+4`, `r+8` and so on. Once there’s a missing version, perform a binary search. For example, if looking at a node at revision 42 that has been updated 123 times since your last recorded pointer, it takes 14 checks \(roughly `O(2 * log n)`\) to find the latest revision.
+### Fast Forward Mechanism
+
+#### Simplified
+
+To balance these scenarios, we progressively check for files at revision `r + 2^n` , where `r` is the current revision, and `n` is the search index. First we check the next revision. If it does not exist, we know that we have the latest version. If it does exist, check `r + 2`, then `r+4`, `r+8` and so on. Once there’s a missing version, perform a binary search. For example, if looking at a node at revision 42 that has been updated 123 times since your last recorded pointer, it takes 14 checks \(roughly `O(2 log n)`\) to find the latest revision.
 
 ![](../../../.gitbook/assets/screen-shot-2021-06-03-at-23.46.07%20%281%29.png)
+
+#### Attack Resistance
+
+A fully deterministic lookup mechanism is open to an attack where the malicious user only writes nodes that are known to be on the lookup path, forcing a linear lookup time against a large number of nodes. To work around this, we add dithering \(noise\) to the lookup values while looking performing large jumps: 
+
+$$
+rev(current, n, m) = current + 2^n - 2^m - random(0..(2^{n-1} - 2^{m-1}))
+$$
+
+```haskell
+-- WIP WIP WIP
+fastFoward initial = fastForward' 1 0
+  where
+    forward n forwardExp backwardExp =
+      n + forwardExp + 1
+    
+    backward
+let
+  current   = current
+  
+  forwards  = 1
+  backwards = 0
+
+next base n m =
+  let diff = 2^n - 2^m
+  dither <- if diff < 1024 then pure 0 else rand 0 diff
+  return (base + diff - dither)
+    
+  
+
+
+```
 
 | Revision Number | Exists |
 | :--- | :--- |
