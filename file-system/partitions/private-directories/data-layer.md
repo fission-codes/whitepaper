@@ -113,26 +113,20 @@ $$
 
 ```haskell
 -- WIP WIP WIP
+
 fastFoward initial = fastForward' 1 0
   where
     forward n forwardExp backwardExp =
       n + forwardExp + 1
     
-    backward
-let
-  current   = current
-  
-  forwards  = 1
-  backwards = 0
+    backward n forwardExp backwardExp =
+      
+    step = initial + 2^forwardExp - 2^backwardExp - dither
 
 next base n m =
   let diff = 2^n - 2^m
   dither <- if diff < 1024 then pure 0 else rand 0 diff
   return (base + diff - dither)
-    
-  
-
-
 ```
 
 | Revision Number | Exists |
