@@ -103,42 +103,50 @@ To balance these scenarios, we progressively check for files at revision `r + 2^
 
 ![](../../../.gitbook/assets/screen-shot-2021-06-03-at-23.46.07%20%281%29.png)
 
-#### Attack Resistance
+#### Search Attach Resistance
 
 A fully deterministic lookup mechanism is open to an attack where the malicious user only writes nodes that are known to be on the lookup path, forcing a linear lookup time against a large number of nodes. To work around this, we add noise to the lookup values while looking performing large jumps: 
 
-$$
-rev(current, n, m) = current + 2^n - 2^m - random(0..(2^{n-1} - 2^{m-1}))
-$$
-
 ```haskell
 -- Pseudocode
-fastForward :: forall m . MonadRandom m => SpiralRatchet -> McTrie -> Node
+fastForward :: 
+  forall m . MonadRandom m 
+  => SpiralRatchet 
+  -> McTrie 
+  -> m (Either SearchSpaceExhausted Node)
 fastFoward rachet store = findUpperBound 0 0
   where
+    -- Start by looking for the first missing element to establish a max bound
     findUpperBound :: Natural -> Natural -> m Node
     findUpperBound latestIndex exponent = do
-      index <- mkIndex latestIndex 2^exponent
+      index <- noisyIndex latestIndex (latestIndex - 2^exponent)
       case findIn store (rachet `advanceBy` index) of
         Just _  -> findFirstMiss (exponent + 1)
         Nothing -> narrow 2^exponent index
           
+    -- Noisy split search
     narrow :: Natural -> Natural -> m Node
     narrow floorIndex ceilingIndex
-      | floorIndex == ceilingIndex = 
-          case findIn store (rachet `advanceBy` index) of
-            Just node -> pure node
-            Nothing   -> error "Search space exhausted"
+      | floorIndex == ceilingIndex = return $ found floorIndex
+      | otherwise                  = search floorIndex ceilingIndex
+        
+    search :: Natural -> Natural -> m Node
+    search low high = do
+      index <- noisyIndex floorIndex (round ((ceilingIndex - floorIndex) / 2))
+      case findIn store (rachet `advanceBy` index) of
+        Just _  -> narrow index high
+        Nothing -> narrow low   index
+        
+    found :: Natural -> Node
+    found index =
+      case findIn store (rachet `advanceBy` index) of
+        Just node -> node
+        Nothing   -> error "Should not be possible"
 
-      | otherwise = do
-          let index = floorIndex + floor ((ceilingIndex - floorIndex) / 2)
-          case findIn store (rachet `advanceBy` index) of
-            Just _  -> narrow index      ceilingIndex
-            Nothing -> narrow floorIndex ceiling
-          
-    mkIndex latestIndex diff = do
+    noisyIndex :: Natural -> Natural -> m Natural
+    noisyIndex latestIndex diff =
       noise <- if diff < 1024 then pure 0 else rand 0 diff
-      return $ latestIndex + diff - dither
+      return $ latestIndex + diff - noise
 ```
 
 ## Lazy Progress
