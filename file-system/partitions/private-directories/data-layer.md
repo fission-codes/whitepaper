@@ -109,11 +109,7 @@ A fully deterministic lookup mechanism is open to an attack where the malicious 
 
 ```haskell
 -- Pseudocode
-fastForward :: 
-  forall m . MonadRandom m 
-  => SpiralRatchet 
-  -> McTrie 
-  -> m (Either SearchSpaceExhausted Node)
+fastForward :: forall m . MonadRandom m => SpiralRatchet -> McTrie -> m Node
 fastFoward rachet store = findUpperBound 0 0
   where
     -- Start by looking for the first missing element to establish a max bound
