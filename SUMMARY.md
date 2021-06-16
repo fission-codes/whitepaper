@@ -74,7 +74,6 @@
 * [Consistency](file-system/consistency/README.md)
   * [Synchronization](file-system/consistency/synchronization.md)
   * [Transactions](file-system/consistency/transactions.md)
-  * [Fault Tolerance](file-system/consistency/fault-tolerance.md)
 * [Distribution](file-system/distribution/README.md)
   * [DNSLink Backstop](file-system/distribution/backstop.md)
   * [Real Time](file-system/distribution/real-time.md)

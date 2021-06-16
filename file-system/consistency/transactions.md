@@ -94,6 +94,10 @@ What follows is a _sketch_ of a JavaScript API for transactions. Note that these
 It can be used to glue together multiple nested transactions, and provides all other methods are merely special cases of this method.
 
 ```typescript
+  /////////////////
+ // Rough Types //
+/////////////////
+
 class Transaction = {
   id: string;
   
@@ -110,61 +114,71 @@ type atomic = <value>(
     fn: {fs: WNFS, tx: transaction} => value,
     txConfig?: txConfig
   ): Promise<{tx: transaction, value: value}>
-```
 
-#### Example
+  ////////////////////
+ // Example Sketch //
+////////////////////
 
-```javascript
+const me = "expede"
 const photoData = ...
+const nestedTx = async () => wnfs.atomic({fs, tx} => {
+  // more transactional actions
+})
 
 await wnfs.atomic({fs, tx} => {
-  fs.photos.insert({
+  fs.create(["photos", "vacation.png"], {
     metadata: {
-      takenBy: "expede",
+      takenBy: me,
       latitude: 25.025885,
       longitude: -78.035889
     },
-    filename: "vacation.png",
     data: photoData
   })
   
-  fs.photos.deleteBy({filename: "holiday.gif"})
+  fs.rm(["public", "photos", "holiday.gif"])
   
-  fs.documents.update({directory, metadata: oldMeta, tx} => {
+  // Nested transaction
+  await nestedTx().bind(this) // or something
+  
+  fs.modify(["public", "documents"], {directory, metadata: oldMeta, tx} => {
     directory.contents.find()
-    
+
     return {
       dir: [...directory, newFile],
-      metadata: {...oldMeta, lastTouchedBy: "expede"}
+      metadata: {...oldMeta, lastTouchedBy: me}
     }
   })
-})
+}).maxRetries(0)
 ```
 
-### insert
-
-Insert a completely new file, rather than modifying an existing one.
+### create
 
 ```typescript
 // The path will be the 
-type insert({data: Uint8Array, meta?: metadata, txConfig?: txConfig}): Promise<>
+type create(path: path, data: Uint8Array, meta?: metadata): Promise<>
+
+// Example
+
+wnfs.create(["private", "Documents"], data,)
 ```
 
 ### modify
 
-```text
+```typescript
 wnfs.modify(["favourites", "favs.yaml"], data => {
-            if data.length > 100 {
-              tx.abort({errorMsg: "Data too long"})
-            } else {
-              const newData = data + " new stuff"
-              tx.retryOn(newData.length < 10, {errorMsg: "String too short"})
-              return newData.toUpperCase() 
-            }
-          })
+  if (data.length > 100) throw new Error("Data too long")
+  const newData = data + " new stuff"
+  
+  if (newData.length < 10) throw new Error("String too short")
+  return newData.toUpperCase() 
+})
 ```
 
-### delete
+### remove
+
+```typescript
+wnfs.remove(["favourites", "favs.yaml"])
+```
 
 
 
