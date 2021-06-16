@@ -105,46 +105,41 @@ To balance these scenarios, we progressively check for files at revision `r + 2^
 
 #### Attack Resistance
 
-A fully deterministic lookup mechanism is open to an attack where the malicious user only writes nodes that are known to be on the lookup path, forcing a linear lookup time against a large number of nodes. To work around this, we add dithering \(noise\) to the lookup values while looking performing large jumps: 
+A fully deterministic lookup mechanism is open to an attack where the malicious user only writes nodes that are known to be on the lookup path, forcing a linear lookup time against a large number of nodes. To work around this, we add noise to the lookup values while looking performing large jumps: 
 
 $$
 rev(current, n, m) = current + 2^n - 2^m - random(0..(2^{n-1} - 2^{m-1}))
 $$
 
 ```haskell
--- WIP WIP WIP
-
-fastFoward initial = fastForward' 1 0
+-- Pseudocode
+fastForward :: forall m . MonadRandom m => SpiralRatchet -> McTrie -> Node
+fastFoward rachet store = findUpperBound 0 0
   where
-    forward n forwardExp backwardExp =
-      n + forwardExp + 1
-    
-    backward n forwardExp backwardExp =
-      
-    step = initial + 2^forwardExp - 2^backwardExp - dither
+    findUpperBound :: Natural -> Natural -> m Node
+    findUpperBound latestIndex exponent = do
+      index <- mkIndex latestIndex 2^exponent
+      case findIn store (rachet `advanceBy` index) of
+        Just _  -> findFirstMiss (exponent + 1)
+        Nothing -> narrow 2^exponent index
+          
+    narrow :: Natural -> Natural -> m Node
+    narrow floorIndex ceilingIndex
+      | floorIndex == ceilingIndex = 
+          case findIn store (rachet `advanceBy` index) of
+            Just node -> pure node
+            Nothing   -> error "Search space exhausted"
 
-next base n m =
-  let diff = 2^n - 2^m
-  dither <- if diff < 1024 then pure 0 else rand 0 diff
-  return (base + diff - dither)
+      | otherwise = do
+          let index = floorIndex + floor ((ceilingIndex - floorIndex) / 2)
+          case findIn store (rachet `advanceBy` index) of
+            Just _  -> narrow index      ceilingIndex
+            Nothing -> narrow floorIndex ceiling
+          
+    mkIndex latestIndex diff = do
+      noise <- if diff < 1024 then pure 0 else rand 0 diff
+      return $ latestIndex + diff - dither
 ```
-
-| Revision Number | Exists |
-| :--- | :--- |
-| 42 + 1 = 43 | Yes |
-| 42 + 2 = 44 | Yes |
-| 42 + 4 = 46 | Yes |
-| 42 + 8 = 50 | Yes |
-| 42 + 16 = 58 | Yes |
-| 42 + 32 = 74 | Yes |
-| 42 + 64 = 106 | Yes |
-| 42 + 128 = 170 | No — First overshot! We now have an upper bound |
-| 42 + 96 = 138 | Yes |
-| 42 + 112 = 154 | Yes |
-| 42 + 120 = 162 | Yes |
-| 42 + 124 = 166 | No |
-| 42 + 122 = 164 | Yes |
-| 42 + 123 = 165 | Yes — No more search space, so found! |
 
 ## Lazy Progress
 
