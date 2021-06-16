@@ -150,10 +150,10 @@ Insert a completely new file, rather than modifying an existing one.
 type insert({data: Uint8Array, meta?: metadata, txConfig?: txConfig}): Promise<>
 ```
 
-### update
+### modify
 
 ```text
-wnfs.update(["favourites", "favs.yaml"], data => {
+wnfs.modify(["favourites", "favs.yaml"], data => {
             if data.length > 100 {
               tx.abort({errorMsg: "Data too long"})
             } else {

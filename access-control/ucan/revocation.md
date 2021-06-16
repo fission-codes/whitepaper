@@ -25,7 +25,7 @@ This scheme is heavily centered on authorization over authentication. Creating t
 
 ## Solution
 
-Revocation is done by placing the offending token in a modified Merkle Patricia tree \("MMPT"\) as close to the resource as possible. In the case of Fission, this generally means in a well known, immutable location on WNFS. These can be copied and merged widely, since each token is unique and there is little overhead to maintaining large lists.
+Revocation is done by placing the offending token in a Merklized Concurrent Trie as close to the resource as possible. In the case of Fission, this generally means in a well known, immutable location on WNFS. These can be copied and merged widely, since each token is unique and there is little overhead to maintaining large lists.
 
 ### Revoker Authentication
 
