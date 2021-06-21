@@ -8,7 +8,7 @@ Despite the large key size, RSA is the only widely-trusted asymmetric key algori
 
 ## Curve-25519 / Ed25519
 
-[Curve 25519](https://cr.yp.to/ecdh.html) keys with signatures on the [Twisted Edwards curve](http://cr.yp.to/newelliptic/newelliptic.html), also known as Ed25519 or EdDSA. Ed25519 was chosen for many reasons, not least of which being reasonably good performance and quantum-resistant security.
+[Curve 25519](https://cr.yp.to/ecdh.html) keys with signatures on the [Twisted Edwards curve](http://cr.yp.to/newelliptic/newelliptic.html), also known as Ed25519 or EdDSA. Ed25519 was chosen for many reasons, not least of which being reasonably good performance and high security relative to its length \(i.e. much better than RSA\).
 
 > \[...\] concretely Curve25519 works with keys consisting of about 256 bits, while an equivalent RSA instantiation would need key sizes of 3072 bits long.  
 > [Source](https://www.esat.kuleuven.be/cosic/elliptic-curves-are-quantum-dead-long-live-elliptic-curves/)
