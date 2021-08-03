@@ -90,9 +90,9 @@ Merging in the case where one copy is strictly ahead or behind is straightforwar
 
 ### Public Merge
 
-WNFS has functional persistence, and this confluent history. Our Merklized layout forces  single merge point for all branches. Merges are associative, and we need a consistent order. We pick the latest CIDs for each branch, order them numerically lowest-to-highest. Working recursively bottom-up:
+WNFS has functional persistence, and this confluent history. Our Merklized layout forces a single merge point for all branches. Merges are associative, and we need a consistent order. We pick the latest CIDs for each branch, order them numerically lowest-to-highest. Working recursively bottom-up:
 
-* Files: select a file \(default: pick the highest CID\)
+* Files: select a file \(default: pick the file from the branch with the highest CID\)
 * Directories: merge links by name
   * Defaults to resurrecting deleted links from one branch
 
