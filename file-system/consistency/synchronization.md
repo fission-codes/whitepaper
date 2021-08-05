@@ -49,39 +49,52 @@ localHistory  = [localCID0,  localCID1,  localCID2]
 remoteHistory = [remoteCID0, remoteCID1, remoteCID2, remoteCID3]
 
 compareHistories :: [CID] -> [CID] -> VersionOrder
+compareHistories []     []      = InSync
 compareHistories locals remotes = innerCompare locals remotes [] mempty
 
 innerCompare :: [CID] -> [CID] -> [CID] -> BloomFilter -> VersionOrder
-innerCompare [] [] _ _ = InSync
-innerCompare [] _  _ _ = DivergedAt genesis
-innerCompare _  [] _ _ = DivergedAt genesis
+innerCompare [] [] _ _ = DivergedAt genesis
 innerCompare (local : moreLocal) (remote : moreRemote) checked cache =
   case (local == remoteHead, remote == localHead) of
     (True, True) -> 
       InSync
-      
+
     (True, False) -> 
       AheadOfRemote
-      
+
     (False, True) -> 
       BehindRemote
-      
+
     (False, False) ->
       case filter alreadySeen [local, remote] of
-        []        -> innerCompare moreLocal moreRemote checked' cache'
-        (cid : _) -> DivergedAt cid
-                
+        [] ->
+          case (moreLocal, moreRemote) of
+            ([], []) ->
+              DivergedAt genesis
+
+            ([], _) ->
+              innerCompare [local] moreRemote checked' cache'
+
+            (_, []) ->
+              innerCompare moreLocal [remote] checked' cache'
+
+            (_, _) ->
+              innerCompare moreLocal moreRemote checked' cache'
+
+        (cid : _) ->
+          DivergedAt cid
+
   where
     alreadySeen cid =
       cache `Bloom.contains` cid && checked `List.contains` cid
   
     checked' = 
       (local : remote : checked)
-              
+
     cache' = 
       cache
         |> BloomFilter.insert remote
-        |> BloomFilter.insert checked
+        |> BloomFilter.insert local
 ```
 
 ## Confluent Reconciliation
