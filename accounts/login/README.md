@@ -6,7 +6,7 @@ This has historically been done with some proof of identity, via a password or o
 
 As mentioned elsewhere, Fission has an intentionally weak concept of "identity". This is a system more on "authorization" than "authentication". A user may be said to have "logged in" to an app if they have the necessary permissions available to perform actions as that user for their current application.
 
-However, the app is an agent of the user, and its codes ultimately performs actions on the users behalf. Perhaps a better view is that the user empowers the app with the delegated capabilities required to carry out tasks on their behalf. It is a model where the human is in control, not the app.
+However, the app is an agent of the user, and its codes ultimately perform actions on the user's behalf. Perhaps a better view is that the user empowers the app with the delegated capabilities required to carry out tasks on their behalf. It is a model where the human is in control, not the app.
 
 ## Building Intuition
 
@@ -14,7 +14,7 @@ Traditional logins and account systems are no more "natural" than [using a mouse
 
 ![](../../.gitbook/assets/screen-shot-2021-04-30-at-6.16.35-pm.png)
 
-This first image above shows a scenariothat you may be familiar with. The circles represent capabilities, for example access to an email account, access to social media, or a cached files. Alice's work desktop has very different but slightly overlapping capabilities from her personal laptop or phone. Alice's most active device is her phone, and so it has more capabilities than her laptop. We can see that Alice fills many roles across her personal life, work life, and aspects of both. They are all the same human being, but each persona behaves differently and is expected to maintain some degree of separation \(e.g. no sensitive documents brought home, or NSFW photos on her work desktop\).
+This first image above shows a scenario that you may be familiar with. The circles represent capabilities, for example access to an email account, access to social media, or a cached files. Alice's work desktop has very different but slightly overlapping capabilities from her personal laptop or phone. Alice's most active device is her phone, and so it has more capabilities than her laptop. We can see that Alice fills many roles across her personal life, work life, and aspects of both. They are all the same human being, but each persona behaves differently and is expected to maintain some degree of separation \(e.g. no sensitive documents brought home, or NSFW photos on her work desktop\).
 
 ![](../../.gitbook/assets/screen-shot-2021-04-30-at-6.05.28-pm.png)
 
