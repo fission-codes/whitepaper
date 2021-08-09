@@ -103,7 +103,7 @@ To balance these scenarios, we progressively check for files at revision `r + 2^
 
 ![](../../../.gitbook/assets/screen-shot-2021-06-03-at-23.46.07%20%281%29.png)
 
-#### Search Attach Resistance
+#### Search Attack Resistance
 
 A fully deterministic lookup mechanism is open to an attack where the malicious user only writes nodes that are known to be on the lookup path, forcing a linear lookup time against a large number of nodes. To work around this, we add noise to the lookup values while looking performing large jumps: 
 
