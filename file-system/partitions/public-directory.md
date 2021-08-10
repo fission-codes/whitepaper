@@ -79,7 +79,7 @@ data IPFSSerialized = IPFSSerialized
 data Userland = Either [(Text, IPFSLink)] IPFSNode
 ```
 
-Note that links are NOT flattened into a single node. WNFS maintains a sepacial separate namespace for userland. This is a 2-layer approach:
+Note that links are NOT flattened into a single node. WNFS maintains a special separate namespace for userland. This is a 2-layer approach:
 
 ```text
    +———————————————————+
@@ -124,7 +124,7 @@ It bears repeating that while this does create updated parent nodes, it will be 
 
 ## Concurrency
 
-Concurrent writes on WNFS never overwrite each other. Multiple branches of history are allowed — and persitsed — as long as they are eventually merged. See the Consistency section for more.
+Concurrent writes on WNFS never overwrite each other. Multiple branches of history are allowed — and persisted — as long as they are eventually merged. See the Consistency section for more.
 
 
 

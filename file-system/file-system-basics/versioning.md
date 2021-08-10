@@ -1,10 +1,10 @@
 # Versioning
 
-WNFS is a nondestructive, versioned file system. This is similar to Git history: files that are unchanged \(shared between versions\) remain unchanged. Parents include links to them, their previous version, and to new or altered altered children.
+WNFS is a nondestructive, versioned file system. This is similar to Git history: files that are unchanged \(shared between versions\) remain unchanged. Parents include links to them, their previous version, and to new or altered children.
 
 ![](../../.gitbook/assets/screen-shot-2021-05-21-at-8.25.55-am.png)
 
-WNFS uses a temporal graph with functional persistence. This is ”single writer” — new patches must be applied in order, and conflicts are automatically resolvable with a rebase / last-writer-wins \(LWW\) strategy, or with software transaction memory \(STM, see relevant section\).
+WNFS uses a temporal graph with functional persistence. This is ”single writer” — new patches must be applied in order, and conflicts are automatically resolvable with a rebase / last-writer-wins \(LWW\) strategy, or with software transactional memory \(STM, see relevant section\).
 
 This is versioning at the file system level only. Sub-file versioning can be implemented on top of WNFS with STM, or separately with techniques such as CRDTs \(which is baked-in to the separate database layer\). This is an improvement over what most uses expect, and each committed version of the file can be stepped through to retrieve old history \(e.g. retrieve the state of a file from many weeks ago\).
 
@@ -24,7 +24,7 @@ B   C
   D   E
 ```
 
-This DAG has no diffs, one revision, and one generation. Since the content changes, so does the CID and thus the pointers to it i the graph. If we update node `E` to `E’`, the pointers above it need to be updated as well. This then changes `C` to `C’`, and thus `A` to `A’`\(“A revision 1”\). All other links can be copied over \(`B` and `D` remain at their previous revision 0\). We are using the term ”revision” to avoid the word ”version” which conflicts with the version of WNFS itself.
+This DAG has no diffs, one revision, and one generation. Since the content changes, so does the CID and thus the pointers to it in the graph. If we update node `E` to `E’`, the pointers above it need to be updated as well. This then changes `C` to `C’`, and thus `A` to `A’`\(“A revision 1”\). All other links can be copied over \(`B` and `D` remain at their previous revision 0\). We are using the term ”revision” to avoid the word ”version” which conflicts with the version of WNFS itself.
 
 ```text
 Gen 1

@@ -6,7 +6,7 @@ description: WNFS Logged Online/Offline File System
 
 The Web Native File System \(WNFS\) is a file system written for the web. It is versioned, logged, programmable, has strong-yet-flexible security, and is fully controlled by the end user. Service providers can validate writes without reading the contents of the file system, and minimal metadata is leaked.
 
-WNFS relies heavily on the ”space” side of the space/tie tradeoff to deliver performance. A a consequence of this and Merklization, WNFS can provide advanced functionality such as versioning and delegated or collaborative write access.
+WNFS relies heavily on the ”space” side of the space/time tradeoff to deliver performance. A a consequence of this and Merklization, WNFS can provide advanced functionality such as versioning and delegated or collaborative write access.
 
 Features at a high level:
 

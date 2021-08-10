@@ -18,7 +18,7 @@ The file layer adds additional structure over the protocol layer, with richer se
 
 Rather than CIDs and Merkle structures, we speak of files, directory hierarchy, and versioning. This layer also handles automated conflict resolution.
 
-This layer knows about several well defined sections defined at the root of the DAG. These include \(but are not limited to\) the public, private, and shared sections. There is a strict separation between these sections, for many reasons, but importantly access control — both for users an a separation between userland and kernelspace.
+This layer knows about several well defined sections defined at the root of the DAG. These include \(but are not limited to\) the public, private, and shared sections. There is a strict separation between these sections, for many reasons, but importantly access control — both for users and as separation between userland and kernelspace.
 
 It presents a much richer view of the Data Layer. The example given above would be interpreted as follows, where `Photos@1` is the root node \(at the top of the Block Layer diagram\).
 
@@ -26,7 +26,7 @@ It presents a much richer view of the Data Layer. The example given above would 
 
 ## API Layer 🗄
 
-The File System Layer is an abstraction abstraction over the File Layer. This contains many analogies to the common Unix filesystem interfaces \(e.g. `ls`, `cat`, `mkdir`\), the transactional interface, and browser events.
+The File System Layer is an abstraction over the File Layer. This contains many analogies to the common Unix filesystem interfaces \(e.g. `ls`, `cat`, `mkdir`\), the transactional interface, and browser events.
 
 ## Application Layer 📊
 

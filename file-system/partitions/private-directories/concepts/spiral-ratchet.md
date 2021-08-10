@@ -17,11 +17,11 @@ SHA-256 is native to the WebCypto API, is a very fast operation, and commonly ha
 3. Seeking ahead by 100ks or millions takes very noticeable time  
 4. It should be cheaper to fast forward than for an attacker to build a large history
 
-We still want small step changes to very fast, but also be able to deterministically tune how quickly we jump ahead, without revealing previous counter hashes, while maintaining the same security properties as a single ratchet counter.
+We still want small step changes to be very fast, but also be able to deterministically tune how quickly we jump ahead, without revealing previous counter hashes, while maintaining the same security properties as a single ratchet counter.
 
 Positional counting does exactly this in the most common numeral systems. Our design involves three positions, two of which are bounded. We call these the large \(or epoch\), medium, and small numbers. 
 
-Positionally this look like:
+Positionally this looks like:
 
 ```text
 large   medium  small
