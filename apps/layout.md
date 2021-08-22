@@ -10,12 +10,12 @@ The standard format for apps is as follows:
 │   └── Apps
 │       └── Todos
 │           ├── Artifacts
-│           │   ├── config.json
-│           │   └── db.json
-│           ├── Data
 │           │   ├── app.js.min.tar.gz
 │           │   ├── index.html
 │           │   └── style.css
+│           ├── Data
+│           │   ├── config.json
+│           │   └── db.json
 │           └── Source
 │               ├── package.json
 │               ├── README.md
