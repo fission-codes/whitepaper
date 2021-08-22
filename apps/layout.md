@@ -2,7 +2,7 @@
 
 The standard format for apps is as follows:
 
-```bash
+```text
 /
 ├── p
 │   └── ...
@@ -13,10 +13,11 @@ The standard format for apps is as follows:
 │           │   ├── app.js.min.tar.gz
 │           │   ├── index.html
 │           │   └── style.css
-│           ├── Data
+│           ├── Data [optionally in private]
 │           │   ├── config.json
-│           │   └── db.json
-│           └── Source
+│           │   ├── searchIndex.json
+│           │   └── Photos [and other symlinks to relevant files]
+│           └── Source [optionally in private]
 │               ├── package.json
 │               ├── README.md
 │               └── src
