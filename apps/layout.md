@@ -24,7 +24,7 @@ The standard format for apps is as follows:
 └── private
     └── Apps
         └── Todos
-            └── ... same structure of public ...
+            └── ... same structure as public ...
 ```
 
 ## Data
