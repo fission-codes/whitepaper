@@ -203,5 +203,5 @@ data GeneralSpiralRatchet algo = GSR
   }
 ```
 
-Here, the `digits` field correlates the index with the digit exponent. In the familair base 10, index 0 = 10^0 = 1s-digit, index 5 = 10^5 = 100,000s-digit.
+Here, the `digits` field correlates the index with the digit exponent. In the familiar base 10, index 0 = 10^0 = 1s-digit, index 5 = 10^5 = 100,000s-digit.
 
