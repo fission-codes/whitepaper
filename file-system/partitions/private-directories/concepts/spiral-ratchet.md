@@ -174,10 +174,10 @@ serialize SpiralRatchet {..} =
     |> concat -- ByteString
 ```
 
-We then flag the encoding. The default encoding is [base64URL-unpadded](https://datatracker.ietf.org/doc/html/rfc4648) \(signified with [`u`](https://github.com/multiformats/multibase)\) so:
+We then flag the encoding. The default encoding is [base64URL-unpadded](https://datatracker.ietf.org/doc/html/rfc4648) \(signified with [`u`](https://github.com/multiformats/multibase)\) and SHA-256 \(`0x16`\), so:
 
 ```text
-u4aFrTubcQSzb7f-g_XhLLhok/O3PRsF2c8VSpDD1jaWypCgqEnYECNxevFJMUuZtvaUgJKrXZpzXiEhXqsjjdvKTa-tdozp5bgry5wlYsl5LP4Q5tjdUXs1tq3-sNjm3Phe34n75Y8X-jctJ_zmSl0vw-w2YM2WlheTYHO17a1wv8N2BXhuFQ1IDbQ8osqKxrN1H4GrZhrFY-FvzlGDMWw
+uFuGha07m3EEs2-3_oP14Sy4aJPztz0bBdnPFUqQw9Y2lsqQoKhJ2BAjcXrxSTFLmbb2lICSq12ac14hIV6rI43byk2vrXaM6eW4K8ucJWLJeSz-EObY3VF7Nbat_rDY5tz4Xt-J--WPF_o3LSf85kpdL8PsNmDNlpYXk2Bzte2tcL_DdgV4bhUNSA20PKLKisazdR-Bq2YaxWPhb85RgzFs
 ```
 
 ## Generalized Spiral Ratchet
