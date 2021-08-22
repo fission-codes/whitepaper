@@ -40,13 +40,13 @@ The metaphor is a spiral. You can ratchet one at a time, or deterministically sk
 
 ```haskell
 data SpiralRatchet = SpiralRatchet
-  { large     :: SHA256
+  { large     :: Digest SHA256
 
-  , medium    :: SHA256
-  , mediumMax :: SHA256
+  , medium    :: Digest SHA256
+  , mediumMax :: Digest SHA256
   
-  , small     :: SHA256
-  , smallMax  :: SHA256
+  , small     :: Digest SHA256
+  , smallMax  :: Digest SHA256
   }
   
 exampleSR = SpiralRatchet
@@ -163,5 +163,45 @@ setup = do
   return SpiralRatchet {..}
 ```
 
+## Canonical Serialization
 
+The spiral ratchet is byte aligned, which makes for straightforward binary serialization. The usual case is to increment the smallest digit, followed by the next largest, and so on. As such, it is more efficient to encode as little-endian:
+
+```haskell
+serialize SpiralRatchet {..} =
+  [small, smallMax, medium, mediumMax, large] -- [Digest AES256]
+    |> fmap toByteString -- [ByteString]
+    |> concat -- ByteString
+```
+
+We then flag the encoding. The default encoding is [base64URL-unpadded](https://datatracker.ietf.org/doc/html/rfc4648) \(signified with [`u`](https://github.com/multiformats/multibase)\) so:
+
+```text
+u4aFrTubcQSzb7f-g_XhLLhok/O3PRsF2c8VSpDD1jaWypCgqEnYECNxevFJMUuZtvaUgJKrXZpzXiEhXqsjjdvKTa-tdozp5bgry5wlYsl5LP4Q5tjdUXs1tq3-sNjm3Phe34n75Y8X-jctJ_zmSl0vw-w2YM2WlheTYHO17a1wv8N2BXhuFQ1IDbQ8osqKxrN1H4GrZhrFY-FvzlGDMWw
+```
+
+## Generalized Spiral Ratchet
+
+There is nothing special about a 3xAES256 spiral ratchet. The digits don't even need to be the same length or hashing algorithm \(though this is strongly recommended to lower cognitive overhead\). It is "merely" a [positional number system](https://en.wikipedia.org/wiki/Positional_notation) implemented with hashing to avoid unary counting overhead. To provide some consistency, here is the formula for constructing a spiral ratchet up to `n` digits:
+
+* An unbounded hash to represent the largest digit \(or "epoch"\)
+* Each digit is accompanied by its ceiling, to indicate how much room is left
+  * This may also be implemented as the number of remaining increments
+* A hashing algorithm
+
+### Example Implementation
+
+```haskell
+data SpiralDigit algo = SpiralDigit
+  { current :: Digest algo
+  , max     :: Digest algo
+  }
+
+data GeneralSpiralRatchet algo = GSR
+  { epoch  :: Digest algo
+  , digits :: [SpiralDigit]
+  }
+```
+
+Here, the `digits` field correlates the index with the digit exponent. In the familair base 10, index 0 = 10^0 = 1s-digit, index 5 = 10^5 = 100,000s-digit.
 
