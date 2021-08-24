@@ -1,5 +1,5 @@
 ---
-description: A reduction cache of the pubic tree for better links
+description: A reduction cache of the public tree for better links
 ---
 
 # Pretty
