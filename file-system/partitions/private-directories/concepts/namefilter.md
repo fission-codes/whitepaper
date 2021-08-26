@@ -14,7 +14,10 @@ $$
 n = 47\\
 p = 0.000000001\\
 m = 2048\\
-k = 30
+k = 30\\
+s_{target} = 1410\\
+s_{lower} = 1390\\
+s_{upper} = 1420
 $$
 
 If required, doubling `n` and `m` leaves `p` and `k` constant. See [here for pretty graphs](https://hur.st/bloomfilter/?n=47&p=&m=2048&k=30) \(useful for parameter tuning, verified manually\).

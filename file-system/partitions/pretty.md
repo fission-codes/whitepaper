@@ -10,7 +10,7 @@ One aesthetic problem that arises from the multi-segment approach of the `public
 
 This reduction only selects for userland paths, discarding headers, metadata, and so on. It encodes directly as protocol nodes to be legible to as many system as possible without needing to understand the WNFS schemata or application.
 
-The leaves of the pretty section MUST match the leaves of the public section _at the protocol layer_. This is to say, we count the raw data index of a file, or the userland segment of the DAG as a leaf, but never a header segment or 
+The leaves of the pretty section MUST match the leaves of the public section _at the protocol layer_. This is to say, we count the raw data index of a file, or the userland segment of the DAG as a leaf, but never a header segment or
 
 Being a reduction, this index cache can always be dropped and rebuilt deterministically.
 
