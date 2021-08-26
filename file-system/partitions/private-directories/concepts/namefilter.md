@@ -74,7 +74,7 @@ const saturate = (barefilter: NameFilter): NameFilter {
   }
 
   // Step more slowly though until comparison reached
-  return saturatedUnderMax(filter, 0)
+  return saturatedUnderMax(filter)
 }
 
 // Closest without going over
