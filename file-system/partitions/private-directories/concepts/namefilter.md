@@ -50,7 +50,7 @@ There is an unlikely case where adding an element causes no change to the filter
 
 ```javascript
 if (filterBefore === filterAfter) {
-  filterAfter.add(sha(complement(filterAfter))
+  filterAfter.add(sha(complement(filterAfter.toBytes()))
 } else {
   filterAfter
 }
