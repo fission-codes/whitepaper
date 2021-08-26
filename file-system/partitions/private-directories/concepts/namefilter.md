@@ -56,7 +56,9 @@ if (filterBefore === filterAfter) {
 }
 ```
 
-The naive approach is to check on every hash. Given the extremely unlikely 
+The naive approach is to check on every hash. Given that this is an _extremely_ unlikely situation, we can perform the check after an unreasonable number of iterations have completed:
+
+
 
 #### Algorithm \(in Pseudocode\)
 
