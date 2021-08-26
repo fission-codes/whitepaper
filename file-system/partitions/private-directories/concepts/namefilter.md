@@ -16,7 +16,7 @@ p = 0.000000001\\
 m = 2048\\
 k = 30\\
 popcount_{max} = 1410\\
-hash = xxHash
+hash = XXH3_{64}
 $$
 
 If required, doubling `n` and `m` leaves `p` and `k` constant. See [here for pretty graphs](https://hur.st/bloomfilter/?n=47&p=&m=2048&k=30) \(useful for parameter tuning, verified manually\).
