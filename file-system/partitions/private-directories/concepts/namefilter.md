@@ -61,6 +61,7 @@ const saturate = (barefilter: NameFilter): NameFilter {
   return saturatedUnderMax(filter)
 }
 
+// Closest without going over
 const saturateUnderMax = (filter: NameFilter): NameFilter {
   const newFilter = hash(filter)
   if (popcount(newFilter) > max) return filter
