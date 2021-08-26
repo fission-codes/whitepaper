@@ -49,7 +49,7 @@ const max: number = 1410
 
 const saturate = (barefilter: NameFilter): NameFilter {
   // Get the lower bound of remaining elements
-  const lowerBound = (max - popcount(barefilter)) / 30
+  const lowerBound = Math.floor((max - popcount(barefilter)) / 30)
 
   // Quickly jump to the lower bound
   let filter = barefilter
