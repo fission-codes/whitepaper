@@ -49,10 +49,12 @@ To satisfy these onstraints, we have chosen a target saturation of 1410, with so
 There is an unlikely case where adding an element causes no change to the filter, and thus causes an infinite loop. Getting around this is straightforward: take the binary complement of the filter, hash that, and continue:
 
 ```javascript
-filterBefore === filterAfter ? hash
+if (filterBefore === filterAfter) {
+  filterAfter ^ complement(filterAfter)
+} else {
+   filterAfter
+}
 ```
-
-
 
 The naive approach is to check on every hash. Given the extremely unlikely 
 
