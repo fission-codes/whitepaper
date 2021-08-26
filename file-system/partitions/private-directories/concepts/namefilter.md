@@ -15,10 +15,15 @@ n = 47\\
 p = 0.000000001\\
 m = 2048\\
 k = 30\\
-popcount_{max} = 1410
+popcount_{max} = 1410\\
+hash = xxHash
 $$
 
 If required, doubling `n` and `m` leaves `p` and `k` constant. See [here for pretty graphs](https://hur.st/bloomfilter/?n=47&p=&m=2048&k=30) \(useful for parameter tuning, verified manually\).
+
+#### Hash Function
+
+Many Bloom filter implementations are optmized for speed, not consistency. We have chosen the XXH32 algorithm. 
 
 #### Bare / Unsaturated Namefilter
 
@@ -40,7 +45,7 @@ WNFS uses a backward-secret spiral ratchet for versioning, which is described in
 
 #### Hamming Saturation
 
-Bloom filters admit \(roughly\) how many elements they contain, and are relatively easy to correlate by their Hamming distance. To work around this issue with obfuscation, namefilters deterministically saturate the remaining space, filling just over _half_ of the available filter, while maintaining a very low false positive rate. The idea is to fill the namefilter with a constant Hamming weight, but still be easily constructable by someone with the bare namefilter.
+Bloom filters admit \(roughly\) how many elements they contain, and are relatively easy to correlate by their Hamming distance. To work around this issue with obfuscation, namefilters deterministically saturate the remaining space, filling just over _half_ of the available filter, while maintaining a very low false positive rate. The idea is to fill the namefilter with a constant Hamming weight, but still be easily constructible by someone with the bare namefilter.
 
 To satisfy these constraints, we have chosen a target saturation of 1410, with some tollerances. 1410 is chosen as it represents the worst case insertion performance of 47 elements, yielding the lower bound false positive rate. This is granted some tollerances: since every element takes up to 30 elements, we don't know how many bits will overlap. As such, we need to find the overshoot of 1410 elements, and take the previous value. This requires limited backtracking.
 
@@ -81,7 +86,9 @@ const saturate = (barefilter: NameFilter): NameFilter {
 const saturateUnderMax = (filter: NameFilter): NameFilter {
   let newFilter = filter.add(sha(filter.toBytes()))
   if (filter === candidate) {
-    newFilter = filter.add(sha(complement(filter.toBytes())))
+    // Change value deterministically to break out of infinite loop
+    const breakout = complement(filter.toBytes())
+    newFilter = filter.add(sha(breakout))
   }
   
   if (popcount(newFilter) > max) return filter
