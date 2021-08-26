@@ -44,6 +44,20 @@ Bloom filters admit \(roughly\) how many elements they contain, and are relative
 
 To satisfy these onstraints, we have chosen a target saturation of 1410, with some tollerances. 1410 is chosen as it represents the worst case insertion performance of 47 elements, yielding the lower bound false positive rate. This is granted some tollerances: since every element takes up to 30 elements, we don't know how many bits will overlap. As such, we need to find the overshoot of 1410 elements, and take the previous value. This requires limited backtracking.
 
+#### Collisions
+
+There is an unlikely case where adding an element causes no change to the filter, and thus causes an infinite loop. Getting around this is straightforward: take the binary complement of the filter, hash that, and continue:
+
+```javascript
+filterBefore === filterAfter ? hash
+```
+
+
+
+The naive approach is to check on every hash. Given the extremely unlikely 
+
+#### Algorithm \(in Pseudocode\)
+
 ```typescript
 const max: number = 1410
 
@@ -54,7 +68,7 @@ const saturate = (barefilter: NameFilter): NameFilter {
   // Quickly jump to the lower bound
   let filter = barefilter
   for (i = 0; i < lowerBound; i++) {
-    filter = hash(filter)
+    filter = filter ^ hash(filter)
   }
 
   // Step more slowly though until comparison reached
@@ -67,42 +81,6 @@ const saturateUnderMax = (filter: NameFilter): NameFilter {
   if (popcount(newFilter) > max) return filter
   saturatedUnderMax(newFilter)
 }
-```
-
-#### Collisions
-
-#### Algorithm \(in Pseudocode\)
-
-Saturation is then achieved by iteratively hashing the filter into its successor until a certain number of bits are set to 1.
-
-```haskell
-makeNameFilter :: BloomFilter -> BloomFilter
-makeNameFilter bare = saturateTo 1410 aesKey bare
-
-saturateTo :: Natural -> SHA256 -> BloomFilter -> BloomFilter
-saturateTo threshold hashSeed namefilter =
-  case (isSaturated namefilter, isSaturated namefilter') of
-    (True, _) ->
-      namefilter
-      
-    (_, True) ->
-      -- Err on the side of slightly too few bits
-      if inTollerance namefilter'
-        then namefilter'
-        else namefilter
-        
-    _ ->
-      saturateTo threshold hashSeed' namefilter'
-    
-  where
-    saturatedBy filter = Binary.sum filter - threshold
-    isSaturated filter = saturatedBy filter >= 0
-    
-    -- 10 = k / 3, where k is number of bits per entry
-    inTollerance filter = saturatedBy filter <= 10
-    
-    namefilter' = namefilter .|. toBloom hashSeed'
-    hashSeed'   = sha256 hashSeed -- Recursively hash
 ```
 
 In this way, we can deterministically generate very different looking filters for the same node, varying over the version number. The base filter stays inside the longer structure, . With an appropriately configured filter, this provides multiple features:
