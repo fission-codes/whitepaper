@@ -65,12 +65,12 @@ const max: number = 1410
 
 const saturate = (barefilter: NameFilter): NameFilter {
   // Get the lower bound of remaining elements
-  const lowerBound = Math.floor((max - popcount(barefilter)) / 30)
+  const lowerBound = Math.floor((max - barefilter.popcount()) / 30)
 
   // Quickly jump to the lower bound
   let filter = barefilter
   for (i = 0; i < lowerBound; i++) {
-    filter = filter ^ hash(filter)
+    filter = filter.add(hash(filter))
   }
 
   // Step more slowly though until comparison reached
@@ -79,8 +79,11 @@ const saturate = (barefilter: NameFilter): NameFilter {
 
 // Closest without going over
 const saturateUnderMax = (filter: NameFilter): NameFilter {
-  const candidate = filter ^ hash(filter)
-  const newFilter = filter === candidate ? filter ^ hash(complement(filter)) : candidate
+  let newFilter = filter.add(hash(filter))
+  if (filter === candidate) {
+    newFilter = filter.add(hash(complement(filter.toBytes())))
+  }
+  
   if (popcount(newFilter) > max) return filter
   return saturatedUnderMax(newFilter)
 }
