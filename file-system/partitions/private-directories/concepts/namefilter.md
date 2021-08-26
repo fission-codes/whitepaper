@@ -82,7 +82,7 @@ const saturateUnderMax = (filter: NameFilter): NameFilter {
   const candidate = filter ^ hash(filter)
   const newFilter = filter === candidate ? filter ^ hash(complement(filter)) : candidate
   if (popcount(newFilter) > max) return filter
-  return saturatedUnderMax(newFilter, counter + 1)
+  return saturatedUnderMax(newFilter)
 }
 ```
 
