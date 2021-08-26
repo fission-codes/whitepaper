@@ -70,7 +70,7 @@ const saturate = (barefilter: NameFilter): NameFilter {
   // Quickly jump to the lower bound
   let filter = barefilter
   for (i = 0; i < lowerBound; i++) {
-    filter = filter.add(hash(filter))
+    filter = filter.add(hash(filter.toBytes()))
   }
 
   // Step more slowly though until comparison reached
@@ -79,7 +79,7 @@ const saturate = (barefilter: NameFilter): NameFilter {
 
 // Closest without going over
 const saturateUnderMax = (filter: NameFilter): NameFilter {
-  let newFilter = filter.add(hash(filter))
+  let newFilter = filter.add(hash(filter.toBytes()))
   if (filter === candidate) {
     newFilter = filter.add(hash(complement(filter.toBytes())))
   }
