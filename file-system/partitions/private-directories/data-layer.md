@@ -25,87 +25,76 @@ Each saturated index:
 ~36KB/index
 
 1M element state: 1024+1 indeces * 36KB
-~39.6MB
+~40MB 
 ```
 
 ### WIP Codec
 
-```javascript
+```go
 // proto3
 
-message SBitmap { // Feels a bit out of hand?
-  fixed64 one = 1;
-  fixed64 two = 2;
-  fixed64 three = 3;
-  fixed64 four = 4;
-  fixed64 five = 5;
-  fixed64 six = 6;
-  fixed64 seven = 7;
-  fixed64 eight = 8;
-  fixed64 nine = 9;
-  fixed64 ten = 10;
-  fixed64 eleven = 11;
-  fixed64 twelve = 12;
-  fixed64 thirteen = 13;
-  fixed64 fourteen = 14;
-  fixed64 fifteen = 15;
-  fixed64 sixteen = 16;
-}
-
 message SLink {
-  enum SLinkType {
-    SINDEX = 0;
-    LONEVALUE = 1;
-    MULTIVALUE = 2;
-  }
-
   bytes cid = 1;
-  SLinkType type = 2 [default = 0];
-  uint64 size = 3;
+  uint64 size = 2;
 }
 
 message SIndex {
-  required SBitmap bitmap = 0;
-  repeated PBLink  links = 1;
+  bytes bitmap = 1;
+  repeated PBLink links = 2;
 }
 
-// Example
+message AuthedLink {
+  bytes cid = 1;
+  bytes auth = 2;
+  uint64 size = 3;
+}
 
+message SNode {
+  bytes namefilter = 1;
+  repeated variants AuthedLink = 2;
+}
+```
+
+### Examples
+
+#### SIndex
+
+```javascript
 {
-  "data": 0b1000010000000010000, // ...but much longer. The HAMT bitmap.
+  "bitmap": 0b1000010000000010000, // ...but much longer
   "links": [
     {
       "cid": "bafkreifjjcie6lypi6ny7amxnfftagclbuxndqonfipmb64f2km2devei4",
-      "size": 100,
-      "type": "SINDEX"
+      "size": 100
     },
     {
       "cid": "bafkreigtloekmii6hc7ngwg5msi3wwrem6zrgtfgvfwgerkdn3wgopsfny",
-      "size": 99999,
-      "type": "MULTIVALUE"
+      "size": 99999
     },
     {
       "cid": "bafkreibzj64sbgo6it25xmlopk2ejzxkkpxug47oeoiy7iqsshfklzmzfq",
-      "size": 42,
-      "type": "SINDEX"
+      "size": 42
     }
   ]
 }
+```
 
-// Multivalue
+#### SNode
+
+```javascript
 {
-  "Data": 0xbcb8d227bcf681aa4a8b580bfd07563b465c7e, // ...but much longer. The complete namefilter.
+  "Data": 0xbcb8d227bcf681aa4a8b580bfd07563b465c7e, // ...but much, much longer
   "Links": [
     // Alice's Variant
     {
       "auth": CID("bafkreiez5l4lbmxlryxx3apxgqblbjmspq67lexqgwqpfnuthoz7zm7hkm"),
-      "hash": CID("bafkreifrsmmay6kv3iava6k6uwszux7wrh4b4oaaxedrd4eavav65avbuq"),
+      "cid": CID("bafkreifrsmmay6kv3iava6k6uwszux7wrh4b4oaaxedrd4eavav65avbuq"),
       "size": 24680
     },
     // Bob's Variant
     {
       "auth": CID("bafkreiduk3iramyel3faerctu4dixrmclm2jxlcbgxq42mazaenux5ariq"),
-      "hash": CID("bafkreicvjupn575izcorvjlkgowpksvd3iais2hagtxnozdsq2lul2ops4"),
+      "cid": CID("bafkreicvjupn575izcorvjlkgowpksvd3iais2hagtxnozdsq2lul2ops4"),
       "size": 13579
     }
   ]
