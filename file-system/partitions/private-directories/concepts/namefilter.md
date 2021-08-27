@@ -45,20 +45,6 @@ WNFS is a persistent, versioned file system. Including the version is essential 
 
 WNFS uses a backward-secret spiral ratchet for versioning, which is described in its own section. This ratchet is hashed and added to the bare namefilter.
 
-## Handling Collisions
-
-There is an unlikely case where adding an element causes no change to the filter, and thus causes an infinite loop. Getting around this is straightforward: take the binary complement of the filter, hash that, and continue:
-
-```javascript
-if (filterBefore === filterAfter) {
-  filterAfter.add(sha(complement(filterAfter.toBytes()))
-} else {
-  filterAfter
-}
-```
-
-The naive approach is to check on every hash. Given that this is an _extremely_ unlikely situation, we can perform the check only in the slower portion of the algorithm, while checking the hamming weight / popcount. See the pseudocode section for an example.
-
 ### Algorithm \(in Pseudocode\)
 
 ```typescript
