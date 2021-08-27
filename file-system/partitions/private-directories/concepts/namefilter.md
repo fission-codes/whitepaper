@@ -15,39 +15,21 @@ n = 47\\
 p = 0.000000001\\
 m = 2048\\
 k = 30\\
-X = 1019\\
-hash = XXH3_{64}
+pop_{est} \approx 1019\\
+hash = \text{XXH3_64}
 $$
 
 If required, doubling `n` and `m` leaves `p` and `k` constant. See [here for pretty graphs](https://hur.st/bloomfilter/?n=47&p=&m=2048&k=30) \(useful for parameter tuning, verified manually\).
 
 ### Hash Function
 
-Many Bloom filter implementations are optimized for speed, not consistency. We have chosen the XXH3 \(i.e. 64-bit\) algorithm. 
+Many Bloom filter implementations are optimized for speed, not consistency. We have chosen the [XXH3](https://cyan4973.github.io/xxHash/) \(i.e. 64-bit\) algorithm. 
 
 ### Max Popcount / Hamming Saturation
 
-Bloom filters admit \(roughly\) how many elements they contain, and are relatively easy to correlate by their Hamming distance. To work around this issue with obfuscation, namefilters deterministically saturate the remaining space, filling just over _half_ of the available filter, while maintaining a very low false positive rate. The idea is to fill the namefilter with a constant Hamming weight, but still be easily constructible by someone with the bare namefilter.
+Bloom filters admit \(roughly\) how many elements they contain, and are relatively easy to correlate by their Hamming distance. To work around this issue with obfuscation, namefilters deterministically saturate the remaining space, filling just under _half_ of the available filter, while maintaining a very low false positive rate. The idea is to fill the namefilter with a constant Hamming weight, but still be easily constructible by someone with the bare namefilter.
 
-To satisfy these constraints, we have chosen a target saturation of 1019, with some tollerances. 1019 is chosen as it represents the worst case insertion performance of 47 elements, yielding the lower bound false positive rate.
-
-Here is how to estimate the number of elements in a filter:
-
-$$
-n^*=-\frac{m}{k}\ln\left[1-\frac{X}{m}\right]
-$$
-
-Or rearranged to solve for the popcount \(X\):
-
-$$
-X = -m\left[e^\frac{-kn}m-1\right]
-$$
-
-So for our case:
-
-$$
-1019.206101 = -2048\left[e^\frac{-30*47}{2048}-1\right]
-$$
+To satisfy these constraints, we have chosen a target saturation of 1019, with some tollerances. 1019 is chosen as it represents the 47 elements, yielding the lower bound false positive rate.
 
 This is granted some tolerances: since every element takes _up to_ 30 bins, we don't know how many bits will overlap. As such, we need to find the overshoot of 1019 elements, and take the previous value. This requires limited backtracking.
 
@@ -135,4 +117,24 @@ GCAs were chosen over other [arguably more sophisticated](https://www.fim.uni-pa
 Due to distinguishability, GCAs potentially leak some information about related, deeply-nested sibling nodes as the Hamming approaches zero. Our namefilter GCAs have a cardinality of 47 by default, which is much deeper than most file paths.
 
 We considered using XOR or Cuckoo filters instead of class Bloom filters. XOR is very close to the theoretic efficiency limit, but is very new and the library untested. Cuckoo filters would provide around an additional 4 path segments with the same false-positive rate, but we lose the single-bit-collision of Bloom filters which is actually an advantage for obfuscation.
+
+## Calculations
+
+### Optimal Popcount
+
+This is the formula to estimate the number of elements in a given Bloom filter \([source](https://en.wikipedia.org/wiki/Bloom_filter#Approximating_the_number_of_items_in_a_Bloom_filter)\)
+
+$$
+n^*=-\frac{m}{k}\ln\left[1-\frac{X}{m}\right]
+$$
+
+Rearranged to solve for the popcount \(`X`\):
+
+$$
+X = -m\left[e^\frac{-kn}m-1\right]
+$$
+
+$$
+1019.206101 = -2048\left[e^\frac{-30*47}{2048}-1\right]
+$$
 
