@@ -11,12 +11,13 @@ Namefilters are _not_ a content address. They are based on the _keys_ used to co
 Namefilters are 2048-bit Bloom filters. These hold 47 path segments, and achieve a one-in-a-billion false positive rate with 30 hashes. Formally:
 
 $$
-n = 47\\
-p = 0.000000001\\
-m = 2048\\
-k = 30\\
-pop_{est} \approx 1019\\
-hash = \text{XXH3_64}
+\begin{aligned}n &= 47\\
+p &= 0.000000001\\
+m &= 2048\\
+k &= 30\\
+pop_{est} &\approx 1019\\
+hash &= \text{XXH3_64}
+\end{aligned}
 $$
 
 If required, doubling `n` and `m` leaves `p` and `k` constant. See [here for pretty graphs](https://hur.st/bloomfilter/?n=47&p=&m=2048&k=30) \(useful for parameter tuning, verified manually\).
