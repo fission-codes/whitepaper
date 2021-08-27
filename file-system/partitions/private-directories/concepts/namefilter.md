@@ -15,7 +15,7 @@ n = 47\\
 p = 0.000000001\\
 m = 2048\\
 k = 30\\
-X = 1409\\
+X = 1034\\
 hash = XXH3_{64}
 $$
 
@@ -23,7 +23,7 @@ If required, doubling `n` and `m` leaves `p` and `k` constant. See [here for pre
 
 ### Hash Function
 
-Many Bloom filter implementations are optmized for speed, not consistency. We have chosen the XXH3 \(i.e. 64-bit\) algorithm. 
+Many Bloom filter implementations are optimized for speed, not consistency. We have chosen the XXH3 \(i.e. 64-bit\) algorithm. 
 
 ### Max Popcount / Hamming Saturation
 
@@ -36,11 +36,6 @@ n^*=-\frac{m}{k}\left[1-\frac{X}{m}\right]
 $$
 
 Or alternately:
-
-$$
-X = kn-1\\
-1409 = 30*47-1
-$$
 
 This is granted some tolerances: since every element takes _up to_ 30 bins, we don't know how many bits will overlap. As such, we need to find the overshoot of 1409 elements, and take the previous value. This requires limited backtracking.
 
