@@ -25,6 +25,12 @@ If required, doubling `n` and `m` leaves `p` and `k` constant. See [here for pre
 
 Many Bloom filter implementations are optmized for speed, not consistency. We have chosen the XXH3 \(i.e. 64-bit\) algorithm. 
 
+#### Max Popcount / Hamming Saturation
+
+Bloom filters admit \(roughly\) how many elements they contain, and are relatively easy to correlate by their Hamming distance. To work around this issue with obfuscation, namefilters deterministically saturate the remaining space, filling just over _half_ of the available filter, while maintaining a very low false positive rate. The idea is to fill the namefilter with a constant Hamming weight, but still be easily constructible by someone with the bare namefilter.
+
+To satisfy these constraints, we have chosen a target saturation of 1410, with some tollerances. 1410 is chosen as it represents the worst case insertion performance of 47 elements, yielding the lower bound false positive rate. This is granted some tollerances: since every element takes up to 30 elements, we don't know how many bits will overlap. As such, we need to find the overshoot of 1410 elements, and take the previous value. This requires limited backtracking.
+
 ### Bare / Unsaturated Namefilter
 
 The bare namefilter for any node is the parent's bare namefilter plus the current node's read key. This bare namefilter is passed down to the child SNodes and encrypted along with other header information.
@@ -42,12 +48,6 @@ bare       = bareParent .|. inumber .|. spiralRatchet
 WNFS is a persistent, versioned file system. Including the version is essential for many parts of the system \(seen throughout the rest of this section\). In principle this can be any counter, including simple natural numbers, depending on the design goals of the broader system.
 
 WNFS uses a backward-secret spiral ratchet for versioning, which is described in its own section. This ratchet is hashed and added to the bare namefilter.
-
-### Hamming Saturation
-
-Bloom filters admit \(roughly\) how many elements they contain, and are relatively easy to correlate by their Hamming distance. To work around this issue with obfuscation, namefilters deterministically saturate the remaining space, filling just over _half_ of the available filter, while maintaining a very low false positive rate. The idea is to fill the namefilter with a constant Hamming weight, but still be easily constructible by someone with the bare namefilter.
-
-To satisfy these constraints, we have chosen a target saturation of 1410, with some tollerances. 1410 is chosen as it represents the worst case insertion performance of 47 elements, yielding the lower bound false positive rate. This is granted some tollerances: since every element takes up to 30 elements, we don't know how many bits will overlap. As such, we need to find the overshoot of 1410 elements, and take the previous value. This requires limited backtracking.
 
 ### Handling Collisions
 
