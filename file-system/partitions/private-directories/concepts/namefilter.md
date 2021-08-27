@@ -81,14 +81,7 @@ const saturate = (barefilter: NameFilter): NameFilter {
 
 // Closest without going over
 const saturateUnderMax = (filter: NameFilter): NameFilter {
-  let newFilter = filter.add(sha(filter.toBytes()))
-  if (filter === candidate) {
-    // Change value deterministically to break out of infinite loop
-    const breakout = complement(filter.toBytes())
-    // Mutually recursive! Start again with new popcount
-    saturate(filter.add(sha(breakout)))
-  }
-  
+  const newFilter = filter.add(sha(filter.toBytes()))
   return popcount(newFilter) > max ? filter : saturatedUnderMax(newFilter)
 }
 ```
