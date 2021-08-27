@@ -43,8 +43,8 @@ message SIndex {
 }
 
 message AuthedLink {
-  bytes cid = 1;
-  bytes auth = 2;
+  bytes auth = 1;
+  bytes content = 2;
   uint64 size = 3;
 }
 
@@ -87,13 +87,13 @@ message SNode {
     // Alice's Variant
     {
       "auth": CID("bafkreiez5l4lbmxlryxx3apxgqblbjmspq67lexqgwqpfnuthoz7zm7hkm"),
-      "cid": CID("bafkreifrsmmay6kv3iava6k6uwszux7wrh4b4oaaxedrd4eavav65avbuq"),
+      "content": CID("bafkreifrsmmay6kv3iava6k6uwszux7wrh4b4oaaxedrd4eavav65avbuq"),
       "size": 24680
     },
     // Bob's Variant
     {
       "auth": CID("bafkreiduk3iramyel3faerctu4dixrmclm2jxlcbgxq42mazaenux5ariq"),
-      "cid": CID("bafkreicvjupn575izcorvjlkgowpksvd3iais2hagtxnozdsq2lul2ops4"),
+      "content": CID("bafkreicvjupn575izcorvjlkgowpksvd3iais2hagtxnozdsq2lul2ops4"),
       "size": 13579
     }
   ]
