@@ -43,6 +43,12 @@ $$
 X = -m\left[e^\frac{-kn}m-1\right]
 $$
 
+So for our case:
+
+$$
+1019.206101 = -2048\left[e^\frac{-30*47}{2048}-1\right]
+$$
+
 This is granted some tolerances: since every element takes _up to_ 30 bins, we don't know how many bits will overlap. As such, we need to find the overshoot of 1409 elements, and take the previous value. This requires limited backtracking.
 
 ## Bare / Unsaturated Namefilter
