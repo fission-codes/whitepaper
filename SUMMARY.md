@@ -1,7 +1,7 @@
 # Table of contents
 
 * [Abstract](README.md)
-* [Authors](authors.md)
+* [Contributors](contributors.md)
 
 ## Introduction
 
