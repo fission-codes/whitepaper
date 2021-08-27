@@ -15,7 +15,7 @@ n = 47\\
 p = 0.000000001\\
 m = 2048\\
 k = 30\\
-X = 1034\\
+X = 1019\\
 hash = XXH3_{64}
 $$
 
@@ -29,7 +29,7 @@ Many Bloom filter implementations are optimized for speed, not consistency. We h
 
 Bloom filters admit \(roughly\) how many elements they contain, and are relatively easy to correlate by their Hamming distance. To work around this issue with obfuscation, namefilters deterministically saturate the remaining space, filling just over _half_ of the available filter, while maintaining a very low false positive rate. The idea is to fill the namefilter with a constant Hamming weight, but still be easily constructible by someone with the bare namefilter.
 
-To satisfy these constraints, we have chosen a target saturation of 1409, with some tollerances. 1409 is chosen as it represents the worst case insertion performance of 47 elements, yielding the lower bound false positive rate.
+To satisfy these constraints, we have chosen a target saturation of 1019, with some tollerances. 1019 is chosen as it represents the worst case insertion performance of 47 elements, yielding the lower bound false positive rate.
 
 Here is how to estimate the number of elements in a filter:
 
@@ -49,7 +49,7 @@ $$
 1019.206101 = -2048\left[e^\frac{-30*47}{2048}-1\right]
 $$
 
-This is granted some tolerances: since every element takes _up to_ 30 bins, we don't know how many bits will overlap. As such, we need to find the overshoot of 1409 elements, and take the previous value. This requires limited backtracking.
+This is granted some tolerances: since every element takes _up to_ 30 bins, we don't know how many bits will overlap. As such, we need to find the overshoot of 1019 elements, and take the previous value. This requires limited backtracking.
 
 ## Bare / Unsaturated Namefilter
 
@@ -86,7 +86,7 @@ The naive approach is to check on every hash. Given that this is an _extremely_ 
 ### Algorithm \(in Pseudocode\)
 
 ```typescript
-const max: number = 1410
+const max: number = 1019
 const hashCount: number = 30
 
 const saturate = (barefilter: NameFilter): NameFilter {
