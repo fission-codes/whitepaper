@@ -19,13 +19,12 @@ Unlike the public file system DAG, the private file system is stored as a tree. 
 With a sufficiently compact encoding, this may be reasonable to sync the private index up to 1M namefilters. Some back of the envelope math:
 
 ```text
-Each saturated index:
-1,024 CIDs * (35 bytes / CID) + 32 byte bitmask
-35,872 bytes
+1,024 CIDs * (35 bytes / CID) + 128 byte bitmask
+35,968 bytes
 ~36KB/index
 
-1M element state: 1024+1 indeces * 36KB
-~40MB 
+1M element state: 1024+1 indices * 36KB
+~40MB
 ```
 
 ### WIP Codec
