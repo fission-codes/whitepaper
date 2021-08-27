@@ -128,6 +128,8 @@ Which is \(very\) roughly 8/10B, or a little under 1/1 billion
 
 ### Optimal Number of Elements \(n\) for Hash Count
 
+Just rearranged from calculating `k`
+
 ![](../../../../.gitbook/assets/screen-shot-2021-08-26-at-20.19.35.png)
 
 ### Optimal Popcount \(X\)
