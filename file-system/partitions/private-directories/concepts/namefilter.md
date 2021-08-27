@@ -121,6 +121,8 @@ We considered using XOR or Cuckoo filters instead of class Bloom filters. XOR is
 
 ## Calculations
 
+Because it's important to show your work
+
 ### False Positive Probability \(FPP\)
 
 $$
