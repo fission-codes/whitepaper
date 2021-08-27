@@ -100,17 +100,9 @@ message SNode {
 }
 ```
 
-You may note a complete lack of filenames in th
-
-The hases are not the CIDs of the data, but rather the namefilter \(see relevant section\). CIDs are kept as leaves in this tree, but all intermediate nodes refer to the set of \(hashed\) keys used for access control. Intermediate nodes are lightweight and SHOULD be aggressively cached.
-
-This structure emulates a hash table of shape `Hash Namefilter -> (Namefilter, [CID])`. Terminal namefilter nodes may have multiple child CID leaves.
-
 ## Concurrency
 
-This is a concurrent tree. Many contexts may be updating it at the same time without the ability to communicate directly \(e.g. network partition\). The namefilters themselves may have collisions, but the leaves cannot since they are hashes of the actual content. Conceptually, the same CID may live at multiple names in the McTrie, though this is extremely unlikely in practice.
-
-Being an append-only data structure, merging in absence of namespace conflicts is very straightforward: place the new names in their appropriate positions in the tree. This can be done in high-parallel to further improve runtime performance.
+This is NOT a concurrent tree. All updates to this structure are bacthed thorugh the linearlized STM mechanism \(described in its own section\). Being an append-only data structure, merging is very straightforward: place the new names in their appropriate positions in the tree. This cannot be done in true parallel at this layer, since race conditions may occur that drop values from lower nodes.
 
 > Last, let's consider the case where it is truly ambiguous what order to apply changes using the same example but with different visibility \[...\] Here, we have no "right" answer. Alice and Bob both have made changes without the other's knowledge and now as they synchronize data we have to decide what to do. Importantly, there isn't a _right_ answer here. Different systems resolve this in different ways.
 >
