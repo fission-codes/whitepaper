@@ -12,7 +12,7 @@ Namefilters are 2048-bit Bloom filters. These hold 47 path segments, and achieve
 
 $$
 \begin{aligned}n &= 47\\
-p &= 0.000000001\\
+ε &= 0.000000001\\
 m &= 2048\\
 k &= 30\\
 pop_{est} &\approx 1019\\
@@ -20,7 +20,7 @@ hash &= \text{XXH3_64}
 \end{aligned}
 $$
 
-If required, doubling `n` and `m` leaves `p` and `k` constant. See [here for pretty graphs](https://hur.st/bloomfilter/?n=47&p=&m=2048&k=30) \(useful for parameter tuning, verified manually\).
+If required, doubling `n` and `m` leaves `ε` and `k` constant. See [here for pretty graphs](https://hur.st/bloomfilter/?n=47&p=&m=2048&k=30) \(useful for parameter tuning, verified manually\).
 
 ### Hash Function
 
@@ -120,6 +120,29 @@ Due to distinguishability, GCAs potentially leak some information about related,
 We considered using XOR or Cuckoo filters instead of class Bloom filters. XOR is very close to the theoretic efficiency limit, but is very new and the library untested. Cuckoo filters would provide around an additional 4 path segments with the same false-positive rate, but we lose the single-bit-collision of Bloom filters which is actually an advantage for obfuscation.
 
 ## Calculations
+
+### False Positive Probability \(FPP\)
+
+$$
+\begin{aligned}
+ε &= \left(1-e^{-(\frac{m}{n}\ln2)\frac{n}{m}}\right)^{\frac{m}{n}\ln2}\\
+ &= \left(1-e^{-(\frac{2048}{47}\ln2)\frac{47}{2048}}\right)^{\frac{2048}{47}\ln2}\\
+ &= \left(1-e^{-(\frac{2048}{47}\ln2)\frac{47}{2048}}\right)^{\frac{2048}{47}\ln2}\\
+ &= 8.08787809×10^{−10}
+\end{aligned}
+$$
+
+### Number of Elements for FPP
+
+### Optimal Number of Hash Functions
+
+$$
+\begin{align}
+k &= \frac{m}{n}\ln2\\
+ & = \frac{2048}{47}\ln2\\
+ &= 30.2035197
+\end{align}
+$$
 
 ### Optimal Popcount
 
