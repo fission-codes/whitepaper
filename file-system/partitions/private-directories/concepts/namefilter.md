@@ -82,7 +82,8 @@ const saturate = (barefilter: NameFilter): NameFilter {
 // Closest without going over
 const saturateUnderMax = (filter: NameFilter): NameFilter {
   const newFilter = filter.add(sha(filter.toBytes()))
-  return popcount(newFilter) > max ? filter : saturatedUnderMax(newFilter)
+  if (popcount(newFilter) > max) return filter
+  saturatedUnderMax(newFilter)
 }
 ```
 
