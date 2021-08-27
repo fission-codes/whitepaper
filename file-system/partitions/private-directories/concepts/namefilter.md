@@ -16,7 +16,7 @@ If required, doubling `n` and `m` leaves `ε` and `k` constant. See [here for pr
 
 ### Hash Function
 
-Many Bloom filter implementations are optimized for speed, not consistency. We have chosen the [XXH3](https://cyan4973.github.io/xxHash/) \(i.e. 64-bit\) algorithm. 
+Many Bloom filter implementations are optimized for speed, not consistency. We have chosen the [XXH32](https://cyan4973.github.io/xxHash/) \(i.e. 32-bit\) algorithm. 
 
 ### Max Popcount / Hamming Saturation
 
