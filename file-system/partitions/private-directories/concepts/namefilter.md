@@ -120,7 +120,7 @@ Because it's important to show your work
 
 ![](../../../../.gitbook/assets/screen-shot-2021-08-26-at-20.19.41%20%281%29.png)
 
-Which is \(very\) roughly 8/10B, or a little under 1/1B
+Which is \(very\) roughly 8/10B, or a little better than 1/1B
 
 ### Optimal Number of Hash Functions \(k\)
 
