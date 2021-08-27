@@ -40,10 +40,10 @@ The bare namefilter for any node is the parent's bare namefilter plus the curren
 
 The root node has no parent, so its bare namefilter is merely the SHA-256 hash of its identity hash placed in a Bloom filter. A child node is passed its parent's bare namefilter, and includes it with the SHA-256 of its key to generate its namefilter.
 
-```haskell
-bareParent = 0xabcdef -- parent, unless is root
-inumber    = 0x123456 -- Random 256-bit identifier
-bare       = bareParent .|. inumber .|. spiralRatchet
+```javascript
+const bareParent = 0x5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03
+const iNumber = 0xe258d248fda94c63753607f7c4494ee0fcbe92f1a76bfdac795c9d84101eb317
+const bare = bareParent ^ inumber ^ sha256(spiralRatchet.toKey())
 ```
 
 ## Private Versioning
