@@ -167,7 +167,13 @@ This is the formula to estimate the number of elements in a given Bloom filter \
 
 $$
 \begin{align}
-n^*&=-\frac{m}{k}\ln\left[1-\frac{X}{m}\right]\\
+-\frac{m}{k}\ln\left[1-\frac{X}{m}\right]&=n^*\\
+\text{ }\\
+\ln\left[1-\frac{X}{m}\right]&=-\frac{kn^*}{m}\\
+\text{ }\\
+1-\frac{X}{m}&=e^{-\frac{kn^*}{m}}\\
+\text{ }\\
+-\frac{X}{m} &= e^{-\frac{kn^*}{m}}-1\\
 \text{ }\\
 X &= -m\left[e^\frac{-kn}m-1\right]\\
 \text{ }\\
