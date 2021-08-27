@@ -31,11 +31,15 @@ Bloom filters admit \(roughly\) how many elements they contain, and are relative
 
 To satisfy these constraints, we have chosen a target saturation of 1409, with some tollerances. 1409 is chosen as it represents the worst case insertion performance of 47 elements, yielding the lower bound false positive rate.
 
+Here is how to estimate the number of elements in a filter:
+
 $$
-n^*=-\frac{m}{k}\left[1-\frac{X}{m}\right]
+n^*=-\frac{m}{k}\ln\left[1-\frac{X}{m}\right]
 $$
 
 Or alternately:
+
+
 
 This is granted some tolerances: since every element takes _up to_ 30 bins, we don't know how many bits will overlap. As such, we need to find the overshoot of 1409 elements, and take the previous value. This requires limited backtracking.
 
