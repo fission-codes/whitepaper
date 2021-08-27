@@ -42,7 +42,7 @@ X = kn-1\\
 1409 = 30*47-1
 $$
 
-This is granted some tolerances: since every element takes _up to_ 30 bins, we don't know how many bits will overlap. As such, we need to find the overshoot of 1034 elements, and take the previous value. This requires limited backtracking.
+This is granted some tolerances: since every element takes _up to_ 30 bins, we don't know how many bits will overlap. As such, we need to find the overshoot of 1409 elements, and take the previous value. This requires limited backtracking.
 
 ## Bare / Unsaturated Namefilter
 
