@@ -37,7 +37,7 @@ $$
 n^*=-\frac{m}{k}\ln\left[1-\frac{X}{m}\right]
 $$
 
-Or alternately:
+Or rearranged to solve for the popcount \(X\):
 
 $$
 X = -m\left[e^\frac{-kn}m-1\right]
