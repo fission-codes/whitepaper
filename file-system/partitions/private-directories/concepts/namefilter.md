@@ -67,10 +67,11 @@ The naive approach is to check on every hash. Given that this is an _extremely_ 
 
 ```typescript
 const max: number = 1410
+const hashCount: number = 30
 
 const saturate = (barefilter: NameFilter): NameFilter {
   // Get the lower bound of remaining elements
-  const lowerBound = Math.floor((max - barefilter.popcount()) / 30)
+  const lowerBound = Math.floor((max - barefilter.popcount()) / hashCount)
 
   // Quickly jump to the lower bound
   let filter = barefilter
