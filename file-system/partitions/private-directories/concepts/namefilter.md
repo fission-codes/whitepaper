@@ -8,7 +8,7 @@ Namefilters are _not_ a content address. They are based on the _keys_ used to co
 
 ## Parameters
 
-Namefilters are 2048-bit Bloom filters, encoded in [base64URL](https://datatracker.ietf.org/doc/html/rfc4648#section-5), yielding a consistent 32-character UTF-8 string. These hold 47 path segments, and achieve a one-in-a-billion false positive rate with 30 hashes. Formally:
+Namefilters are 2048-bit Bloom filters. These hold 47 path segments, and achieve a one-in-a-billion false positive rate with 30 hashes. Formally:
 
 $$
 n = 47\\
