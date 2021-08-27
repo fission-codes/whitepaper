@@ -16,6 +16,10 @@ To see more about what is found _inside_ an SNode when unencrypted, please see t
 
 Unlike the public file system DAG, the private file system is stored as a tree. More specifically, this is a SHA256-based HAMT with a branching factor of 1024. The weight was chosen almost entirely to limit the number of network calls required to sync the index from a new node. Network costs dominate in this use case, so it's worth paying the cost to local updates and cached nodes. Assuming that we can make sibling requests in parallel, lets us sync an index over a million elements in a two round trips, since the HAMT would be two levels deep.
 
+```go
+
+```
+
 The prefixes are not the CIDs of the data, but rather the namefilter \(see relevant section\). CIDs are kept as leaves in this tree, but all intermediate nodes refer to the set of \(hashed\) keys used for access control. Intermediate nodes are lightweight and SHOULD be aggressively cached.
 
 This structure emulates a hash table of shape `Hash Namefilter -> (Namefilter, [CID])`. Terminal namefilter nodes may have multiple child CID leaves.
