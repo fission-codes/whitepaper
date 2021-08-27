@@ -126,31 +126,38 @@ We considered using XOR or Cuckoo filters instead of class Bloom filters. XOR is
 $$
 \begin{aligned}
 ε &= \left(1-e^{-(\frac{m}{n}\ln2)\frac{n}{m}}\right)^{\frac{m}{n}\ln2}\\
+\text{ }\\
  &= \left(1-e^{-(\frac{2048}{47}\ln2)\frac{47}{2048}}\right)^{\frac{2048}{47}\ln2}\\
+\text{ }\\
  &= \left(1-e^{-(\frac{2048}{47}\ln2)\frac{47}{2048}}\right)^{\frac{2048}{47}\ln2}\\
+\text{ }\\
  &= 8.08787809×10^{−10}
 \end{aligned}
 $$
 
-### Optimal Number of Elements \(n\) for Hash Rate
+### Optimal Number of Hash Functions \(k\)
 
 $$
 \begin{align}
 k &= \frac{m}{n}\ln2\\
-nk &= m\ln2\\
-n &=\frac{m}{k}\ln2\\
-&=\frac{2048}{30}\ln2\\
-&= 47.31884753
+\text{ }\\
+ & = \frac{2048}{47}\ln2\\
+\text{ }\\
+ &= 30.2035197
 \end{align}
 $$
 
-### Optimal Number of Hash Functions
+### Optimal Number of Elements \(n\) for Hash Count
 
 $$
 \begin{align}
 k &= \frac{m}{n}\ln2\\
- & = \frac{2048}{47}\ln2\\
- &= 30.2035197
+\text{ }\\
+n &=\frac{m}{k}\ln2\\
+\text{ }\\
+&=\frac{2048}{30}\ln2\\
+\text{ }\\
+&= 47.31884753
 \end{align}
 $$
 
