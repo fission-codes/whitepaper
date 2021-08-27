@@ -138,6 +138,8 @@ $$
 \end{aligned}
 $$
 
+Which is \(very\) roughly 8/10B, or a little under 1/1 billion
+
 ### Optimal Number of Hash Functions \(k\)
 
 $$
