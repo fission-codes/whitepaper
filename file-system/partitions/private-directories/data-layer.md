@@ -14,7 +14,21 @@ To see more about what is found _inside_ an SNode when unencrypted, please see t
 
 ## Secure Content Prefix Tree
 
-Unlike the public file system DAG, the private file system is stored as a tree. More specifically, this is a SHA256-based HAMT with a branching factor of 1024. The weight was chosen almost entirely to limit the number of network calls required to sync the index from a new node. Network costs dominate in this use case, so it's worth paying the cost to local updates and cached nodes. Assuming that we can make sibling requests in parallel, lets us sync an index over a million elements in a two round trips, since the HAMT would be two levels deep
+Unlike the public file system DAG, the private file system is stored as a tree. More specifically, this is a SHA256-based HAMT with a branching factor of 1024. The weight was chosen almost entirely to limit the number of network calls required to sync the index from a new node. Network costs dominate in this use case, so it's worth paying the cost to local updates and cached nodes. Assuming that we can make sibling requests in parallel, lets us sync an index over a million elements in a two round trips, since the HAMT would be two levels deep.
+
+With a sufficiently compact encoding, this may be reasonable to sync the private index up to 1M namefilters. Some back of the envelope math:
+
+```text
+Each saturated index:
+1,024 CIDs * (35 bytes / CID) + 32 byte bitmask
+35,872 bytes
+~36KB/index
+
+1M element state: 1024+1 indeces * 36KB
+~39.6MB
+```
+
+### WIP Codec
 
 ```javascript
 // proto3
@@ -78,44 +92,21 @@ message SIndex {
   ]
 }
 
-// Lonevalue
-
-{
-  "Data": 
-}
-
 // Multivalue
-
 {
   "Data": 0xbcb8d227bcf681aa4a8b580bfd07563b465c7e, // ...but much longer. The complete namefilter.
   "Links": [
-    // File -- Alice's Variant
+    // Alice's Variant
     {
+      "auth": CID("bafkreiez5l4lbmxlryxx3apxgqblbjmspq67lexqgwqpfnuthoz7zm7hkm"),
       "hash": CID("bafkreifrsmmay6kv3iava6k6uwszux7wrh4b4oaaxedrd4eavav65avbuq"),
-      "Tsize": 123456,
-      // Name = sha256(author A)
-      "Name": "node#ac943e8fb0b5e8d124660e0c3ab828e8f9faf09512a637fd76fc7073c305e6fa"
+      "size": 24680
     },
-    // UCAN -- Alice's Variant
+    // Bob's Variant
     {
-      "hash": CID("bafkreiez5l4lbmxlryxx3apxgqblbjmspq67lexqgwqpfnuthoz7zm7hkm"),
-      "Tsize": 123456,
-      // Name = same as associated file
-      "Name": "ucan#ac943e8fb0b5e8d124660e0c3ab828e8f9faf09512a637fd76fc7073c305e6fa",
-    },
-    // File -- Bob's Variant
-    {
+      "auth": CID("bafkreiduk3iramyel3faerctu4dixrmclm2jxlcbgxq42mazaenux5ariq"),
       "hash": CID("bafkreicvjupn575izcorvjlkgowpksvd3iais2hagtxnozdsq2lul2ops4"),
-      "Tsize": 13579,
-      // Name = sha256(author A)
-      "Name": "node#3f2f6b90b3b50ceb311f72be0a753a2501d516030a03689e28fa6c4a25cbd957"
-    },
-    // UCAN -- Bob's Variant
-    {
-      "hash": CID("bafkreiduk3iramyel3faerctu4dixrmclm2jxlcbgxq42mazaenux5ariq"),
-      "Tsize": 24680,
-      // Name = same as associated file
-      "Name": "ucan#3f2f6b90b3b50ceb311f72be0a753a2501d516030a03689e28fa6c4a25cbd957"
+      "size": 13579
     }
   ]
 }
