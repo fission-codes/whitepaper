@@ -175,13 +175,11 @@ $$
 \text{ }\\
 -\frac{X}{m} &= e^{-\frac{kn^*}{m}}-1\\
 \text{ }\\
-X &= -m\left[e^\frac{-kn}m-1\right]\\
+X &= -m\left[e^{-\frac{kn}m-1}\right]\\
 \text{ }\\
-&= -2048\left[e^\frac{-30*47}{2048}-1\right]\\
+&= -2048\left[e^{-\frac{30*47}{2048}-1}\right]\\
 \text{ }\\
 &= 1019.206101
 \end{align}
 $$
-
-
 
