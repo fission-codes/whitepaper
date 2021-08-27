@@ -161,21 +161,16 @@ n &=\frac{m}{k}\ln2\\
 \end{align}
 $$
 
-### Optimal Popcount
+### Optimal Popcount \(X\)
 
 This is the formula to estimate the number of elements in a given Bloom filter \([source](https://en.wikipedia.org/wiki/Bloom_filter#Approximating_the_number_of_items_in_a_Bloom_filter)\)
 
 $$
-n^*=-\frac{m}{k}\ln\left[1-\frac{X}{m}\right]
-$$
-
-Rearranged to solve for the popcount \(`X`\):
-
-$$
-X = -m\left[e^\frac{-kn}m-1\right]
-$$
-
-$$
-1019.206101 = -2048\left[e^\frac{-30*47}{2048}-1\right]
+\begin{align}
+n^*&=-\frac{m}{k}\ln\left[1-\frac{X}{m}\right]\\
+X &= -m\left[e^\frac{-kn}m-1\right]\\
+&= -2048\left[e^\frac{-30*47}{2048}-1\right]\\
+&= 1019.206101
+\end{align}
 $$
 
