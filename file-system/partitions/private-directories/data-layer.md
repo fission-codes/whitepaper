@@ -32,14 +32,14 @@ With a sufficiently compact encoding, this may be reasonable to sync the private
 ```go
 // proto3
 
-message SLink {
+message SecLink {
   bytes cid = 1;
   uint64 size = 2;
 }
 
-message SIndex {
+message SecIndex {
   bytes bitmap = 1;
-  repeated PBLink links = 2;
+  repeated SecLink links = 2;
 }
 
 message AuthedLink {
@@ -48,7 +48,7 @@ message AuthedLink {
   uint64 size = 3;
 }
 
-message SNode {
+message SecNode {
   bytes namefilter = 1;
   repeated variants AuthedLink = 2;
 }
@@ -56,7 +56,7 @@ message SNode {
 
 ### Examples
 
-#### SIndex
+#### SecIndex
 
 ```javascript
 {
@@ -78,7 +78,7 @@ message SNode {
 }
 ```
 
-#### SNode
+#### SecNode
 
 ```javascript
 {
