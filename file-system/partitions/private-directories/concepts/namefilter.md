@@ -10,15 +10,7 @@ Namefilters are _not_ a content address. They are based on the _keys_ used to co
 
 Namefilters are 2048-bit Bloom filters. These hold 47 path segments, and achieve a one-in-a-billion false positive rate with 30 hashes. Formally:
 
-$$
-\begin{aligned}n &= 47\\
-ε &= 0.000000001\\
-m &= 2048\\
-k &= 30\\
-pop_{est} &\approx 1019\\
-hash &= \text{XXH3_64}
-\end{aligned}
-$$
+![](../../../../.gitbook/assets/screen-shot-2021-08-26-at-20.19.48.png)
 
 If required, doubling `n` and `m` leaves `ε` and `k` constant. See [here for pretty graphs](https://hur.st/bloomfilter/?n=47&p=&m=2048&k=30) \(useful for parameter tuning, verified manually\).
 
@@ -126,65 +118,21 @@ Because it's important to show your work
 
 ### False Positive Probability \(FPP\)
 
-$$
-\begin{aligned}
-ε &= \left(1-e^{-(\frac{m}{n}\ln2)\frac{n}{m}}\right)^{\frac{m}{n}\ln2}\\
-\text{ }\\
- &= \left(1-e^{-(\frac{2048}{47}\ln2)\frac{47}{2048}}\right)^{\frac{2048}{47}\ln2}\\
-\text{ }\\
- &= \left(1-e^{-(\frac{2048}{47}\ln2)\frac{47}{2048}}\right)^{\frac{2048}{47}\ln2}\\
-\text{ }\\
- &= 8.08787809×10^{−10}
-\end{aligned}
-$$
+![](../../../../.gitbook/assets/screen-shot-2021-08-26-at-20.19.41.png)
 
 Which is \(very\) roughly 8/10B, or a little under 1/1 billion
 
 ### Optimal Number of Hash Functions \(k\)
 
-$$
-\begin{align}
-k &= \frac{m}{n}\ln2\\
-\text{ }\\
- & = \frac{2048}{47}\ln2\\
-\text{ }\\
- &= 30.2035197
-\end{align}
-$$
+![](../../../../.gitbook/assets/screen-shot-2021-08-26-at-20.19.38.png)
 
 ### Optimal Number of Elements \(n\) for Hash Count
 
-$$
-\begin{align}
-k &= \frac{m}{n}\ln2\\
-\text{ }\\
-n &=\frac{m}{k}\ln2\\
-\text{ }\\
-&=\frac{2048}{30}\ln2\\
-\text{ }\\
-&= 47.31884753
-\end{align}
-$$
+![](../../../../.gitbook/assets/screen-shot-2021-08-26-at-20.19.35.png)
 
 ### Optimal Popcount \(X\)
 
 This is the formula to estimate the number of elements in a given Bloom filter \([source](https://en.wikipedia.org/wiki/Bloom_filter#Approximating_the_number_of_items_in_a_Bloom_filter)\)
 
-$$
-\begin{align}
--\frac{m}{k}\ln\left[1-\frac{X}{m}\right]&=n^*\\
-\text{ }\\
-\ln\left[1-\frac{X}{m}\right]&=-\frac{kn^*}{m}\\
-\text{ }\\
-1-\frac{X}{m}&=e^{-\frac{kn^*}{m}}\\
-\text{ }\\
--\frac{X}{m} &= e^{-\frac{kn^*}{m}}-1\\
-\text{ }\\
-X &= -m\left[e^{-\frac{kn}m-1}\right]\\
-\text{ }\\
-&= -2048\left[e^{-\frac{30*47}{2048}-1}\right]\\
-\text{ }\\
-&= 1019.206101
-\end{align}
-$$
+![](../../../../.gitbook/assets/screen-shot-2021-08-26-at-20.21.56.png)
 
