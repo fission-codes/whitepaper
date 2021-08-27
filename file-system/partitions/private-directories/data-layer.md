@@ -6,7 +6,7 @@ This section describes how the `/private` partition would look to an **unauthori
 
 ## Encryption
 
-This layer is completely agnostic about file contents. By default, encryption is done via 256-bit AES-GCM \(via the [WebCrypto API](https://www.w3.org/TR/WebCryptoAPI/)\) but in principle can be done with any cipher \(e.g. [AES-SIV-GCM, ChaCha20-Poly1305](https://soatok.blog/2020/07/12/comparison-of-symmetric-encryption-methods/)\). Everything described below is compatible with any symmetric cipher.
+This layer is completely agnostic about file contents. By default, encryption is done via 256-bit AES-GCM \(e.g. via the [WebCrypto API](https://www.w3.org/TR/WebCryptoAPI/)\) but in principle can be done with any cipher \(e.g. [AES-SIV-GCM, ChaCha20-Poly1305](https://soatok.blog/2020/07/12/comparison-of-symmetric-encryption-methods/)\). Everything described below is compatible with any symmetric cipher.
 
 {% hint style="info" %}
 To see more about what is found _inside_ an SNode when unencrypted, please see the Private File Layer section.
@@ -14,13 +14,116 @@ To see more about what is found _inside_ an SNode when unencrypted, please see t
 
 ## Secure Content Prefix Tree
 
-Unlike the public file system DAG, the private file system is stored as a tree. More specifically, this is a SHA256-based HAMT with a branching factor of 1024. The weight was chosen almost entirely to limit the number of network calls required to sync the index from a new node. Network costs dominate in this use case, so it's worth paying the cost to local updates and cached nodes. Assuming that we can make sibling requests in parallel, lets us sync an index over a million elements in a two round trips, since the HAMT would be two levels deep.
+Unlike the public file system DAG, the private file system is stored as a tree. More specifically, this is a SHA256-based HAMT with a branching factor of 1024. The weight was chosen almost entirely to limit the number of network calls required to sync the index from a new node. Network costs dominate in this use case, so it's worth paying the cost to local updates and cached nodes. Assuming that we can make sibling requests in parallel, lets us sync an index over a million elements in a two round trips, since the HAMT would be two levels deep
 
-```go
+```javascript
+// proto3
 
+message SBitmap { // Feels a bit out of hand?
+  fixed64 one = 1;
+  fixed64 two = 2;
+  fixed64 three = 3;
+  fixed64 four = 4;
+  fixed64 five = 5;
+  fixed64 six = 6;
+  fixed64 seven = 7;
+  fixed64 eight = 8;
+  fixed64 nine = 9;
+  fixed64 ten = 10;
+  fixed64 eleven = 11;
+  fixed64 twelve = 12;
+  fixed64 thirteen = 13;
+  fixed64 fourteen = 14;
+  fixed64 fifteen = 15;
+  fixed64 sixteen = 16;
+}
+
+message SLink {
+  enum SLinkType {
+    SINDEX = 0;
+    LONEVALUE = 1;
+    MULTIVALUE = 2;
+  }
+
+  bytes cid = 1;
+  SLinkType type = 2 [default = 0];
+  uint64 size = 3;
+}
+
+message SIndex {
+  required SBitmap bitmap = 0;
+  repeated PBLink  links = 1;
+}
+
+// Example
+
+{
+  "data": 0b1000010000000010000, // ...but much longer. The HAMT bitmap.
+  "links": [
+    {
+      "cid": "bafkreifjjcie6lypi6ny7amxnfftagclbuxndqonfipmb64f2km2devei4",
+      "size": 100,
+      "type": "SINDEX"
+    },
+    {
+      "cid": "bafkreigtloekmii6hc7ngwg5msi3wwrem6zrgtfgvfwgerkdn3wgopsfny",
+      "size": 99999,
+      "type": "MULTIVALUE"
+    },
+    {
+      "cid": "bafkreibzj64sbgo6it25xmlopk2ejzxkkpxug47oeoiy7iqsshfklzmzfq",
+      "size": 42,
+      "type": "SINDEX"
+    }
+  ]
+}
+
+// Lonevalue
+
+{
+  "Data": 
+}
+
+// Multivalue
+
+{
+  "Data": 0xbcb8d227bcf681aa4a8b580bfd07563b465c7e, // ...but much longer. The complete namefilter.
+  "Links": [
+    // File -- Alice's Variant
+    {
+      "hash": CID("bafkreifrsmmay6kv3iava6k6uwszux7wrh4b4oaaxedrd4eavav65avbuq"),
+      "Tsize": 123456,
+      // Name = sha256(author A)
+      "Name": "node#ac943e8fb0b5e8d124660e0c3ab828e8f9faf09512a637fd76fc7073c305e6fa"
+    },
+    // UCAN -- Alice's Variant
+    {
+      "hash": CID("bafkreiez5l4lbmxlryxx3apxgqblbjmspq67lexqgwqpfnuthoz7zm7hkm"),
+      "Tsize": 123456,
+      // Name = same as associated file
+      "Name": "ucan#ac943e8fb0b5e8d124660e0c3ab828e8f9faf09512a637fd76fc7073c305e6fa",
+    },
+    // File -- Bob's Variant
+    {
+      "hash": CID("bafkreicvjupn575izcorvjlkgowpksvd3iais2hagtxnozdsq2lul2ops4"),
+      "Tsize": 13579,
+      // Name = sha256(author A)
+      "Name": "node#3f2f6b90b3b50ceb311f72be0a753a2501d516030a03689e28fa6c4a25cbd957"
+    },
+    // UCAN -- Bob's Variant
+    {
+      "hash": CID("bafkreiduk3iramyel3faerctu4dixrmclm2jxlcbgxq42mazaenux5ariq"),
+      "Tsize": 24680,
+      // Name = same as associated file
+      "Name": "ucan#3f2f6b90b3b50ceb311f72be0a753a2501d516030a03689e28fa6c4a25cbd957"
+    }
+  ]
+}
 ```
 
-The prefixes are not the CIDs of the data, but rather the namefilter \(see relevant section\). CIDs are kept as leaves in this tree, but all intermediate nodes refer to the set of \(hashed\) keys used for access control. Intermediate nodes are lightweight and SHOULD be aggressively cached.
+You may note a complete lack of filenames in th
+
+The hases are not the CIDs of the data, but rather the namefilter \(see relevant section\). CIDs are kept as leaves in this tree, but all intermediate nodes refer to the set of \(hashed\) keys used for access control. Intermediate nodes are lightweight and SHOULD be aggressively cached.
 
 This structure emulates a hash table of shape `Hash Namefilter -> (Namefilter, [CID])`. Terminal namefilter nodes may have multiple child CID leaves.
 
