@@ -4,7 +4,9 @@ At the data layer, each secret node \(SNode\) is placed in a table and named wit
 
 ## Private Pathing
 
-Namefilters are used as private paths. Instead of human-readable names, WNFS uses randomly-generated inumbers.
+Much of this is covered elsewhere, but it is helpful for discussing why the namefilter is how it is.
+
+Namefilters are used as private paths. Instead of human-readable names, WNFS uses randomly-generated inumbers. A namefilter is thus a set of the randomly-generated inumbers on this path. The inumbers are nonces — they have no intrinsic meaning other than to provide a unique identity for a single file over time. They are not rotated on update.
 
 The set-like property of forgetting the order is important: it should be very hard \(read: impossible except edge cases\) to infer the hierarchical relationship between any two nodes.
 
