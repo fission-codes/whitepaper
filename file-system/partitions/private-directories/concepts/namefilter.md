@@ -106,15 +106,6 @@ const saturateUnderMax = (filter: NameFilter): NameFilter {
 
 In this way, we can deterministically generate very different looking filters for the same node, varying over the version number. The base filter stays inside the longer structure, . With an appropriately configured filter, this provides multiple features:
 
-* Privacy
-  * File names are never exposed
-  * Statistical methods may be able to reveal probable DAG structures
-* Deterministic pointers to the future
-  * O\(log n\) search for updated nodes
-* Minimal knowledge write access verification 
-  * A UCAN + a hash of the read key to the highest node the user can write to
-  * Match on cryptographically blind set membership
-
 ## Design Considerations
 
 GCAs were chosen over other [arguably more sophisticated](https://www.fim.uni-passau.de/fileadmin/dokumente/fakultaeten/fim/forschung/mip-berichte/MIP_1210.pdf) options for three main reasons: witness side, raw performance, and ease of implementation for web browsers. For example, we were unable to find a widely-used RSA accumulator library on NPM or Crates, but implementing a GCA is very straightforward.
