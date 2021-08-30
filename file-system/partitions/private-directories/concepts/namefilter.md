@@ -30,14 +30,20 @@ Many Bloom filter implementations are optimized for speed, not consistency. We h
 
 XXH32 is very portable. It can be implemented within JavaScript's number system \(at time of writing, ES2021 and earlier\). It also can be natively implemented on any 32-bit machine, or on common 64-bit machines with a 32-bit compatability mode, such as [AMD64](https://www.amd.com/system/files/TechDocs/24594.pdf).
 
-However, for every element inserted into the Bloom filters we need `k = 30` different hash functions. We get these by invoking XXH32 with the seeds 0 to 29 \(inclusive\).
+However, for every element inserted into the Bloom filters we need `k = 30` different hash functions. We get these from the first two xxhash32 invocations with seeds 0 and 1 and the [enhanced double hashing scheme](https://www.ccs.neu.edu/home/pete/pub/bloom-filters-verification.pdf) \(see section 5.2, Algorithm 2\) to generate more hash functions from the first two. In our case the enhanced double hashing scheme operates on 32-bit unsigned integer arithmetic. The resulting hashes are taken modulo `m = 2048` to convert these hashes into an index in the bloom filter.
 
 ```typescript
 function* indicesFor(element: Uint8Array) {
   const k = 30
   const m = 2048
-  for (let seed = 0; seed < k; seed++) {
-    yield xxHash32(dataToHash, seed) % m
+  const uint32Limit = 0x1_0000_0000
+  let x = xxhash.xxHash32(element, 0)
+  let y = xxhash.xxHash32(element, 1)
+  yield x % m
+  for (let i = 1; i < parameters.kHashes; i++) {
+    x = (x + y) % uint32Limit
+    y = (y + i) % uint32Limit
+    yield x % m
   }
 }
 ```
