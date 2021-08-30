@@ -114,6 +114,14 @@ Because it's important to show your work
 
 ### False Positive Probability \(FPP\)
 
+$$
+\begin{align}
+ε &= e^{-\frac{m}{n}(\ln 2)^2}
+\text{ }\\
+&= 8.08787809
+\end{align}
+$$
+
 ![](../../../../.gitbook/assets/screen-shot-2021-08-26-at-20.19.41%20%281%29.png)
 
 Which is \(very\) roughly 8/10B, or a little better than 1/1B
@@ -133,4 +141,10 @@ Just rearranged from calculating `k`
 This is the formula to estimate the number of elements in a given Bloom filter \([source](https://en.wikipedia.org/wiki/Bloom_filter#Approximating_the_number_of_items_in_a_Bloom_filter)\)
 
 ![](../../../../.gitbook/assets/screen-shot-2021-08-26-at-20.21.56.png)
+
+$$
+\begin{align}
+a
+\end{align}
+$$
 
