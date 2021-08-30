@@ -30,16 +30,19 @@ Many Bloom filter implementations are optimized for speed, not consistency. We h
 
 XXH32 is very portable. It can be implemented within JavaScript's number system \(at time of writing, ES2021 and earlier\). It also can be natively implemented on any 32-bit machine, or on common 64-bit machines with a 32-bit compatability mode, such as [AMD64](https://www.amd.com/system/files/TechDocs/24594.pdf).
 
-However, for every element inserted into the Bloom filters we need `k = 30` different hash functions. We get these from the first two xxhash32 invocations with seeds 0 and 1 and the [enhanced double hashing scheme](https://www.ccs.neu.edu/home/pete/pub/bloom-filters-verification.pdf) \(see section 5.2, Algorithm 2\) to generate more hash functions from the first two. In our case the enhanced double hashing scheme operates on 32-bit unsigned integer arithmetic. The resulting hashes are taken modulo `m = 2048` to convert these hashes into an index in the bloom filter.
+However, for every element inserted into the Bloom filters we need `k = 30` different hash functions. We get these from the first two XXH32 invocations with seeds 0 and 1 and the [enhanced double hashing scheme](https://www.ccs.neu.edu/home/pete/pub/bloom-filters-verification.pdf) \(§5.2, Algorithm 2\) to generate more hash functions from the first two. In our case the enhanced double hashing scheme operates on 32-bit unsigned integer arithmetic. The resulting hashes are taken modulo `m = 2048` to convert these hashes into an index in the accumulator.
 
 ```typescript
 function* indicesFor(element: Uint8Array) {
   const k = 30
   const m = 2048
   const uint32Limit = 0x1_0000_0000
+  
   let x = xxhash.xxHash32(element, 0)
   let y = xxhash.xxHash32(element, 1)
+  
   yield x % m
+  
   for (let i = 1; i < parameters.kHashes; i++) {
     x = (x + y) % uint32Limit
     y = (y + i) % uint32Limit
@@ -50,7 +53,7 @@ function* indicesFor(element: Uint8Array) {
 
 ### Max Popcount / Hamming Saturation
 
-It is not possible to know an accurate count of the number of elements in a Bloom filter by simply looking it at. This is both a blessing \(obsfucation\) and a curse \(convenience\). We cannot rely on having exactly `n` elements in a filter when inserting more elements into an existing filter.
+It is not possible to know an accurate count of the number of elements in a Bloom filter by simply looking it at. This is both a blessing \(obfuscation\) and a curse \(convenience\). We cannot rely on having exactly `n` elements in a filter when inserting more elements into an existing filter.
 
 Bloom filters admit \(roughly\) how many elements they contain, and are relatively easy to correlate by their Hamming distance. To work around this issue with obfuscation, namefilters deterministically saturate the remaining space, filling just under _half_ of the available filter, while maintaining a very low false positive rate. The idea is to fill the namefilter with a constant Hamming weight, but still be easily constructible by someone with the bare namefilter.
 
