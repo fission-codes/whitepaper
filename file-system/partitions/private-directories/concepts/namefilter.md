@@ -108,9 +108,9 @@ Due to distinguishability, GCAs potentially leak some information about related,
 
 We considered using XOR or Cuckoo filters instead of class Bloom filters. XOR is very close to the theoretic efficiency limit, but is very new and the library untested. Cuckoo filters would provide around an additional 4 path segments with the same false-positive rate, but we lose the single-bit-collision of Bloom filters which is actually an advantage for obfuscation.
 
-## Calculations
+## Parameter Tuning Calculations
 
-Because it's important to show your work
+Because it's important to show your work™️
 
 ### False Positive Probability \(FPP\)
 
