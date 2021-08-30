@@ -114,16 +114,7 @@ Because it's important to show your work
 
 ### False Positive Probability \(FPP\)
 
-$$
-\begin{align}
-ε &= e^{-\frac{m}{n}(\ln 2)^2}\\
-   &= e^{-\frac{2048}{47}(\ln 2)^2}
-\text{ }\\
-&= 8.08787809\times10^{-10}\\
-\text{ }\\
-ε &\lt 1\times10^{-9}
-\end{align}
-$$
+![](../../../../.gitbook/assets/screen-shot-2021-08-30-at-09.27.45.png)
 
 ### Optimal Number of Hash Functions \(k\)
 
