@@ -44,16 +44,21 @@ This is granted some tolerances: since every element takes _up to_ 30 bins, we d
 
 ## Bare / Unsaturated Namefilter
 
-The bare namefilter for any node is the parent's bare namefilter plus the current node's read key. This bare namefilter is passed down to the child SNodes and encrypted along with other header information.
+The bare namefilter for any node is the parent's bare namefilter plus the current node's inumber. This bare namefilter is passed down to the child SNodes and encrypted along with other header information.
 
 The root node has no parent, so its bare namefilter is merely the SHA-256 hash of its identity hash placed in a Bloom filter. A child node is passed its parent's bare namefilter, and includes it with the SHA-256 of its key to generate its namefilter.
 
 ```javascript
 const bareParent = 0x5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03
 const iNumber = 0xe258d248fda94c63753607f7c4494ee0fcbe92f1a76bfdac795c9d84101eb317
-const versionedKey = sha256(spiralRatchet.toKey())
-const bare = bareParent ^ inumber ^ versionedKey
+const bareFilter = bareParent ^ inumber
 ```
+
+{% hint style="info" %}
+### Creation or Rotation
+
+To preserve the cryptree property, key rotation requires access to the parent. Adjusting the inumber is implicit in the bare namefilter, and thus the inumber does not need to be held separately. It is only used at initial creation to create a child path.
+{% endhint %}
 
 ## Private Versioning
 
