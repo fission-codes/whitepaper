@@ -69,7 +69,7 @@ The root node has no parent, so its bare namefilter is merely the SHA-256 hash o
 
 ```javascript
 const bareParent = 0x5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03
-const iNumber = 0xe258d248fda94c63753607f7c4494ee0fcbe92f1a76bfdac795c9d84101eb317
+const inumber = 0xe258d248fda94c63753607f7c4494ee0fcbe92f1a76bfdac795c9d84101eb317
 const bareFilter = bareParent ^ inumber
 ```
 
