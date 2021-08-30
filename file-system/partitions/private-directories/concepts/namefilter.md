@@ -34,6 +34,8 @@ function* indicesFor(element: Uint8Array) {
 
 ### Max Popcount / Hamming Saturation
 
+It is not possible to know an accurate count of the number of elements in a Bloom filter by simply looking it at. This is both a blessing \(obsfucation\) and a curse \(convenience\). We cannot rely on having exactly `n` elements in a filter when inserting more elements into an existing filter.
+
 Bloom filters admit \(roughly\) how many elements they contain, and are relatively easy to correlate by their Hamming distance. To work around this issue with obfuscation, namefilters deterministically saturate the remaining space, filling just under _half_ of the available filter, while maintaining a very low false positive rate. The idea is to fill the namefilter with a constant Hamming weight, but still be easily constructible by someone with the bare namefilter.
 
 To satisfy these constraints, we have chosen a target saturation of 1019, with some tolerances. 1019 is chosen as it represents the 47 elements, yielding the lower bound false positive rate.
