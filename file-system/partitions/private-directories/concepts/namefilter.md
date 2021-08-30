@@ -130,5 +130,5 @@ Just rearranged from calculating `k`
 
 This is the formula to estimate the number of elements in a given Bloom filter \([source](https://en.wikipedia.org/wiki/Bloom_filter#Approximating_the_number_of_items_in_a_Bloom_filter)\)
 
-![](../../../../.gitbook/assets/screen-shot-2021-08-30-at-09.37.27.png)
+![](../../../../.gitbook/assets/screen-shot-2021-08-30-at-09.46.00.png)
 
