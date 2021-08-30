@@ -2,9 +2,15 @@
 
 At the data layer, each secret node \(SNode\) is placed in a table and named with a namefilter. This is a [generalized combinatoric accumulator](https://www.jstage.jst.go.jp/article/transinf/E91.D/5/E91.D_5_1489/_pdf/-char/en) \(GCA\), which in turn is essentially the Bloom construction of the [Nyberg hash accumulator](https://link.springer.com/content/pdf/10.1007%2F3-540-60865-6_45.pdf).
 
-## Construction
+## Private Pathing
 
-Namefilters are _not_ a content address. They are based on the _keys_ used to construct that path. This is important for validating if a namefilter is allowed to be constructed \(via UCAN, see below\). They are essentially a set of hashes of the keys used to encrypt this node and all of the parents in the cyptree. The set-like property of forgetting the order is important: it should be very hard \(read: impossible except edge cases\) to infer the hierarchical relationship between any two nodes.
+Namefilters are used as private paths. Instead of human-readable names, WNFS uses randomly-generated inumbers.
+
+The set-like property of forgetting the order is important: it should be very hard \(read: impossible except edge cases\) to infer the hierarchical relationship between any two nodes.
+
+{% hint style="warning" %}
+Namefilters are _not_ a content address. They are based on the inumbers used to construct that path. This is important for validating if a namefilter is allowed to be constructed \(via UCAN, see below\).
+{% endhint %}
 
 ## Parameters
 
@@ -55,7 +61,7 @@ const bareFilter = bareParent ^ inumber
 ```
 
 {% hint style="info" %}
-### Creation or Rotation
+### inumber
 
 To preserve the cryptree property, key rotation requires access to the parent. Adjusting the inumber is implicit in the bare namefilter, and thus the inumber does not need to be held separately. It is only used at initial creation to create a child path.
 {% endhint %}
