@@ -16,13 +16,25 @@ If required, doubling `n` and `m` leaves `ε` and `k` constant. See [here for pr
 
 ### Hash Function
 
-Many Bloom filter implementations are optimized for speed, not consistency. We have chosen the [XXH32](https://cyan4973.github.io/xxHash/) \(i.e. 32-bit\) algorithm. 
+Many Bloom filter implementations are optimized for speed, not consistency. We have chosen the [XXH32](https://cyan4973.github.io/xxHash/) \(i.e. 32-bit\) algorithm, because it is very portable \(e.g. can be implemented within javascript's number system\) and about as fast as 64-bit xxhash for 256 bit sized data.
+
+However, for every element inserted into the Bloom filters we need k = 30 different hash functions. We get these by invoking XXH32 with the seeds 0 to 29 \(inclusive\).
+
+```typescript
+function* indicesFor(element: Uint8Array) {
+  const k = 30
+  const m = 2048
+  for (let i = 0; i < k; i++) {
+    yield xxHash32(/* data to hash */ element, /* seed */ i) % m
+  }
+}
+```
 
 ### Max Popcount / Hamming Saturation
 
 Bloom filters admit \(roughly\) how many elements they contain, and are relatively easy to correlate by their Hamming distance. To work around this issue with obfuscation, namefilters deterministically saturate the remaining space, filling just under _half_ of the available filter, while maintaining a very low false positive rate. The idea is to fill the namefilter with a constant Hamming weight, but still be easily constructible by someone with the bare namefilter.
 
-To satisfy these constraints, we have chosen a target saturation of 1019, with some tollerances. 1019 is chosen as it represents the 47 elements, yielding the lower bound false positive rate.
+To satisfy these constraints, we have chosen a target saturation of 1019, with some tolerances. 1019 is chosen as it represents the 47 elements, yielding the lower bound false positive rate.
 
 This is granted some tolerances: since every element takes _up to_ 30 bins, we don't know how many bits will overlap. As such, we need to find the overshoot of 1019 elements, and take the previous value. This requires limited backtracking.
 
