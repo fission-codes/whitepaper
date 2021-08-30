@@ -28,7 +28,7 @@ If later required, doubling `n` and `m` leaves `ε` and `k` constant. See [here 
 
 Many Bloom filter implementations are optimized for speed, not consistency. We have chosen the [XXH32](https://cyan4973.github.io/xxHash/) \(i.e. 32-bit\) algorithm. It is about as fast as XXH64 for 256-bit \(i.e. small\) data.
 
-XXH32 is very portable. It can be implemented within JavaScript number system \(at time of writing, ES2021 and earlier\). It also can be natively implemented on any 32-bit machine, or on common 64-bit machines with a 32-bit compatability mode, such as [AMD64](https://www.amd.com/system/files/TechDocs/24594.pdf).
+XXH32 is very portable. It can be implemented within JavaScript's number system \(at time of writing, ES2021 and earlier\). It also can be natively implemented on any 32-bit machine, or on common 64-bit machines with a 32-bit compatability mode, such as [AMD64](https://www.amd.com/system/files/TechDocs/24594.pdf).
 
 However, for every element inserted into the Bloom filters we need `k = 30` different hash functions. We get these by invoking XXH32 with the seeds 0 to 29 \(inclusive\).
 
@@ -36,8 +36,8 @@ However, for every element inserted into the Bloom filters we need `k = 30` diff
 function* indicesFor(element: Uint8Array) {
   const k = 30
   const m = 2048
-  for (let i = 0; i < k; i++) {
-    yield xxHash32(/* data to hash */ element, /* seed */ i) % m
+  for (let seed = 0; seed < k; seed++) {
+    yield xxHash32(dataToHash, seed) % m
   }
 }
 ```
