@@ -33,7 +33,7 @@ XXH32 is very portable. It can be implemented within JavaScript number system \(
 However, for every element inserted into the Bloom filters we need `k = 30` different hash functions. We get these by invoking XXH32 with the seeds 0 to 29 \(inclusive\).
 
 ```typescript
-function indicesFor(element: Uint8Array) {
+function* indicesFor(element: Uint8Array) {
   const k = 30
   const m = 2048
   for (let i = 0; i < k; i++) {
