@@ -116,15 +116,14 @@ Because it's important to show your work
 
 $$
 \begin{align}
-ε &= e^{-\frac{m}{n}(\ln 2)^2}
+ε &= e^{-\frac{m}{n}(\ln 2)^2}\\
+   &= e^{-\frac{2048}{47}(\ln 2)^2}
 \text{ }\\
-&= 8.08787809
+&= 8.08787809\times10^{-10}\\
+\text{ }\\
+ε &\lt 1\times10^{-9}
 \end{align}
 $$
-
-![](../../../../.gitbook/assets/screen-shot-2021-08-26-at-20.19.41%20%281%29.png)
-
-Which is \(very\) roughly 8/10B, or a little better than 1/1B
 
 ### Optimal Number of Hash Functions \(k\)
 
