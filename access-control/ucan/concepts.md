@@ -60,6 +60,8 @@ A user holding two scopes may have more rights than the sum of their parts. The 
 
 Proofs are existing facts. Typically these are UCAN chains, leading back to a self-evident origin token.
 
+
+
 ### Self-Evident UCANs
 
 The originating UCAN contains no proofs. It is merely a UCAN signed by the private key associated with the corresponding account’s DID. As such, the proof _is_ the signature itself. We call these ”self-evident” or “origin” UCANs.

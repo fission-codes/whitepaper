@@ -16,3 +16,29 @@ Fission uses a blend of correct-by-construction read authorization and cryptogra
 It should be noted that Fission’s authorization system relies heavily on capabilities and less on identity. The concept of ”identity” is weak. A user holding at least all of the capabilities as the resource owner can be considered equal in all respects with regard to authorization.
 {% endhint %}
 
+## Comparison to Access Control Lists \(ACLs\)
+
+### ACLs / Reactive Auth
+
+The access control mechanism that is most widespread today is ACL. This works by keeping a list of users and what they're allowed to who \(which resources and what they're able to do with them\). This requires maintaining a complex mapping in a central location, plus a process that mediates the interaction.
+
+This is a bit like having a guard outside of a building. You ask them to perform actions on your behalf. The stop you, check your ID, look up if you're allowed to do that, and pass the message along if so. If you break into the back of the building \(sneak past the guard\), you have full access.
+
+The advantage of this reactive model is that it's very easy to remove capabilties from the central list. The disadvantage is that the list tends towards having very complex rules over time, and it doesn't scale well or work offline.
+
+![](../.gitbook/assets/screen-shot-2021-08-30-at-17.59.34.png)
+
+### OCAP / Proactive Auth
+
+OCAP is less known today, but has good real-world analogies. For instance, a movie ticket asserts that you are allowed to watch a film at a certain location at a certain time. It doesn't depend on your passport or a list somewhere. If you're holding that ticket you're allowed in.
+
+This scales very well and works offline, because it requires no central list. Having ticket _is_ the complete proof. This model doesn't require writing complex rules or maintaining state. It is said to be "proactive".
+
+The downside is that revocation is more challenging. OCAP tends to use the [principle of least authority](https://en.wikipedia.org/wiki/Principle_of_least_privilege) to scope what the grantee's capabilities to what is safe at the time it's issued. This can commonly include access to a narrow set of resources, an expiration time, and so on.
+
+![](../.gitbook/assets/screen-shot-2021-08-30-at-17.59.38.png)
+
+### Balance
+
+Since they both have tradeoffs, it's rare to see a pure ACL or pure OCAP system. Typically they borrow some techniques from each other. For instance, an ACL-driven backend may issue stateless JWTs, or OCAP systems may maintain a \(central or replicated\) revocation list.
+
