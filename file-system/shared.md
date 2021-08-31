@@ -39,7 +39,7 @@ const shareNameFilter =
 
 ### Payload
 
-The content of these files is merely a pointer and the requisite key. Due to size limitations in RSA encryption, we store a CID instead of a namefilter. The only requirement for the associated CID points to a file that iself has namefilters in the correct private file system. This entry point node will contain pointers to one or more namefilters, ensuring that paths are relative to the current root.
+The content of these files is merely a pointer and the requisite key. Due to size limitations in RSA encryption, we store a CID instead of a namefilter. The only requirement for the associated CID points to a file that itself has namefilters in the correct private file system. This entry point node will contain pointers to one or more namefilters, ensuring that paths are relative to the current root.
 
 {% hint style="info" %}
 This may become serialized as an official [multiformat](https://multiformats.io/) in the future
@@ -53,7 +53,7 @@ interface SharedKeyPayload {
 }
 ```
 
-### Entry Point
+### Entry Index
 
 This node is not versioned, since an arbitrary sharer may not have access to the key of a previous version, and thus a ratchet doesn't work. As such, we conflate the node's encryption key as its inumber, and an arbitrary bare filter \(i.e. one that the writer is allowed to write with\) as the parent filter:
 
