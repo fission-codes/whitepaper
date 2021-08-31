@@ -18,7 +18,7 @@ shared_by_me[key] = node
 
 ### Conflicts
 
-If during a merge there are two shared nodes with the same value, we add one level of nesting:
+If during a merge there are two shared nodes with the same value:
 
 ```javascript
 const shared_by_me: {}
