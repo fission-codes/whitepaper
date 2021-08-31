@@ -56,9 +56,9 @@ This may become serialized as an official [multiformat](https://multiformats.io/
 
 ```typescript
 interface SharedKeyPayload {
-  algorithm: KeyType;    // e.g. "AES-256"
-  key:       Uint8Array; // Raw key bytes
-  nonce:     Uint8Array; // 32 bytes
+  algo:       KeyType;    // e.g. "AES-256"
+  key:        Uint8Array; // Raw key bytes
+  namefilter: Namefilter; // As bytes
 }
 ```
 
