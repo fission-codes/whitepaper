@@ -39,21 +39,21 @@ const pointerNamefilter = (shareKey: AesKey): Namefilter => {
 
 If a user from the shared group has their access revoked, they simply are excluded from any updated version shares.
 
-### Content
+### Read Pointer
 
-The content of these files is a very straightforward JSON array containing UCANs or read keys. UCANs are described elsewhere. A read keys look like this:
+The content of these files is a very straightforward JSON array containing UCANs or read keys. UCANs are described elsewhere. A read pointers look like this:
+
+{% hint style="danger" %}
+This may get serialized as a multiformat in the future
+{% endhint %}
 
 ```typescript
-interface SharedKey {
+interface SharedPointer {
   algorithm: KeyType; // e.g. "AES-256"
   key:       Bytes;
   pointer:   CID;
 }
 ```
-
-{% hint style="danger" %}
-This may get serialized as a multiformat in the future
-{% endhint %}
 
 ## Shared With Me
 
