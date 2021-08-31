@@ -92,3 +92,7 @@ While not strictly required, it is strongly encouraged that during copying, you 
 
 ## Lookup & Discovery
 
+The fundamental challenge being overcome is one of discovery: looking for data that you expect to exist. This does not solve the problem of being made aware that there is data available globally like a mailbox. However, if this information is learned out-of-band, it provides a convenient way to rendezvous.
+
+From a UX perspective, this enables flows like what you find in document sharing applications. Users with access can grant others access and send them a link. When the recipient navigates to the document, they are immediately able to open view the document as normal.
+
