@@ -40,12 +40,12 @@ In the conflict case, it is possible to avoid a layer of indirection by giving m
   Links: [
     {
       Hash: CID(QmWDtUQj38YLW8v3q4A6LwPn4vYKEbuKWpgSm6bjKW6Xfe),
-      Name: sha(`${recipient}{sender}0`),
+      Name: sha(`${recipient}${sender}42`),
       Tsize: 214
     },
     {
       Hash: CID(bafyreifepiu23okq5zuyvyhsoiazv2icw2van3s7ko6d3ixl5jx2yj2yhu),
-      Name: sha(`${recipient}{sender}0`),
+      Name: sha(`${recipient}${sender}42`),
       Tsize: 214
     }
   ]
