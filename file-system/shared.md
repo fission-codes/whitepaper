@@ -1,6 +1,6 @@
 # Share
 
-There are three cases where we need to exchange data in an offline manner. Fundamentally these are all variants on ”I need to make this update, but don’t have the other party online.”
+There are three cases where we need to exchange data in an offline manner. Fundamentally these are all variants on ”I need to make this update, but the other party is not availble.”
 
 ## Exchange & Share Keys
 
@@ -8,7 +8,21 @@ Sharing information with a user that’s offline is easy thanks to authenticated
 
 As there's only a single recipient per key, there is no need for backwards secrecy, and so we can use a simple natural number to represent the version, and to do seek-head.
 
-## Shared By Me
+## Shared
+
+### Partition
+
+`shared` is the label for the top-level partition for both incoming a outgoing shared pointers. It is structured as a map of salted and hashed root DIDs pointing to an array of encrypted payloads, sorted newest-to-oldest. Each of these payloads are of fixed length, since they're encrypted with the target's public key.
+
+```javascript
+const shared_by_me: {}
+const key = sha256(`${recipientRootDid}${senderRootDid}`)
+shared_by_me[key] = [new_payload, medium_payload, old_payload]
+```
+
+### Write Access
+
+Anyone with a valid UCAN granting private partition write access may use the shared partition. While this is an append-only structure, it should be considered less stable than the public or private partitions, and may include expiration and garbage collection in the future.
 
 ### Layout
 
@@ -16,7 +30,9 @@ This is a one-to-many exchange. Because of how account linking works, any given 
 
 ![](../.gitbook/assets/screen-shot-2021-06-10-at-13.02.58%20%281%29.png)
 
-The actual file pointers \(in grey above\) are only generated once per permissions group. Encrypting the share key with a group is done per key \(if shared with 5 people, then 5 nodes containing a share ket will be created\). This "share key" gives read access to a SNode at a special namefilter address \(see below\). There is nothing unusual about the content of this SNode: it is a directory contains named pointers and keys for other nodes in the private section.
+Encrypting the share key with a group is done per key \(if shared with 5 people, then 5 nodes containing a share key will be created\). This "share key" gives read access to a SNode at a special namefilter address \(see below\). There is nothing unusual about the content of this SNode: it is a directory contains named pointers and keys for other nodes in the private section.
+
+The entry index \(in grey above\) is stored in the private partition. The rest is in the shared partition.
 
 Since all data is immutable-by-default, updating the share key is done by creating a new key and placing it at the incremented version number.
 
@@ -24,17 +40,15 @@ Since all data is immutable-by-default, updating the share key is done by creati
 
 This node provides a method of lookup, and a key to decrypt larger data, directories, UCANs, and more.
 
-The recipient needs a way to deterministically look up their node in the namefilter, without giving away the list of everyone that has been shared with. To facilitate direct copying for "shared with me", this should also be globally unique.
+The recipient needs a way to deterministically look up their node in the namefilter, without giving away the list of everyone that has been shared with. To facilitate direct copying for "shared with me". This will also be globally unique.
 
 To accomplish this, we salt the recipient's root DID with the sender's root DID, and the version number, and then take the hash.
 
 ```typescript
-const empty = new Namefilter()
-    
 // Top-level lookup by recipient's root DID
 const shareNameFilter =
-  (recipientRootId: Did, senderRootId: Did, version: number): Namefilter =>
-    empty
+  (recipientRootId: Did, senderRootId: Did, authFilter: Namefilter, version: number): Namefilter =>
+    authFilter
       .append(sha256(`${receiver}${sender}${version}`))
       .saturate()
 ```
@@ -70,10 +84,7 @@ const entryIndexNamefilter =
 
 ## Shared With Me
 
-The inverse of "shared by me" is "shared with me". Here the root user exchange keys are the recipient. This is used for two reasons:
+The inverse of "shared by me" is "shared with me". They are stored in the same partition, named "shared". Any agent with write access to the private partition may copy data to this partition.
 
-1. Copying keys to your own file system to ensure that you have a copy in the case that the original file system gets overwritten
-2. Distribution to other linked devices
-
-This looks nearly identical to the "shared by me" section.
+## Lookup & Discovery
 
