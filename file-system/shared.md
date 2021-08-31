@@ -37,20 +37,11 @@ const shareNameFilter =
   }
 ```
 
-The entry-point node has no inumber, and the content of an RSA encryption is no longer than the key. We additionally need to facilitate write access mediated by a UCAN. As such, we use the encryption key as the inumber, and an arbitrary barefilter \(i.e. one that the writer is allowed to write with\) as the parent filter:
+### Payload
 
-```typescript
-// Namefilter for the entry index
-const entryIndexNamefilter = 
-  (shareKey: AesKey, bareFilter: Namefilter): Namefilter => {
-    return bareFilter
-      .append(sha256(shareKey))
-      .append(nonce)
-      .saturate()
-  }
-```
+The content of these files is merely a pointer and the requesite key. The only requirement for the associated namefilter is that it be in the private partition.
 
-{% hint style="danger" %}
+{% hint style="info" %}
 This may become serialized as an official [multiformat](https://multiformats.io/) in the future
 {% endhint %}
 
@@ -58,13 +49,22 @@ This may become serialized as an official [multiformat](https://multiformats.io/
 interface SharedKeyPayload {
   algo:       KeyType;    // e.g. "AES-256"
   key:        Uint8Array; // Raw key bytes
-  namefilter: Namefilter; // As bytes
+  namefilter: Namefilter; // Saturated namefilter as bytes
 }
 ```
 
-The content of these files is a very straightforward JSON array containing UCANs or read keys. UCANs are described elsewhere. A read pointers look like this:
+### Entry Point
 
-If a user from the shared group has their access revoked, they simply are excluded from any updated version shares.
+Any node in the private partition may be pointed to. In the simple case, this is an existing file. However, in the case that the user is being given a UCAN, or multiple points to many parts of the filesystem, then a entry index must be created.
+
+This node is not versioned, since an arbitrary sharer may not have access to the key of a previous version, and thus a ratchet doesn't work. As such, we conflate the node's encryption key as its inumber, and an arbitrary bare filter \(i.e. one that the writer is allowed to write with\) as the parent filter:
+
+```typescript
+// Namefilter for the entry index
+const entryIndexNamefilter = 
+  (shareKey: AesKey, bareFilter: Namefilter): Namefilter =>
+    bareFilter.append(sha256(shareKey)).saturate()
+```
 
 ## Shared With Me
 
