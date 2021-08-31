@@ -14,9 +14,9 @@ The share keys may be rotated. This is done as normal as with any other versione
 
 This is a one-to-many exchange. Because of how account linking works, any given user will typically have a small number of exchange keys \(in the range of 1 to 5\). Each user only has access to a single key at any given time, so the sender will use a single key to share with multiple recipient keys:
 
-![](../.gitbook/assets/screen-shot-2021-06-10-at-13.02.58.png)
+![](../.gitbook/assets/screen-shot-2021-06-10-at-13.02.58%20%281%29.png)
 
-The actual file pointers \(in grey above\) are only generated once per permissions group. Encrypting the share key with a group is done per key \(if shared with 5 people, then 5 nodes will be created\). This "share key" gives read access to a SNode at a special namefilter address \(see below\). There is nothing unusual about the content of this SNode: it is a directory contains named pointers and keys for other nodes in the private section.
+The actual file pointers \(in grey above\) are only generated once per permissions group. Encrypting the share key with a group is done per key \(if shared with 5 people, then 5 nodes containing a share ket will be created\). This "share key" gives read access to a SNode at a special namefilter address \(see below\). There is nothing unusual about the content of this SNode: it is a directory contains named pointers and keys for other nodes in the private section.
 
 Since all data is immutable-by-default, updating the share key is done by creating a new key and placing it at the incremented version number.
 
@@ -24,7 +24,7 @@ Since all data is immutable-by-default, updating the share key is done by creati
 
 The recipient needs a way to deterministically look up their node in the namefilter, without giving away the list of everyone that has been shared with. To facilitate direct copying for "shared with me", this should also be globally unique.
 
-To accompliush this, we salt the recipient's root DID with the sender's root DID, and the version number, and then take the hash.
+To accomplish this, we salt the recipient's root DID with the sender's root DID, and the version number, and then take the hash.
 
 ```typescript
 // Top-level lookup by recipient's root DID
@@ -37,7 +37,7 @@ const shareNameFilter =
   }
 ```
 
-The entrypoint node has no inumber, and the content of an RSA encryption is no longer than the key. We additionally need to facilitate write access mediated by a UCAN. As such, we use the encryption key as the inumber, and an arbitrary barefilter \(i.e. one that the writer is allowed to write with\) as the parent filter:
+The entry-point node has no inumber, and the content of an RSA encryption is no longer than the key. We additionally need to facilitate write access mediated by a UCAN. As such, we use the encryption key as the inumber, and an arbitrary barefilter \(i.e. one that the writer is allowed to write with\) as the parent filter:
 
 ```typescript
 // Namefilter for the entry index
