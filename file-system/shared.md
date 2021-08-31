@@ -20,29 +20,33 @@ The actual file pointers \(in grey above\) are only generated once per permissio
 
 Since all data is immutable-by-default, updating the share key is done by creating a new key and placing it at the incremented version number.
 
+### Top-Level Lookup Namefilter
+
+The recipient needs a way to deterministically look up their node in the namefilter, without giving away the list of everyone that has been shared with. We salt the recipient's root DID with the sender's root DID, and the version number, and then take the hash.
+
 ```typescript
-const shareNameFilter = 
-  (recipient: Did, sender: Did, version: number): Namefilter => {
+// Top-level lookup by recipient's root DID
+const shareNameFilter =
+  (recipientRootId: Did, senderRootId: Did, version: number): Namefilter => {
     const filter = new Namefilter()
     return filter
       .append(sha256(`${receiver}${sender}${version}`))
       .saturate()
   }
-
-const pointerNamefilter = (shareKey: AesKey, nonce: Uint8Array): Namefilter => {
-  const filter = new Namefilter()
-  return filter
-    .append(sha256(shareKey))
-    .append(nonce)
-    .saturate()
-}
 ```
 
-If a user from the shared group has their access revoked, they simply are excluded from any updated version shares.
 
-### Read Pointer
 
-The content of these files is a very straightforward JSON array containing UCANs or read keys. UCANs are described elsewhere. A read pointers look like this:
+```typescript
+// Namefilter for the entry index
+const entryIndexNamefilter = 
+  (shareKey: AesKey, bareFilter: Namefilter): Namefilter => {
+    return bareFilter
+      .append(sha256(shareKey))
+      .append(nonce)
+      .saturate()
+  }
+```
 
 {% hint style="danger" %}
 This may become serialized as an official [multiformat](https://multiformats.io/) in the future
@@ -55,6 +59,10 @@ interface SharedKeyPayload {
   nonce:     Uint8Array; // 32 bytes
 }
 ```
+
+The content of these files is a very straightforward JSON array containing UCANs or read keys. UCANs are described elsewhere. A read pointers look like this:
+
+If a user from the shared group has their access revoked, they simply are excluded from any updated version shares.
 
 ## Shared With Me
 
