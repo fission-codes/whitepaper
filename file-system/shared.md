@@ -1,6 +1,11 @@
-# Share
+---
+description: >-
+  There are several cases where we need to exchange data in an offline manner.
+  Fundamentally these are all variants on ”I need to make this update, but the
+  other party is not available.”
+---
 
-There are three cases where we need to exchange data in an offline manner. Fundamentally these are all variants on ”I need to make this update, but the other party is not available.”
+# Share
 
 ## Exchange & Share Keys
 
