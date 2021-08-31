@@ -36,7 +36,7 @@ In the conflict case, it is possible to avoid a layer of indirection by giving m
 
 ```typescript
 {
-  Data: Uint8Array(5) [ 0, 1, 2, 3, 4 ],
+  Data: "",
   Links: [
     {
       Hash: CID(QmWDtUQj38YLW8v3q4A6LwPn4vYKEbuKWpgSm6bjKW6Xfe),
