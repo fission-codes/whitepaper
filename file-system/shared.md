@@ -39,7 +39,7 @@ const shareNameFilter =
 
 ### Payload
 
-The content of these files is merely a pointer and the requisite key. Due to size limitations in RSA encryption, we store a CID instead of a namefilter. The only requirement for the associated CID points to a file that iself has namefilters in the correct private file system. This entry point node will contain pointers to one or more namefilters, which the recipient MUST validate are in the expected filesystem.
+The content of these files is merely a pointer and the requisite key. Due to size limitations in RSA encryption, we store a CID instead of a namefilter. The only requirement for the associated CID points to a file that iself has namefilters in the correct private file system. This entry point node will contain pointers to one or more namefilters, ensuring that paths are relative to the current root.
 
 {% hint style="info" %}
 This may become serialized as an official [multiformat](https://multiformats.io/) in the future
