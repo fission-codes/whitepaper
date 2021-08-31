@@ -108,7 +108,9 @@ Finally, David's cloud service determines that his granddaughter, Evelyn, should
 
 ![](../../.gitbook/assets/screen-shot-2021-08-30-at-18.15.05.png)
 
-## Revocation
+## Cascading Revocation
 
 There is no way to provide a proof that negates another _inside_ a UCAN. UCANs can be negated at the whole-UCAN level only. Please see the relevant section for more.
+
+![](../../.gitbook/assets/screen-shot-2021-08-30-at-18.28.02.png)
 
