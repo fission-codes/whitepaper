@@ -34,23 +34,6 @@ The entry index \(in grey above\) is stored in the private partition. The rest i
 
 Since all data is immutable-by-default, updating the share key is done by creating a new key and placing it at the incremented version number.
 
-### Top-Level Lookup Namefilter
-
-This node provides a method of lookup, and a key to decrypt larger data, directories, UCANs, and more.
-
-The recipient needs a way to deterministically look up their node in the namefilter, without giving away the list of everyone that has been shared with. To facilitate direct copying for "shared with me". This will also be globally unique.
-
-To accomplish this, we salt the recipient's root DID with the sender's root DID, and the version number, and then take the hash.
-
-```typescript
-// Top-level lookup by recipient's root DID
-const shareNameFilter =
-  (recipientRootId: Did, senderRootId: Did, authFilter: Namefilter, version: number): Namefilter =>
-    authFilter
-      .append(sha256(`${receiver}${sender}${version}`))
-      .saturate()
-```
-
 ### Payload
 
 The content of these files is merely a pointer and the requisite key. Due to size limitations in RSA encryption, we store a CID instead of a namefilter. The only requirement for the associated CID points to a file that itself has namefilters in the correct private file system. This entry point node will contain pointers to one or more namefilters, ensuring that paths are relative to the current root.
