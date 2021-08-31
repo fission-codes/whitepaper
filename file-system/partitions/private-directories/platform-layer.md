@@ -14,9 +14,9 @@ To read or ”unlock“ a private node, you need the node and its key:
 
 ```haskell
 data UnlockPointer = UnlockPointer
-  { rawKey    :: Bytes
-  , algorithm :: CryptoAlgorithm
-  , pointer   :: CID
+  { rawKey      :: Bytes
+  , algorithm   :: CryptoAlgorithm
+  , namefileter :: Namefilter
   }
 
 unlock :: UnlockPointer -> DecryptedNode
@@ -43,7 +43,7 @@ data DecryptedDirectory = DecryptedDirectory
   { metadata       :: Metadata
   , bareNameFilter :: BareNameFilter
   , revision       :: SpiralRatchet
-  , links          :: Map Text PrivateLink
+  , links          :: Map Text UnlockPointer
   }
 ```
 
