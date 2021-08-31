@@ -22,6 +22,8 @@ Since all data is immutable-by-default, updating the share key is done by creati
 
 ### Top-Level Lookup Namefilter
 
+This node provides a method of lookup, and a key to decrypt larger data, directories, UCANs, and more.
+
 The recipient needs a way to deterministically look up their node in the namefilter, without giving away the list of everyone that has been shared with. To facilitate direct copying for "shared with me", this should also be globally unique.
 
 To accomplish this, we salt the recipient's root DID with the sender's root DID, and the version number, and then take the hash.
@@ -54,6 +56,8 @@ interface SharedKeyPayload {
 ```
 
 ### Entry Index
+
+This is a regular directory SNode that contains the actual child namefilter/key pairs to more data \(regular data, UCANs, and so on\)
 
 This node is not versioned, since an arbitrary sharer may not have access to the key of a previous version, and thus a ratchet doesn't work. As such, we conflate the node's encryption key as its inumber, and an arbitrary bare filter \(i.e. one that the writer is allowed to write with\) as the parent filter:
 
