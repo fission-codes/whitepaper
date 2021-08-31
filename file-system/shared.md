@@ -8,19 +8,55 @@ Sharing information with a user that’s offline is easy thanks to authenticated
 
 ## Shared Partition
 
-`shared` is the label for the top-level partition for both incoming a outgoing shared pointers. It is structured as a map of salted and hashed root DIDs pointing to an array of encrypted payloads, sorted newest-to-oldest. Each of these payloads are of fixed length, since they're encrypted with the target's public key.
+`shared` is the label for the top-level partition for both incoming a outgoing shared pointers. It is structured as a map of salted and hashed with their zero-indexed root DIDs pointing to one-or-more payloads. Each of these payloads are of fixed length, since they're encrypted with the target's public key.
 
 ```javascript
 const shared_by_me: {}
-const key = sha256(`${recipientRootDid}${senderRootDid}`)
-shared_by_me[key] = [new_payload, medium_payload, old_payload]
+const key = sha256(`${recipientRootDid}${senderRootDid}${version}`)
+shared_by_me[key] = node
 ```
 
-### Write Access
+### Conflicts
+
+If during a merge there are two shared nodes with the same value, we add one level of nesting:
+
+```javascript
+const shared_by_me: {}
+const key = sha256(`${recipientRootDid}${senderRootDid}${version}`)
+shared_by_me[key] = [nodeA, nodeB]
+```
+
+Or, if you prefer:
+
+```typescript
+type SharedIndex = { [Sha256]: SNode | SNode[] };
+```
+
+In the conflict case, it is possible to avoid a layer of indirection by giving multiple CIDs the same name:
+
+```typescript
+{
+  Data: Uint8Array(5) [ 0, 1, 2, 3, 4 ],
+  Links: [
+    {
+      Hash: CID(QmWDtUQj38YLW8v3q4A6LwPn4vYKEbuKWpgSm6bjKW6Xfe),
+      Name: sha(`${recipient}{sender}0`),
+      Tsize: 214
+    },
+    {
+      Hash: CID(bafyreifepiu23okq5zuyvyhsoiazv2icw2van3s7ko6d3ixl5jx2yj2yhu),
+      Name: sha(`${recipient}{sender}0`),
+      Tsize: 214
+    }
+  ]
+}
+```
+
+## Write Access
 
 Anyone with a valid UCAN granting private partition write access may use the shared partition. While this is an append-only structure, it should be considered less stable than the public or private partitions, and may include expiration and garbage collection in the future.
 
-### Layout
+## Layout
 
 Because of how account linking works, any given user will typically have a small number of exchange keys \(in the range of 1 to 5\). Each user only has access to a single key at any given time, so the sender will use a single key to share with multiple recipient keys:
 
@@ -32,7 +68,7 @@ The entry index \(in grey above\) is stored in the private partition. The rest i
 
 Since all data is immutable-by-default, updating the share key is done by creating a new key and placing it at the incremented version number.
 
-### Payload
+## Payload
 
 The content of these files is merely a pointer and the requisite key. Due to size limitations in RSA encryption, we store a CID instead of a namefilter. The only requirement for the associated CID points to a file that itself has namefilters in the correct private file system. This entry point node will contain pointers to one or more namefilters, ensuring that paths are relative to the current root.
 
@@ -48,7 +84,7 @@ interface SharedKeyPayload {
 }
 ```
 
-### Entry Index
+## Entry Index
 
 This is a regular directory SNode that contains the actual child namefilter/key pairs to more data \(regular data, UCANs, and so on\)
 
