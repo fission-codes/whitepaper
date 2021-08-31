@@ -84,6 +84,30 @@ UCANs allow agents to delegate some \(or all\) of their rights to other agents â
 
 As mentioned earlier, scopes can be merged \(set union\). If merging the inputs \(proofs\), the output scope is a subset of the proof union. While this relationship commutes, it needs to be emphasized that if _any_ proof of a certain input scope is given, it may be included in the output authorization scope.
 
+### Example
+
+Meet Alice. She owns a number of resources \(the items in the box\).
+
+![](../../.gitbook/assets/screen-shot-2021-08-30-at-18.16.05.png)
+
+She wants to share all of them with Bob. She creates a UCAN that delegates right to everything to him. He now has all of Alice's capabilities. They are not the same person, but they can perform the same actions on these items.
+
+![](../../.gitbook/assets/screen-shot-2021-08-30-at-18.18.53.png)
+
+Bob then want to also use this acces on his phone. He sometimes lets his neice \(Carol\) use his phone, so he doesn't want the phone to be able to access _everything_, so he scopes it down to just three capabilities and delegates to the public key on his phone.
+
+Carol finds that she finds one of the capabilities very useful and asks if she can have access to it herself. Bob delegates just that one resource to Carol from his phone.
+
+![](../../.gitbook/assets/screen-shot-2021-08-30-at-18.14.20.png)
+
+Later, Bob's partner David needs access to a few resources. Bob delegates those to him from his desktop. David later delegates one of the resources to a cloud service that manages batch tasks for him.
+
+![](../../.gitbook/assets/screen-shot-2021-08-30-at-18.15.00.png)
+
+Finally, David's cloud service determines that his granddaughter, Evelyn, should aslo have access to this resource, and delegates it to her. She later has coffee with Carol, and finds that she would also like to have access to the dog resource! Carol delegates it to her. Now Evelyn has more access than Carol or the cloud server.
+
+![](../../.gitbook/assets/screen-shot-2021-08-30-at-18.15.05.png)
+
 ## Revocation
 
 There is no way to provide a proof that negates another _inside_ a UCAN. UCANs can be negated at the whole-UCAN level only. Please see the relevant section for more.
