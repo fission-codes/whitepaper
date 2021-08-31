@@ -24,7 +24,7 @@ Anyone with a valid UCAN granting private partition write access may use the sha
 
 ### Layout
 
-This is a one-to-many exchange. Because of how account linking works, any given user will typically have a small number of exchange keys \(in the range of 1 to 5\). Each user only has access to a single key at any given time, so the sender will use a single key to share with multiple recipient keys:
+Because of how account linking works, any given user will typically have a small number of exchange keys \(in the range of 1 to 5\). Each user only has access to a single key at any given time, so the sender will use a single key to share with multiple recipient keys:
 
 ![](../.gitbook/assets/screen-shot-2021-06-10-at-13.02.58%20%281%29.png)
 
