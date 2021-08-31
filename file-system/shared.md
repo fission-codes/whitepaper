@@ -1,6 +1,6 @@
 # Share
 
-There are three cases where we need to exchange data in an offline manner. Fundamentally these are all variants on ”I need to make this update, but the other party is not availble.”
+There are three cases where we need to exchange data in an offline manner. Fundamentally these are all variants on ”I need to make this update, but the other party is not available.”
 
 ## Exchange & Share Keys
 
@@ -8,9 +8,7 @@ Sharing information with a user that’s offline is easy thanks to authenticated
 
 As there's only a single recipient per key, there is no need for backwards secrecy, and so we can use a simple natural number to represent the version, and to do seek-head.
 
-## Shared
-
-### Partition
+## Shared Partition
 
 `shared` is the label for the top-level partition for both incoming a outgoing shared pointers. It is structured as a map of salted and hashed root DIDs pointing to an array of encrypted payloads, sorted newest-to-oldest. Each of these payloads are of fixed length, since they're encrypted with the target's public key.
 
