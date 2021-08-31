@@ -18,7 +18,7 @@ This is a one-to-many exchange. Because of how account linking works, any given 
 
 The actual file pointers \(in grey above\) are only generated once per permissions group. Encrypting the share key with a group is done per key \(if shared with 5 people, then 5 nodes will be created\). This "share key" gives read access to a SNode at a special namefilter address \(see below\). There is nothing unusual about the content of this SNode: it is a directory contains named pointers and keys for other nodes in the private section.
 
-Since all data is immutible, updating the share key is done by creating a new key and placing it at the incremented version number.
+Since all data is immutable-by-default, updating the share key is done by creating a new key and placing it at the incremented version number.
 
 ```typescript
 const shareNameFilter = 
@@ -29,10 +29,11 @@ const shareNameFilter =
       .saturate()
   }
 
-const pointerNamefilter = (shareKey: AesKey): Namefilter => {
+const pointerNamefilter = (shareKey: AesKey, nonce: Uint8Array): Namefilter => {
   const filter = new Namefilter()
   return filter
     .append(sha256(shareKey))
+    .append(nonce)
     .saturate()
 }
 ```
