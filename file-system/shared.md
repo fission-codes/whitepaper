@@ -22,7 +22,9 @@ Since all data is immutable-by-default, updating the share key is done by creati
 
 ### Top-Level Lookup Namefilter
 
-The recipient needs a way to deterministically look up their node in the namefilter, without giving away the list of everyone that has been shared with. We salt the recipient's root DID with the sender's root DID, and the version number, and then take the hash.
+The recipient needs a way to deterministically look up their node in the namefilter, without giving away the list of everyone that has been shared with. To facilitate direct copying for "shared with me", this should also be globally unique.
+
+To accompliush this, we salt the recipient's root DID with the sender's root DID, and the version number, and then take the hash.
 
 ```typescript
 // Top-level lookup by recipient's root DID
