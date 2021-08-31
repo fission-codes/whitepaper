@@ -29,14 +29,14 @@ The recipient needs a way to deterministically look up their node in the namefil
 To accomplish this, we salt the recipient's root DID with the sender's root DID, and the version number, and then take the hash.
 
 ```typescript
+const empty = new Namefilter()
+    
 // Top-level lookup by recipient's root DID
 const shareNameFilter =
-  (recipientRootId: Did, senderRootId: Did, version: number): Namefilter => {
-    const filter = new Namefilter()
-    return filter
+  (recipientRootId: Did, senderRootId: Did, version: number): Namefilter =>
+    empty
       .append(sha256(`${receiver}${sender}${version}`))
       .saturate()
-  }
 ```
 
 ### Payload
