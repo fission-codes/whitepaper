@@ -39,7 +39,7 @@ const shareNameFilter =
 
 ### Payload
 
-The content of these files is merely a pointer and the requesite key. The only requirement for the associated namefilter is that it be in the private partition.
+The content of these files is merely a pointer and the requisite key. Due to size limitations in RSA encryption, we store a CID instead of a namefilter. The only requirement for the associated CID points to a file that iself has namefilters in the correct private file system. This entry point node will contain pointers to one or more namefilters, which the recipient MUST validate are in the expected filesystem.
 
 {% hint style="info" %}
 This may become serialized as an official [multiformat](https://multiformats.io/) in the future
@@ -47,15 +47,13 @@ This may become serialized as an official [multiformat](https://multiformats.io/
 
 ```typescript
 interface SharedKeyPayload {
-  algo:       KeyType;    // e.g. "AES-256"
-  key:        Uint8Array; // Raw key bytes
-  namefilter: Namefilter; // Saturated namefilter as bytes
+  algo: KeyType;    // e.g. "AES-256"
+  key:  Uint8Array; // Raw key bytes
+  cid:  CID;        // Direct CID, not namefilter
 }
 ```
 
 ### Entry Point
-
-Any node in the private partition may be pointed to. In the simple case, this is an existing file. However, in the case that the user is being given a UCAN, or multiple points to many parts of the filesystem, then a entry index must be created.
 
 This node is not versioned, since an arbitrary sharer may not have access to the key of a previous version, and thus a ratchet doesn't work. As such, we conflate the node's encryption key as its inumber, and an arbitrary bare filter \(i.e. one that the writer is allowed to write with\) as the parent filter:
 
