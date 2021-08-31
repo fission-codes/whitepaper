@@ -45,14 +45,14 @@ If a user from the shared group has their access revoked, they simply are exclud
 The content of these files is a very straightforward JSON array containing UCANs or read keys. UCANs are described elsewhere. A read pointers look like this:
 
 {% hint style="danger" %}
-This may get serialized as a multiformat in the future
+This may become serialized as an official [multiformat](https://multiformats.io/) in the future
 {% endhint %}
 
 ```typescript
-interface SharedPointer {
-  algorithm: KeyType; // e.g. "AES-256"
-  key:       Bytes;
-  pointer:   CID;
+interface SharedKeyPayload {
+  algorithm: KeyType;    // e.g. "AES-256"
+  key:       Uint8Array; // Raw key bytes
+  nonce:     Uint8Array; // 32 bytes
 }
 ```
 
