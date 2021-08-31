@@ -6,8 +6,6 @@ There are three cases where we need to exchange data in an offline manner. Funda
 
 Sharing information with a user that’s offline is easy thanks to authenticated key exchange. All WNFS users widely distribute a list of public 2048-bit RSA public keys — their non-exportable ”exchange keys” — as DIDs at a well-known location \(`/public/.well-known/exchange/*`\). These RSA keys are used to send a symmetric key to a recipient; the "share key". This symmetric key is then used to decrypt pointers, UCANs, and other messages.
 
-As there's only a single recipient per node, there is no need for backwards secrecy, and so we can use a simple natural number to represent the version, and to do seek-head.
-
 ## Shared Partition
 
 `shared` is the label for the top-level partition for both incoming a outgoing shared pointers. It is structured as a map of salted and hashed root DIDs pointing to an array of encrypted payloads, sorted newest-to-oldest. Each of these payloads are of fixed length, since they're encrypted with the target's public key.
