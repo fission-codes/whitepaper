@@ -52,6 +52,10 @@ Inside this content space, can draw a boundary around some resource\(s\) \(their
 
 As a practical matter, since scopes form a group, you can be fairly loose: order doesn’t matter, and merging resources can be quite broad since the more powerful of any overlap will take precedence \(i.e. you don’t need a clean separation\).
 
+### Rights Amplification
+
+A user holding two scopes may have more rights than the sum of their parts. The classic analogy is a can and can opener. Having access to both gives you the right to access the contents of the can, which yiou can't access with just the can or just the opener.
+
 ## Authorization Proofs
 
 Proofs are existing facts. Typically these are UCAN chains, leading back to a self-evident origin token.
