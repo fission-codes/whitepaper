@@ -86,5 +86,9 @@ const entryIndexNamefilter =
 
 The inverse of "shared by me" is "shared with me". They are stored in the same partition, named "shared". Any agent with write access to the private partition may copy data to this partition.
 
+{% hint style="info" %}
+While not strictly required, it is strongly encouraged that during copying, you also integrate keys and pointers into the private file system. This is done as normal soft links into directories where the content is relevant \(e.g. an app that works on collaborative private data\).
+{% endhint %}
+
 ## Lookup & Discovery
 
