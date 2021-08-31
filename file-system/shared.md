@@ -47,7 +47,8 @@ In the conflict case, it is possible to avoid a layer of indirection by giving m
       Hash: CID(bafyreifepiu23okq5zuyvyhsoiazv2icw2van3s7ko6d3ixl5jx2yj2yhu),
       Name: sha(`${recipient}${sender}42`),
       Tsize: 214
-    }
+    },
+    // ...more links
   ]
 }
 ```
