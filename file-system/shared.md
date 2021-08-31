@@ -16,28 +16,28 @@ This is a one-to-many exchange. Because of how account linking works, any given 
 
 ![](../.gitbook/assets/screen-shot-2021-06-10-at-13.02.58.png)
 
-The actual file pointers \(in grey above\) are only generated once per permissions group. Encrypting the share key with a group is done per key, but containing the same decryption key. Thus, the top-level key MAY shared across multiple users. Sharing with a single user is a special case of the above.
+The actual file pointers \(in grey above\) are only generated once per permissions group. Encrypting the share key with a group is done per key \(if shared with 5 people, then 5 nodes will be created\). This "share key" gives read access to a SNode at a special namefilter address \(see below\). There is nothing unusual about the content of this SNode: it is a directory contains named pointers and keys for other nodes in the private section.
 
-The pointer keys themselves are not versioned. Looking up newer versions of particular files once the entry point is decrypted is done in the usual way from the private partition. Updating the share key is done by creating a new key and placing it at the incremented version number.
+Since all data is immutible, updating the share key is done by creating a new key and placing it at the incremented version number.
 
-```haskell
-keyNamefilter :: DID -> DID -> Natural -> Namefilter
-keyNamefilter receiverExchangeDID senderSigningDID version =
-  Namefilter.empty
-    |> Namefilter.insert baseSHA
-    |> Namefilter.saturate
-  where
-    baseSHA = sha256 (receiverExchangeDID <> senderSigningDID <> version)
-    
--- Pointer names are unique
-pointerNamefilter :: SymmetricKey -> Namefilter
-pointerNamefilter key =
-  Namefilter.empty
-    |> Namefilter.insert (sha256 key)
-    |> Namefilter.saturate
+```typescript
+const shareNameFilter = 
+  (recipient: Did, sender: Did, version: number): Namefilter => {
+    const filter = new Namefilter()
+    return filter
+      .append(sha256(`${receiver}${sender}${version}`))
+      .saturate()
+  }
+
+const pointerNamefilter = (shareKey: AesKey): Namefilter => {
+  const filter = new Namefilter()
+  return filter
+    .append(sha256(shareKey))
+    .saturate()
+}
 ```
 
-If a user from the shared group has their access revoked, they simply are excluded from the updated version share.
+If a user from the shared group has their access revoked, they simply are excluded from any updated version shares.
 
 ### Content
 
@@ -50,6 +50,10 @@ interface SharedKey {
   pointer:   CID;
 }
 ```
+
+{% hint style="danger" %}
+This may get serialized as a multiformat in the future
+{% endhint %}
 
 ## Shared With Me
 
