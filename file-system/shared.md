@@ -37,7 +37,7 @@ const shareNameFilter =
   }
 ```
 
-
+The entrypoint node has no inumber, and the content of an RSA encryption is no longer than the key. We additionally need to facilitate write access mediated by a UCAN. As such, we use the encryption key as the inumber, and an arbitrary barefilter \(i.e. one that the writer is allowed to write with\) as the parent filter:
 
 ```typescript
 // Namefilter for the entry index
