@@ -32,7 +32,7 @@ Or, if you prefer:
 type SharedIndex = { [Sha256]: SNode | SNode[] };
 ```
 
-In the conflict case, it is possible to avoid a layer of indirection by giving multiple CIDs the same name:
+In the conflict case, it is possible to avoid a layer of indirection by giving multiple CIDs the same name \(in `dag-pb`\):
 
 ```typescript
 {
