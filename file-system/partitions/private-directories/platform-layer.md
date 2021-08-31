@@ -14,9 +14,9 @@ To read or ”unlock“ a private node, you need the node and its key:
 
 ```haskell
 data UnlockPointer = UnlockPointer
-  { rawKey      :: Bytes
-  , algorithm   :: CryptoAlgorithm -- e.g. "AES-GCM"
-  , namefileter :: Namefilter
+  { rawKey    :: Bytes
+  , algorithm :: CryptoAlgorithm -- e.g. "AES-GCM"
+  , index     :: SHA256 Namefilter
   }
 
 unlock :: UnlockPointer -> DecryptedNode
