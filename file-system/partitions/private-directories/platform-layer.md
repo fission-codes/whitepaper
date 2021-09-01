@@ -68,15 +68,14 @@ const segmentNames = (file) => {
   const {bareNamefilter, content: {ratchet, count}} = file.header
   const key = ratchet.toBytes()
   
-  let contentNames = []
-  for (i = 0; i < count; i++) {
-    
-    contentNames[i] 
-      = bateNamefilter
-          .append(sha256(key))
-          .append(sha256(`${key}${i}`))
-          .saturate()
+  let names = []
+  for (i = 0; i < count; i++) {  
+    names[i] = bareNamefilter
+                 .append(sha256(key))
+                 .append(sha256(`${key}${i}`))
+                 .saturate()
   }
+
   return contentNames
 }
 ```
