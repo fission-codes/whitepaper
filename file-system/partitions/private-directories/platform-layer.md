@@ -40,8 +40,8 @@ data DecryptedFile = DecryptedFile
   }
   
 data Content
-  = Inline Bytes
-  | ExternalContent SpiralRatchet [Namefilter] -- MAY be split across many sections to obscure files
+  = Inline ByteString -- e.g. {inline: 0x123456}
+  | ExternalContent SpiralRatchet Natural -- Number of segments
 
 data DecryptedDirectory = DecryptedDirectory
   { metadata       :: Metadata
@@ -60,6 +60,26 @@ The private section is recursively protected with AES-256 encryption. This is to
 Content may be inlined or externalized. Inlined content is decrypted along with the header.
 
 Since external content is separate from the header, it needs a unique namefilter derived from a ratchet \(to avoid forcing lookups to go through the header\). If the key were derived from the header's key, then the file would be reencrypted e.g. every time the metadata changed.
+
+External content namefilters are defined thus:
+
+```javascript
+const segmentNames = (file) => {
+  const {bareNamefilter, content: {ratchet, count}} = file.header
+  const key = ratchet.toBytes()
+  
+  let contentNames = []
+  for (i = 0; i < count; i++) {
+    
+    contentNames[i] 
+      = bateNamefilter
+          .append(sha256(key))
+          .append(sha256(`${key}${i}`))
+          .saturate()
+  }
+  return contentNames
+}
+```
 
 ## Revocation
 
