@@ -42,7 +42,7 @@ data DecryptedFile = DecryptedFile
 data DecryptedDirectory = DecryptedDirectory
   { metadata       :: Metadata
   , bareNameFilter :: BareNameFilter
-  , revision       :: SpiralRatchet
+  , ratchet        :: SpiralRatchet
   , links          :: Map Text UnlockPointer
   }
 ```
@@ -50,6 +50,15 @@ data DecryptedDirectory = DecryptedDirectory
 ### Secure Recursive Read Access
 
 The private section is recursively protected with AES-256 encryption. This is to say that each vnode is encrypted with an AES key, and each of its children are encrypted separately with their own randomly derived AES keys. A node holds the keys to each of its children. In this way, having a key for a node also grants read access to that entire subgraph.
+
+## Content Access
+
+The file content and header are stored separately. The decryption key \(and thus namefilter\) is derived from the header's key by taking its SHA256.
+
+```javascript
+const { ratchet } = myFile.header
+const fileKey = sha256(ratchet.toBytes())
+```
 
 ## Revocation
 
