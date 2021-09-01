@@ -36,7 +36,7 @@ data DecryptedFile = DecryptedFile
   { metadata   :: Metadata -- NOTE includes events, &c
   , bareName   :: BareNameFilter
   , revision   :: SpiralRatchet
-  , rawContent :: CID | [CID] -- MAY be split across many sections to obscure files
+  , rawContent :: InlineFile | [Namefilter] -- MAY be split across many sections to obscure files
   }
 
 data DecryptedDirectory = DecryptedDirectory
