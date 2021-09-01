@@ -27,7 +27,7 @@ If during a merge there are two shared nodes with the same value:
 
 ```javascript
 const shared_by_me: {}
-const key = sha256(`${recipientRootDid}${senderRootDid}${version}`)
+const key = sha256(`${recipientExchangeDid}${senderRootDid}${counter}`)
 shared_by_me[key] = [nodeA, nodeB]
 ```
 
