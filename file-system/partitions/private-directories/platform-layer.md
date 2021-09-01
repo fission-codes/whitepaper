@@ -33,11 +33,15 @@ data DecryptedNode
   | DecryptedMovedTo   UnlockPointer
 
 data DecryptedFile = DecryptedFile
-  { metadata   :: Metadata -- NOTE includes events, &c
-  , bareName   :: BareNameFilter
-  , revision   :: SpiralRatchet
-  , rawContent :: InlineFile | [Namefilter] -- MAY be split across many sections to obscure files
+  { metadata :: Metadata -- NOTE includes events, &c
+  , bareName :: BareNameFilter
+  , revision :: SpiralRatchet
+  , content  :: Content
   }
+  
+data Content
+  = Inline Bytes
+  | ExternalContent SpiralRatchet [Namefilter] -- MAY be split across many sections to obscure files
 
 data DecryptedDirectory = DecryptedDirectory
   { metadata       :: Metadata
@@ -53,12 +57,9 @@ The private section is recursively protected with AES-256 encryption. This is to
 
 ## Content Access
 
-The file content and header are stored separately. The decryption key \(and thus namefilter\) is derived from the header's key by taking its SHA256.
+Content may be inlined or externalized. Inlined content is decrypted along with the header.
 
-```javascript
-const { ratchet } = myFile.header
-const fileKey = sha256(ratchet.toBytes())
-```
+Since external content is separate from the header, it needs a unique namefilter derived from a ratchet \(to avoid forcing lookups to go through the header\). If the key were derived from the header's key, then the file would be reencrypted e.g. every time the metadata changed.
 
 ## Revocation
 
