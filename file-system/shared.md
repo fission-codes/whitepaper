@@ -17,7 +17,7 @@ Sharing information with a user that’s offline is easy thanks to authenticated
 
 ```javascript
 const shared_by_me: {}
-const key = sha256(`${recipientRootDid}${senderRootDid}${version}`)
+const key = sha256(`${recipientExchangeDid}${senderRootDid}${counter}`)
 shared_by_me[key] = node
 ```
 
