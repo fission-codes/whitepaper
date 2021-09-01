@@ -63,7 +63,7 @@ A node with no valid key pointing at it is said to be orphaned, since it has no 
 
 Since the structure of a cryptDAG is hidden completely from the outside world, there is a very strict separation between the platform layer, and how things are organized at the protocol layer. There are still two layers, but the protocol layer is more closely relied on by the platform layer.
 
-The protocol layer describes encrypted nodes, with a special naming scheme and organized in a McTrie \(see Data Layer\). These can be converted to a decrypted virtual node via an _external_ symmetric key.
+The protocol layer describes encrypted nodes, with a special naming scheme and organized in a HAMT \(see Data Layer\). These can be converted to a decrypted virtual node via an _external_ symmetric key.
 
 ## Key Rotation
 
