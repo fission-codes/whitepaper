@@ -16,7 +16,7 @@ To read or ”unlock“ a private node, you need the node and its key:
 data UnlockPointer = UnlockPointer
   { rawKey :: Bytes
   , index  :: SHA256 Namefilter
-  , algorithm :: CryptoAlgorithm -- assumed AES-GCM for now
+  , algorithm :: CryptoAlgorithm -- e.g. AES-GCM
   }
 
 unlock :: UnlockPointer -> DecryptedNode
@@ -33,10 +33,11 @@ data DecryptedNode
   | DecryptedMovedTo   UnlockPointer
 
 data DecryptedFile = DecryptedFile
-  { metadata :: Metadata -- NOTE includes events, &c
-  , bareName :: BareNameFilter
-  , revision :: SpiralRatchet
-  , content  :: Content
+  { metadata  :: Metadata -- NOTE includes events, &c
+  , bareName  :: BareNameFilter
+  , revision  :: SpiralRatchet
+  , algorithm :: CryptoAlgorithm
+  , content   :: Content
   }
   
 data Content
