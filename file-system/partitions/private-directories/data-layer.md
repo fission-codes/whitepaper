@@ -102,7 +102,7 @@ message SecNode {
 
 ## Unique Nonces
 
-To avoid nonce collisions on large files broken into many chunks \(e.g. a stream of AES-GCM encrypted files\), we use a  nonce based on a random seed. The exact source of randomess does not matter, just the more random the better
+To avoid nonce collisions on large files broken into many chunks \(e.g. a stream of AES-GCM encrypted files\), we use a  nonce based on a random seed. The exact source of randomness does not matter, just the more random the better
 
  While different browsers use different generators, `crypto.getRandomValues` is required to contain a [CSPRNG](https://en.wikipedia.org/wiki/Cryptographically-secure_pseudorandom_number_generator), which should be good for up to around 4 billion \(2^32\) x 12-byte nonces \(2^96\) without encountering the birthday paradox. More or larger nonces will need to use a specialized large CSPRNG and/or include a monotonic counter to avoid collisions.
 
@@ -116,7 +116,7 @@ crypto.getRandomValues(rands)
 
 ## Concurrency
 
-This is NOT a concurrent tree. All updates to this structure are bacthed thorugh the linearlized STM mechanism \(described in its own section\). Being an append-only data structure, merging is very straightforward: place the new names in their appropriate positions in the tree. This cannot be done in true parallel at this layer, since race conditions may occur that drop values from lower nodes.
+This is NOT a concurrent tree. All updates to this structure are batched through the linearized STM mechanism \(described in its own section\). Being an append-only data structure, merging is very straightforward: place the new names in their appropriate positions in the tree. This cannot be done in true parallel at this layer, since race conditions may occur that drop values from lower nodes.
 
 > Last, let's consider the case where it is truly ambiguous what order to apply changes using the same example but with different visibility \[...\] Here, we have no "right" answer. Alice and Bob both have made changes without the other's knowledge and now as they synchronize data we have to decide what to do. Importantly, there isn't a _right_ answer here. Different systems resolve this in different ways.
 >
