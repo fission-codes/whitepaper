@@ -104,7 +104,7 @@ message SecNode {
 
 To avoid nonce collisions on large files broken into many chunks \(e.g. a stream of AES-GCM encrypted files\), we use a  nonce based on a random seed. The exact source of randomess does not matter, just the more random the better
 
- While different browsers use different generators, `crypto.getRandomValues` is required to contain a [CSPRNG](https://en.wikipedia.org/wiki/Cryptographically-secure_pseudorandom_number_generator), which should be good for up to around 4 billion \(2^32\) invocations without encountering the birthday paradox. Larger nonces will need to use different CSPRNG.
+ While different browsers use different generators, `crypto.getRandomValues` is required to contain a [CSPRNG](https://en.wikipedia.org/wiki/Cryptographically-secure_pseudorandom_number_generator), which should be good for up to around 4 billion \(2^32\) invocations without encountering the birthday paradox. Larger nonces will need to include a different CSPRNG and/or include a monotonic counter to avoid collisions.
 
 For example, with a 12-byte nonce:
 
