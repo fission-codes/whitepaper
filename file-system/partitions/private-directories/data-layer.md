@@ -6,7 +6,7 @@ This section describes how the `/private` partition would look to an **unauthori
 
 ## Encryption
 
-This layer is completely agnostic about file contents. By default, encryption is done via 256-bit AES-GCM \(e.g. via the [WebCrypto API](https://www.w3.org/TR/WebCryptoAPI/)\) but in principle can be done with any cipher \(e.g. [AES-SIV-GCM, ChaCha20-Poly1305](https://soatok.blog/2020/07/12/comparison-of-symmetric-encryption-methods/)\). Everything described below is compatible with any symmetric cipher.
+This layer is completely agnostic about file contents. By default, encryption is done via 256-bit AES-GCM \(e.g. via the [WebCrypto API](https://www.w3.org/TR/WebCryptoAPI/)\) but in principle can be done with any cipher \(e.g. [AES-SIV-GCM, XChaCha20-Poly1305](https://soatok.blog/2020/07/12/comparison-of-symmetric-encryption-methods/)\). Everything described below is compatible with any symmetric cipher.
 
 {% hint style="info" %}
 To see more about what is found _inside_ an SNode when unencrypted, please see the Private File Layer section.
@@ -97,6 +97,22 @@ message SecNode {
       "size": 13579
     }
   ]
+}
+```
+
+## CSPRNG Nonces
+
+To avoid nonce collisions on large files broken into many chunks \(e.g. a stream of AES-GCM encrypted files\) use a [CSPRNG](https://en.wikipedia.org/wiki/Cryptographically-secure_pseudorandom_number_generator) nonce based on a random seed.
+
+```javascript
+const clearChunks = [a, b, c, /* ... */ ]
+const seed = Math.floor(Math.random())
+const drng = new CSPRING(seed)
+let cipherChunks = []
+
+for (i = 0; i < clearChunks.length; i++) {
+  const nonce = drng.next()
+  const nonce << 1 + i // WIP
 }
 ```
 
