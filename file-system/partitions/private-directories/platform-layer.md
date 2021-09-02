@@ -16,7 +16,7 @@ To read or ”unlock“ a private node, you need the node and its key:
 data UnlockPointer = UnlockPointer
   { rawKey :: Bytes
   , index  :: SHA256 Namefilter
-    -- , algorithm :: CryptoAlgorithm -- assumed AES-GCM for now
+  , algorithm :: CryptoAlgorithm -- assumed AES-GCM for now
   }
 
 unlock :: UnlockPointer -> DecryptedNode
@@ -59,7 +59,7 @@ The private section is recursively protected with AES-256 encryption. This is to
 
 Content may be inlined or externalized. Inlined content is decrypted along with the header.
 
-Since external content is separate from the header, it needs a unique namefilter derived from a ratchet \(to avoid forcing lookups to go through the header\). If the key were derived from the header's key, then the file would be reencrypted e.g. every time the metadata changed.
+Since external content is separate from the header, it needs a unique namefilter derived from a ratchet \(to avoid forcing lookups to go through the header\). If the key were derived from the header's key, then the file would be re-encrypted e.g. every time the metadata changed.
 
 External content namefilters are defined thus:
 
