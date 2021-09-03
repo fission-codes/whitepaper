@@ -42,7 +42,7 @@
 * [Registration](accounts/verifiable-claims.md)
 * [Delegation](accounts/device-linking.md)
 * [Login](accounts/login/README.md)
-  * [AWAKE](accounts/login/quake.md)
+  * [AWAKE](accounts/login/awake.md)
 * [Recovery](accounts/recovery.md)
 * [Multifactor Authentication](accounts/mfa.md)
 
