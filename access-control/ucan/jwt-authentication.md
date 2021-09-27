@@ -191,7 +191,7 @@ The attenuated resources \(i.e. output\) of a UCAN is an array of heterogeneous 
 
 The union of this array must be a strict subset \(attenuation\) of the proofs plus resources created/owned/originated by the `”iss”` DID. This scoping also includes time ranges, making the proof that starts latest and proof the end soonest the lower and upper time bounds.
 
-Each capability has its own semantics, which need to be interpratable by the target resource handler. They consist of at least a resource and a capability, generally adhering to the form:
+Each capability has its own semantics, which need to be interpretable by the target resource handler. They consist of at least a resource and a capability, generally adhering to the form:
 
 ```javascript
 {
@@ -227,10 +227,10 @@ Each capability has its own semantics, which need to be interpratable by the tar
 
 #### Resource Type
 
-This merely a unique identifier to indicate the type of thing being being described. For example, `“wnfs“` for the WebNative File System, `“email”` for email, and `“domain“` for domain names.
+This merely a unique identifier to indicate the type of thing being described. For example, `“wnfs“` for the WebNative File System, `“email”` for email, and `“domain“` for domain names.
 
 {% hint style="warning" %}
-NOT every handler must understand every possible resource. If you receive a UCAN that has such a capability, simply ignore it. It may need to be passed through to anothre provider.
+NOT every handler must understand every possible resource. If you receive a UCAN that has such a capability, simply ignore it. It may need to be passed through to another provider.
 {% endhint %}
 
 #### Resource Identifier
