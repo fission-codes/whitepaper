@@ -98,8 +98,8 @@ advance SpiralRatchet {..} =
     (False, True) -> error "Not possible"
 
   where
-    nextSmall  = sha256 small
-    nextMedium = sha256 medium
+    nextSmall  = sha3_256 small
+    nextMedium = sha3_256 medium
 
     advanceSmall :: SpiralRatchet
     advanceSmall = SpiralRatchet {small = nextSmall, ..}
