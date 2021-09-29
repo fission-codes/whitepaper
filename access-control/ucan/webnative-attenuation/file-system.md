@@ -20,7 +20,7 @@ Private paths have an additional wrinkle. For privacy, paths are given as namefi
 
 We follow the same procedure — check if the path successfully `OR`s with the bare namefilter.
 
-For space saving reasons, these namefilters are then hashed down for storage. The UCAN is required to also include a mapping “fact“ of the namefilter and its base58 SHA256 value.
+For space saving reasons, these namefilters are then hashed down for storage. The UCAN is required to also include a mapping “fact“ of the namefilter and its base58 SHA3-256 value.
 
 ## Capabilities
 
@@ -28,7 +28,7 @@ WNFS capabilities are monotone, where each level “contains” the capabilities
 
 ### 1. CREATE
 
-At the platform layer, this ”create new path”. This is a new path _relative_ to the most recent generation. So, if this path existed in a previous generaion, but was then removed, it’s allowed to be created anew.
+At the platform layer, this ”create new path”. This is a new path _relative_ to the most recent generation. So, if this path existed in a previous generation, but was then removed, it’s allowed to be created anew.
 
 Append access allows for the adding of completely new file paths, but not new generations. In other words, at the low-level protocol layer, this is a restricted form of “append only”.
 

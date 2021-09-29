@@ -30,7 +30,7 @@ _Note: we separate the read & write flows here for clarity, but they will be don
 
 * Alice
   * generates 10 random BLS secret keys \(`SK_a`\)
-  * takes the SHA256 hash of each of these secret keys
+  * takes the SHA3-256 hash of each of these secret keys
   * sends the hashes to the server
 * The server
   * generates 10 BLS secret keys \(`SK_f`\), one for each hash, and stores them in a database alongside the hashes
@@ -47,7 +47,7 @@ _Note: we separate the read & write flows here for clarity, but they will be don
 * Alice
   * enters one of her recovery codes, `SK_a` 
   * creates a new key pair `(SK_r, PK_r)` and associated DID `did:key:zAliceNew`
-  * sends a request to the server including `SHA256(SK_a)` and `did:key:zAliceNew`
+  * sends a request to the server including `SHA3_256(SK_a)` and `did:key:zAliceNew`
 * The server 
   * looks up the relevant key to `SK_a` in the database: `SK_f` 
     * _Note: We can add a time delay on this part for added security. If a user reports their device missing or their security breached, this is also where we can halt an attacker._
@@ -65,7 +65,7 @@ _Note: we separate the read & write flows here for clarity, but they will be don
 
 * Alice
   * generates 10 random BLS secret keys \(`SK_a`\)
-  * takes the SHA256 hash of each of these secret keys
+  * takes the SHA3\_256 hash of each of these secret keys
   * sends the hashes to the server
 * The server
   * generates 10 BLS secret keys \(`SK_f`\), one for each hash, and stores them in a database alongside the hashes
@@ -90,8 +90,8 @@ _Note: we separate the read & write flows here for clarity, but they will be don
 ```
 
 * Alice 
-  * takes the SHA256 hash of `sig_agg` to determine an AES256 key `R_recovery` 
-  *  encrypts `AccessFile` with each `R_recovery` key and stores it in their filesystem at `/recovery/{sha256(R_recovery)}`
+  * takes the SHA3\_256 hash of `sig_agg` to determine an AES256 key `R_recovery` 
+  *  encrypts `AccessFile` with each `R_recovery` key and stores it in their filesystem at `/recovery/{sha3_256(R_recovery)}`
 
 ![](../.gitbook/assets/screenshot-from-2021-01-08-15-22-13.png)
 
@@ -99,7 +99,7 @@ _Note: we separate the read & write flows here for clarity, but they will be don
 
 * Alice
   * Enters one of her recovery codes, `SK_a` 
-  * Sends a request to the server including `SHA256(SK_a)` 
+  * Sends a request to the server including `SHA3_256(SK_a)` 
 * The server 
   * Looks up the relevant key to `SK_a` in the database: `SK_f` 
     * _Note: We can add a time delay on this part for added security. If a user reports their device missing or their security breached, this is also where we can halt an attacker._
@@ -109,8 +109,8 @@ _Note: we separate the read & write flows here for clarity, but they will be don
   * Deletes the key pair from the DB
 * Alice
   * Signs `challenge` with `SK_a` and combines the result with `sig_f` to obtain `sig_agg` 
-  * Takes the SHA256 hash of `sig_agg` to obtain  AES256 key `R_recovery` 
-  * Retrieves the encrypted `AccessFile` from `/recovery/{sha256(R_recovery)}` 
+  * Takes the SHA3-256 hash of `sig_agg` to obtain  AES256 key `R_recovery` 
+  * Retrieves the encrypted `AccessFile` from `/recovery/{sha3_256(R_recovery)}` 
   * Decrypts `AccessFile` with `R_recovery` 
   * Uses `R_root` from the decrypted `AccessFile` to decrypt her `/private` filesystem
 
