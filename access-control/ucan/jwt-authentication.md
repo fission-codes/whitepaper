@@ -151,7 +151,7 @@ An empty facts field may be represented as the absence of the field or an empty 
 ```javascript
 "fct": [
   {
-    "sha256": "B94D27B9934D3E08A52E52D7DA7DABFAC484EFE37A5380EE9088F7ACE2EFCDE9",
+    "sha3_256": "B94D27B9934D3E08A52E52D7DA7DABFAC484EFE37A5380EE9088F7ACE2EFCDE9",
     "msg": "hello world"
   }
 ]

@@ -54,7 +54,7 @@ As a practical matter, since scopes form a group, you can be fairly loose: order
 
 ### Rights Amplification
 
-A user holding two scopes may have more rights than the sum of their parts. The classic analogy is a can and can opener. Having access to both gives you the right to access the contents of the can, which yiou can't access with just the can or just the opener.
+A user holding two scopes may have more rights than the sum of their parts. The classic analogy is a can and can opener. Having access to both gives you the right to access the contents of the can, which you can't access with just the can or just the opener.
 
 ## Authorization Proofs
 
@@ -73,7 +73,7 @@ Logical or self-evident facts are a related form of proof. A statement of fact m
 As a simple example:
 
 ```text
-SHA256(”hello world”) = 0xa948904f2f0f479b8f8197694b30184b0d2ed1c1cd2a1ec0fb85d299a192a447
+SHA3_256(”hello world”) = 0xa948904f2f0f479b8f8197694b30184b0d2ed1c1cd2a1ec0fb85d299a192a447
 ```
 
 Perhaps non-intuitively, signing a challenge string also constitutes a fact: that you know the private key associated with some public key, despite not giving away the actual private key.

@@ -17,7 +17,7 @@ Sharing information with a user that’s offline is easy thanks to authenticated
 
 ```javascript
 const shared_by_me: {}
-const key = sha256(`${recipientExchangeDid}${senderRootDid}${counter}`)
+const key = sha3_256(`${recipientExchangeDid}${senderRootDid}${counter}`)
 shared_by_me[key] = node
 ```
 
@@ -27,14 +27,14 @@ If during a merge there are two shared nodes with the same value:
 
 ```javascript
 const shared_by_me: {}
-const key = sha256(`${recipientExchangeDid}${senderRootDid}${counter}`)
+const key = sha3_256(`${recipientExchangeDid}${senderRootDid}${counter}`)
 shared_by_me[key] = [nodeA, nodeB]
 ```
 
 Or, if you prefer:
 
 ```typescript
-type SharedIndex = { [Sha256]: SNode | SNode[] };
+type SharedIndex = { [Sha3_256]: SNode | SNode[] };
 ```
 
 In the conflict case, it is possible to avoid a layer of indirection by giving multiple CIDs the same name \(in `dag-pb`\):
@@ -100,7 +100,7 @@ This node is not versioned, since an arbitrary sharer may not have access to the
 // Namefilter for the entry index
 const entryIndexNamefilter = 
   (shareKey: AesKey, bareFilter: Namefilter): Namefilter =>
-    bareFilter.append(sha256(shareKey)).saturate()
+    bareFilter.append(sha3_256(shareKey)).saturate()
 ```
 
 ## Shared With Me

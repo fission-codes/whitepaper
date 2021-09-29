@@ -14,7 +14,7 @@ To see more about what is found _inside_ an SNode when unencrypted, please see t
 
 ## Secure Content Prefix Tree
 
-Unlike the public file system DAG, the private file system is stored as a tree. More specifically, this is a SHA256-based HAMT with a branching factor of 1024. The weight was chosen almost entirely to limit the number of network calls required to sync the index from a new node. Network costs dominate in this use case, so it's worth paying the cost to local updates and cached nodes. Assuming that we can make sibling requests in parallel, lets us sync an index over a million elements in a two round trips, since the HAMT would be two levels deep.
+Unlike the public file system DAG, the private file system is stored as a tree. More specifically, this is a SHA3-256-based HAMT with a branching factor of 1024. The weight was chosen almost entirely to limit the number of network calls required to sync the index from a new node. Network costs dominate in this use case, so it's worth paying the cost to local updates and cached nodes. Assuming that we can make sibling requests in parallel, lets us sync an index over a million elements in a two round trips, since the HAMT would be two levels deep.
 
 With a sufficiently compact encoding, this may be reasonable to sync the private index up to 1M namefilters. Some back of the envelope math:
 

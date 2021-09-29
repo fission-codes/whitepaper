@@ -15,7 +15,7 @@ To read or ”unlock“ a private node, you need the node and its key:
 ```haskell
 data UnlockPointer = UnlockPointer
   { rawKey :: Bytes
-  , index  :: SHA256 Namefilter
+  , index  :: SHA3_256 Namefilter
   , algorithm :: CryptoAlgorithm -- e.g. AES-GCM
   }
 
@@ -72,8 +72,8 @@ const segmentNames = (file) => {
   let names = []
   for (i = 0; i < count; i++) {  
     names[i] = bareNamefilter
-                 .append(sha256(key))
-                 .append(sha256(`${key}${i}`))
+                 .append(sha3_256(key))
+                 .append(sha3_256(`${key}${i}`))
                  .saturate()
   }
 

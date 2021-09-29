@@ -21,8 +21,8 @@ barename inumber version =
     |> Namefilter.saturate
     
   where
-    uuidHash    = sha256 uuid
-    versionHash = sha256 (uuid <> version)
+    uuidHash    = sha3_256 uuid
+    versionHash = sha3_256 (uuid <> version)
 ```
 
 History link structure below the root is achieved by the same structural sharing mechanism as in the public partition. Multivalues are used during merge operations.
