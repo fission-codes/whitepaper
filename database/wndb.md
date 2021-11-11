@@ -6,7 +6,14 @@
 * Break Stuff — typical DBs are designed for different assumptions
 * Embrace & Extend — smart people have invented good primitives
 
+## Assumptions
 
+* Unbounded replicas, entering and leaving at will
+* Heterogeneous devices
+* Heterogeneous access rights
+* Application diversity on shared data
+* Offline operation (and generally partition tolerant)
+* PACELC — PA/EL
 
 ## WIP Select Resources
 
