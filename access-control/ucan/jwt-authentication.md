@@ -14,17 +14,17 @@ The JWT structure is a convenient container to carry the authenticated informati
 
 ## Uniqueness
 
-The hash of a token may be taken as a nonce. As such, each token MUST be unique. The Fission server also requires that all tokens be used at most once to avoid replay attacks. If there is reason to make the same request multiple times in a narrow time window, it is recommended to vary the `exp` field \("expiry-overloading"\), or add an explicit `nonce`.
+The hash of a token may be taken as a nonce. As such, each token MUST be unique. The Fission server also requires that all tokens be used at most once to avoid replay attacks. If there is reason to make the same request multiple times in a narrow time window, it is recommended to vary the `exp` field ("expiry-overloading"), or add an explicit `nonce`.
 
 ## Skeleton
 
 The [JWT standard](https://tools.ietf.org/html/rfc7519) includes a number of sections and keys that are required. For those not familiar, a JWT is made up of three components:
 
-| Section | Purpose |
-| ---: | :--- |
-| Header | Token Metadata |
-| Payload | Authorization Information |
-| Signature | Token Authentication |
+|   Section | Purpose                   |
+| --------: | ------------------------- |
+|    Header | Token Metadata            |
+|   Payload | Authorization Information |
+| Signature | Token Authentication      |
 
 The vast majority of the UCAN specification is in the body. We will note changes elsewhere as required.
 
@@ -32,16 +32,16 @@ The vast majority of the UCAN specification is in the body. We will note changes
 
 The header MUST include the following fields:
 
-| Field | Meaning | Valid Options | Required |
-| :---: | :---: | :---: | :---: |
-| `“alg“` | Signature Algorithm | `”EdDSA”` or `”RS256”` | ✔️ |
-| `“typ“` | Type | `”JWT”` | ✔️ |
-| `”ucv”` | UCAN Version | Semver \(`”m.n.p”`\) | ✔️ |
+|  Field  |       Meaning       |      Valid Options     | Required |
+| :-----: | :-----------------: | :--------------------: | :------: |
+| `“alg“` | Signature Algorithm | `”EdDSA”` or `”RS256”` |    ✔️    |
+| `“typ“` |         Type        |         `”JWT”`        |    ✔️    |
+| `”ucv”` |     UCAN Version    |   Semver (`”m.n.p”`)   |    ✔️    |
 
 {% hint style="info" %}
 Note that EdDSA is not in the JWT spec [RFC 7519](https://tools.ietf.org/html/rfc7519) at time of writing, but already widely used “in the wild“, in common JWT libraries, and is listed on [jwt.io](https://jwt.io).
 
-EdDSA applied to JOSE \(including JWT\) exists as its own spec: [RFC 8037](https://tools.ietf.org/html/rfc8037).
+EdDSA applied to JOSE (including JWT) exists as its own spec: [RFC 8037](https://tools.ietf.org/html/rfc8037).
 {% endhint %}
 
 ### Example
@@ -76,10 +76,10 @@ This section describes the authorization claims being made, who is involved, and
 
 ### Sender/Receiver
 
-| Field | Long Name | Role | Required |
-| :---: | :---: | :---: | :---: |
-| `“iss“` | Issuer | Sender DID / signer | ✔️ |
-| `“aud“` | Audience | Receiver DID | ✔️ |
+|  Field  | Long Name |         Role        | Required |
+| :-----: | :-------: | :-----------------: | :------: |
+| `“iss“` |   Issuer  | Sender DID / signer |    ✔️    |
+| `“aud“` |  Audience |     Receiver DID    |    ✔️    |
 
 {% hint style="success" %}
 Being self-signed, these are the DIDs of the sender and receiver. The token signature MUST be signed with the private key associated with the `“iss”` field
@@ -96,16 +96,16 @@ Being self-signed, these are the DIDs of the sender and receiver. The token sign
 
 `“nbf“` and `“exp”` stand for ”not before” and ”expires at” respectively. These are standard JWT fields. Taken together they represent the time bounds for a token.
 
-| Field | Long Name | Required |
-| :---: | :---: | :---: |
-| `“nbf“` | Not Before | ❌ |
-| `”exp“` | Expires At | ✔️ |
+|  Field  |  Long Name | Required |
+| :-----: | :--------: | :------: |
+| `“nbf“` | Not Before |     ❌    |
+| `”exp“` | Expires At |    ✔️    |
 
-The `“nbf“` field is optional \(though recommended\). When omitted, it is assumed to be currently valid. Setting this field in the future allows the sender to delay ue of a UCAN. For example, you may want someone to only be able to post something over the weekend at a hackaton, but not before.
+The `“nbf“` field is optional (though recommended). When omitted, it is assumed to be currently valid. Setting this field in the future allows the sender to delay ue of a UCAN. For example, you may want someone to only be able to post something over the weekend at a hackaton, but not before.
 
 The `“exp“` field is extremely important for a number of reasons. It is strongly encouraged to keep the time as short as  possible for a use case. For instance, when sending commands to the server, keeping it to 30 seconds is very reasonable when sending over TLS.
 
-By limiting the time range, you lower the risk of a malicious user abusing a UCAN. There’s a balance, since if a user trusts an audience \(e.g. their personal phone\), they may not want to  reauthorize it very often.
+By limiting the time range, you lower the risk of a malicious user abusing a UCAN. There’s a balance, since if a user trusts an audience (e.g. their personal phone), they may not want to  reauthorize it very often.
 
 {% hint style="danger" %}
 Due to clock drift, do not expect the time bounds to be exact. At minimum assume +/- 60 seconds. While we would like to depend on a logic clock, this is not always possible, so a wall clock time keeping is required to some degree.
@@ -123,8 +123,8 @@ Due to clock drift, do not expect the time bounds to be exact. At minimum assume
 The nonce parameter `nnc` is a randomly generated string, used to ensure the uniqueness of the UCAN. This helps prevent replay attacks, and ensures a unique CID per creation. Typically the expiry time will ensure that UCANs are unique, but adding the nonce _ensures_ uniqueness.
 
 | Field | Long Name | Required |
-| :--- | :--- | :--- |
-| `nnc` | Nonce | ❌ |
+| ----- | --------- | -------- |
+| `nnc` | Nonce     | ❌        |
 
 #### Example
 
@@ -140,9 +140,9 @@ To qualify as valid “facts”, they MUST be self evident & externally verifiab
 
 The values in this field MUST be the value directly, or individual CIDs of the facts, or a tree of CIDs. Prefer direct values whenever possible.
 
-| Field | Long Name | Required |
-| :---: | :---: | :---: |
-| `“fct”` | Facts | ❌ |
+|  Field  | Long Name | Required |
+| :-----: | :-------: | :------: |
+| `“fct”` |   Facts   |     ❌    |
 
 An empty facts field may be represented as the absence of the field or an empty array.
 
@@ -161,15 +161,15 @@ An empty facts field may be represented as the absence of the field or an empty 
 
 The `“prf”` section is reserved for UCAN proofs; the ”inputs” of the UCAN.
 
-Each proof MUST form a chain all the way back to the resource originator / owner. If a UCAN's proof list is empty, it is read as being the initial/"root" UCAN. In this case, the `”iss”` is the resource originator / owner for everything in the `“cap”` section.
+Each proof MUST form a chain all the way back to the resource originator / owner. If a UCAN's proof list is empty, it is read as being the initial/"root" UCAN. In this case, the `”iss”` is the resource originator / owner for everything in the `“att”` section.
 
 In the case of multiple proofs, any capabilities not covered by a proof are considered to be claimed by the issuer DID.
 
-| Field | Long Name | Required |
-| :---: | :---: | :---: |
-| `”prf”` | UCAN Proofs | ✔️ |
+|  Field  |  Long Name  | Required |
+| :-----: | :---------: | :------: |
+| `”prf”` | UCAN Proofs |    ✔️    |
 
-This field contains an array of proofs. The field is required if you are accessing deleagted resources. If the resources are associated with the current DID, this field may be omitted.
+This field contains an array of proofs. The field is required if you are accessing delegated resources. If the resources are associated with the current DID, this field may be omitted.
 
 Inline proofs MUST include the entire _encoded_ token, since they will be validated by the receiver.
 
@@ -187,9 +187,9 @@ These UCAN chains — especially with 2048-bit RSA DIDs — have the potential 
 
 ## Attenuation
 
-The attenuated resources \(i.e. output\) of a UCAN is an array of heterogeneous resources and capabilities \(defined below\).
+The attenuated resources (i.e. output) of a UCAN is an array of heterogeneous resources and capabilities (defined below).
 
-The union of this array must be a strict subset \(attenuation\) of the proofs plus resources created/owned/originated by the `”iss”` DID. This scoping also includes time ranges, making the proof that starts latest and proof the end soonest the lower and upper time bounds.
+The union of this array must be a strict subset (attenuation) of the proofs plus resources created/owned/originated by the `”iss”` DID. This scoping also includes time ranges, making the proof that starts latest and proof the end soonest the lower and upper time bounds.
 
 Each capability has its own semantics, which need to be interpretable by the target resource handler. They consist of at least a resource and a capability, generally adhering to the form:
 
@@ -200,9 +200,9 @@ Each capability has its own semantics, which need to be interpretable by the tar
 }
 ```
 
-| Field Name | Long Name | Required |
-| :---: | :---: | :---: |
-| `“att“` | Attenuation | ✔️  |
+| Field Name |  Long Name  | Required |
+| :--------: | :---------: | :------: |
+|   `“att“`  | Attenuation |    ✔️    |
 
 #### Example
 
@@ -237,14 +237,13 @@ NOT every handler must understand every possible resource. If you receive a UCAN
 
 This value depends on the resource type. A resource identifier is a canonical reference of some sort. For instance, a DNSLink, email address, domain name, or username.
 
-These values may also include the wildcard \(`*`\). This means ”any resource of this type”, even if not yet created, bounded by proofs. These are generally used for account linking. Wildcards are not required to delegate longer paths, as paths are generally taken as `OR` filters.
+These values may also include the wildcard (`*`). This means ”any resource of this type”, even if not yet created, bounded by proofs. These are generally used for account linking. Wildcards are not required to delegate longer paths, as paths are generally taken as `OR` filters.
 
-| Resource Value | Meaning |
-| :--- | :--- |
-| `"*"` | Delegate all resources of any type that are in scope |
-| `{"wnfs": "/file/path/"}` | File paths in our file system |
-| `{"app": "*"}` | All apps that the `iss` has access to, including future ones |
-| `{"app": "myapp.fission.app"}` | A URL for the app \(ideally the autoassigned one\) |
-| `{"domain": "*"}` | All domain names that a user has imported or bought |
-| `{"domain": "somedomain.com"}` | A domain name that a user has imported or bought |
-
+| Resource Value                 | Meaning                                                      |
+| ------------------------------ | ------------------------------------------------------------ |
+| `"*"`                          | Delegate all resources of any type that are in scope         |
+| `{"wnfs": "/file/path/"}`      | File paths in our file system                                |
+| `{"app": "*"}`                 | All apps that the `iss` has access to, including future ones |
+| `{"app": "myapp.fission.app"}` | A URL for the app (ideally the auto-assigned one)            |
+| `{"domain": "*"}`              | All domain names that a user has imported or bought          |
+| `{"domain": "somedomain.com"}` | A domain name that a user has imported or bought             |
