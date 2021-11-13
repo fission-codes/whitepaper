@@ -24,3 +24,5 @@
 * [https://reader.elsevier.com/reader/sd/pii/074310669390016A?token=3E10D0EE8A3668348BD59321AEABCA82DD51053C5C300A42B7BD7D1F8C9B668F920EED5B8A01492C1889CFCFE69591DC\&originRegion=us-east-1\&originCreation=20211111002622](https://reader.elsevier.com/reader/sd/pii/074310669390016A?token=3E10D0EE8A3668348BD59321AEABCA82DD51053C5C300A42B7BD7D1F8C9B668F920EED5B8A01492C1889CFCFE69591DC\&originRegion=us-east-1\&originCreation=20211111002622)
 
 {% embed url="https://t.co/GzlrF6ErfI?amp=1" %}
+Slides: [https://web.stanford.edu/class/ee380/Abstracts/091111-RethinkingTime.pdf](https://web.stanford.edu/class/ee380/Abstracts/091111-RethinkingTime.pdf)
+{% endembed %}
