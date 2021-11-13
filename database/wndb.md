@@ -14,6 +14,8 @@
 * Application diversity on shared data
 * Offline operation (and generally partition tolerant)
 * PACELC — PA/EL
+* Infinite latency
+* Tradeoffs — e.g. not good for financial transactions
 
 ## WIP Select Resources
 
