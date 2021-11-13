@@ -1,16 +1,16 @@
 # Synchronization
 
-The Web Native File System is a functionally persistent data structure. It's an append-only structure \(with some very minor caveats for 1. data owner _can_ overwrite to protect user sovereignty, and 2. the private segment layout is mutable at the block layer for raw performance\).
+The Web Native File System is a functionally persistent data structure. It's an append-only structure (with some very minor caveats for 1. data owner _can _overwrite to protect user sovereignty, and 2. the private segment layout is mutable at the block layer for raw performance).
 
 In order to share the latest version of your data with others, the root CID needs to be broadcast. WNFS works offline, but even in an online setting is fundamentally a distributed system. Knowing if your local version is ahead of the broadcast tree, or vice versa, if very important to guard against data loss.
 
 {% hint style="info" %}
-There is nothing special about the "broadcast" part of this setup. For all intents and purposes, this can \(and in future — _will\)_ be done with `n` machines \(since versions form a partial order / semilattice\).
+There is nothing special about the "broadcast" part of this setup. For all intents and purposes, this can (and in future — _will)_ be done with `n` machines (since versions form a partial order / semilattice).
 
 As such, we will name the current pair being compared as "local" and "remote".
 {% endhint %}
 
-In a fully mutable setting, this can become tricky since data is dropped — you diverge _immediately_. You can work around this by comparing a history log \(as we do for the private section\), but a record of force-push is included in the tree to record that this is a forced , lossy point of synchronization. Persistent Merkle data structures have several nice properties that make approaching the problem more tractable.
+In a fully mutable setting, this can become tricky since data is dropped — you diverge _immediately_. You can work around this by comparing a history log (as we do for the private section), but a record of force-push is included in the tree to record that this is a forced , lossy point of synchronization. Persistent Merkle data structures have several nice properties that make approaching the problem more tractable.
 
 ## Comparison Algorithm
 
@@ -18,16 +18,16 @@ The basic comparison algorithm is the same in all cases, though some of the deta
 
 ## Private
 
-The private file system is straightforward: You are in sync if you have the same CID root for the data layer of the McTrie. Otherwise, do a direct multivalue merge. Attempt to do a fast-forward for your root node for your local pointer, and resolve any conflicts on that version \(see below\). Child resolution will happen as a natural course of use.
+The private file system is straightforward: You are in sync if you have the same CID root for the data layer of the McTrie. Otherwise, do a direct multivalue merge. Attempt to do a fast-forward for your root node for your local pointer, and resolve any conflicts on that version (see below). Child resolution will happen as a natural course of use.
 
 ## Public
 
-In all cases, we can think of the history as a set of CIDs \(only how they're stored is different\). If we add order \(a list instead of a set\), we can additionally tell where we diverged. There are four possible states:
+In all cases, we can think of the history as a set of CIDs (only how they're stored is different). If we add order (a list instead of a set), we can additionally tell where we diverged. There are four possible states:
 
-1. In sync \(the heads are equal\)
-2. Ahead of remote \(remote's head CID is contained in local's history\)
-3. Behind remote \(local's head CID is contained in remote's history\)
-4. Diverged with a shared history \(local and remote share a common ancestor\)
+1. In sync (the heads are equal)
+2. Ahead of remote (remote's head CID is contained in local's history)
+3. Behind remote (local's head CID is contained in remote's history)
+4. Diverged with a shared history (local and remote share a common ancestor)
 
 Or, if you prefer:
 
@@ -39,9 +39,9 @@ data VersionOrder
   | DivergedAt CID
 ```
 
-To give us a base case, we consider the genesis filesystem to be blank in all cases \(`QmbFMke1KXqnYyBBWxB74N4c5SBnJMVAiMNRcGu6x1AwQH`\). From intuition: every file system began blank before we added something to it.
+To give us a base case, we consider the genesis filesystem to be blank in all cases (`QmbFMke1KXqnYyBBWxB74N4c5SBnJMVAiMNRcGu6x1AwQH`). From intuition: every file system began blank before we added something to it.
 
-Once we have the history, we can walk back one at a time, looking for the head CID of the other system. In principle we can do this one at a time \(`O(m + n)`\), but for performance we do this simultaneously on both local and remote file systems or use a Bloom filter cache for`O(2 * min(m, n))` run time. This can be further performance optimized, but this gets us a large part of the way there.
+Once we have the history, we can walk back one at a time, looking for the head CID of the other system. In principle we can do this one at a time (`O(m + n)`), but for performance we do this simultaneously on both local and remote file systems or use a Bloom filter cache for`O(2 * min(m, n))` run time. This can be further performance optimized, but this gets us a large part of the way there.
 
 ```haskell
 -- newest to oldest
@@ -105,15 +105,15 @@ Merging in the case where one copy is strictly ahead or behind is straightforwar
 
 WNFS has functional persistence, and this confluent history. Our Merklized layout forces a single merge point for all branches. Merges are associative, and we need a consistent order. We pick the latest CIDs for each branch, order them numerically lowest-to-highest. Working recursively bottom-up:
 
-* Files: select a file \(default: pick the file from the branch with the highest CID\)
+* Files: select a file (default: pick the file from the branch with the highest CID)
 * Directories: merge links by name
   * Defaults to resurrecting deleted links from one branch
 
 When all branches are merged, publish a merge node that includes previous links to the heads of all branches under the key `mergeHistory`. Metadata is also map-merged.
 
-The `previous` link for files that were directly select are pointed at again \(i.e. the one without the newly created `mergeHistory`\).
+The `previous` link for files that were directly select are pointed at again (i.e. the one without the newly created `mergeHistory`).
 
-When walking back the history, the default behaviour is to take the `previous` link. Alternate paths may be taken if the agent prefers \(e.g. when doing error correction or searching for previous versions of files\). This can also be linearlized at runtime by any number of algorithms \(e.g. [Euler Tour](https://en.wikipedia.org/wiki/Euler_tour_technique), sequenced one branch after another, or interleaved by version number since divergence\).
+When walking back the history, the default behaviour is to take the `previous` link. Alternate paths may be taken if the agent prefers (e.g. when doing error correction or searching for previous versions of files). This can also be linearlized at runtime by any number of algorithms (e.g. [Euler Tour](https://en.wikipedia.org/wiki/Euler\_tour\_technique), sequenced one branch after another, or interleaved by version number since divergence).
 
 ### Private Merge
 
@@ -123,8 +123,8 @@ This is largely part of the regular operation of the private DAG, since we are a
 
 The root of the file system itself is designed to be very flexible, and support many different versioning methods below it, specifically:
 
-* Immutable \(`public`, `private`\)
-* Mutable \(`pretty` & `shared` since they're not versioned\)
+* Immutable (`public`, `private`)
+* Mutable (`pretty` & `shared` since they're not versioned)
 
 As such, you need to look at  the sections themselves to determine priority. If one section is ahead of remote, and the other is behind remote, then this is considered to have diverged, and user intervention is required. This is actually not as bad as it sounds, since the actual data content would be the same even if comparing a versioned root. It feels off because we're treating the sections differently, but they're functionally equivalent.
 
@@ -143,6 +143,4 @@ This is the most intuitive: walk the tree backwards along the `previous` links. 
 The version ratchet exist to explicitly prevent an agent from seeing versions prior to an arbitrary point. Agents that have access to previous versions must build the appropriate ratchet. This often follows a zig-zag lookup: Start from your earliest, highest node, and walk down the tree matching the bare namefilter of your target node. This involves walking forwards and down, until you discover the earliest ratchet for your barefilter.
 
 Since this is all immutable, all of these keys MAY be kept in a local cache to speed up subsequent lookups. This is kept as a map of barefilters to ratchets.
-
-
 

@@ -2,7 +2,7 @@
 
 ## Resource
 
-The resource type is `”wnfs”`. The resource value is a DNSLink pointing at the highest node in the graph granting access. Everything below is given the same access \(as its content\).
+The resource type is `”wnfs”`. The resource value is a DNSLink pointing at the highest node in the graph granting access. Everything below is given the same access (as its content).
 
 ## Paths
 
@@ -28,7 +28,7 @@ WNFS capabilities are monotone, where each level “contains” the capabilities
 
 ### 1. CREATE
 
-At the platform layer, this ”create new path”. This is a new path _relative_ to the most recent generation. So, if this path existed in a previous generation, but was then removed, it’s allowed to be created anew.
+At the platform layer, this ”create new path”. This is a new path _relative _to the most recent generation. So, if this path existed in a previous generation, but was then removed, it’s allowed to be created anew.
 
 Append access allows for the adding of completely new file paths, but not new generations. In other words, at the low-level protocol layer, this is a restricted form of “append only”.
 
@@ -48,8 +48,8 @@ Includes Capability 1 and Capability 2.
 
 ### 4. OVERWRITE
 
-> With great power comes great responsibility  
->   
+> With great power comes great responsibility\
+> \
 > — Uncle Ben via Spider Man
 
 The ability to rewrite history. This is a fairly dangerous operation, as it may break assumptions from other users. This is the “hard delete”, contrasted with Capability 3’s “soft delete”.
@@ -58,11 +58,10 @@ Includes Capability 1, Capability 2, and Capability 3.
 
 ### 5. SUPER\_USER
 
-> Property rights are theoretical socially-enforced constructs in economics for determining how a resource or economic good is used and owned. \[...\] the right to transfer the good to others, alter it, abandon it, or destroy it \(the right to ownership cessation\)  
->   
-> — Wikipedia, [Property Rights \(economics\)](https://en.wikipedia.org/wiki/Property_rights_%28economics%29)
+> Property rights are theoretical socially-enforced constructs in economics for determining how a resource or economic good is used and owned. \[...] the right to transfer the good to others, alter it, abandon it, or destroy it (the right to ownership cessation)\
+> \
+> — Wikipedia, [Property Rights (economics)](https://en.wikipedia.org/wiki/Property\_rights\_\(economics\))
 
 The ability to destroy the file system itself, or transfer it to another owner. “Transfer" here is the transfer of ownership over the actual head pointer, as all other data can be copied with sufficient read permissions.
 
 Includes Capability 1, Capability 2, Capability 3, and Capability 4.
-

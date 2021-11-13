@@ -5,22 +5,22 @@
 A user must be able to recover their account and file system in a privacy-preserving way that reveals no information to Fission.
 
 * **Read Access:** By decrypting a root AES key that reveals access to the `/private` branch of the filesystem
-* **Write Access:** By delegating full write access to a new DID through a UCAN
+* **Write Access: **By delegating full write access to a new DID through a UCAN
 
 ### Constraints
 
-* Users should have a set of recovery codes \(similar to 2FA recovery codes\) such that any one recovery code has the capability of restoring full access to a user's filesystem
-* Upon recovery, a user's DID should have an unbroken chain of delegation from their original DID \(even though they no longer have access to that key pair\)
+* Users should have a set of recovery codes (similar to 2FA recovery codes) such that any one recovery code has the capability of restoring full access to a user's filesystem
+* Upon recovery, a user's DID should have an unbroken chain of delegation from their original DID (even though they no longer have access to that key pair)
 * Fission should not be able to restore or have access to a user's filesystem without access to their recovery codes
 * Fission should have the ability to stop or slow access to a filesystem in the case of suspicious activity
 
 ### Basic Outline
 
-A user generates a number of recovery tokens on account creation. Each recovery token is a 256-bit BLS secret key. The server also holds BLS secret keys, one for each token that a user possesses. When the user and the server both sign the same data, and the signatures are "added", the public key of that signature is the same as the user's and the server's public keys "added" together \("added" here refers to BLS aggregation\).
+A user generates a number of recovery tokens on account creation. Each recovery token is a 256-bit BLS secret key. The server also holds BLS secret keys, one for each token that a user possesses. When the user and the server both sign the same data, and the signatures are "added", the public key of that signature is the same as the user's and the server's public keys "added" together ("added" here refers to BLS aggregation).
 
 To allow **Write** permission recovery, the user permissions a UCAN for the that aggregated public key. In the event of recovery, the user and the server work together to sign another UCAN for a _new_ key pair that the user creates. This signature is aggregated from the user's recovery code and the associated secret key that the server is holding.
 
-To allow **Read** permission recovery, the user stores an encrypted AccessFile in the `/recovery` directory of their filesystem \(one for each recovery token\). This AccessFile contains the root AES key for decrypting the `/private` branch of the filesystem. The AES key to decrypt this file is determined by aggregating the user's and server's signatures of some known challenge \(for instance, the user's username\) and hashing the result.
+To allow **Read** permission recovery, the user stores an encrypted AccessFile in the `/recovery` directory of their filesystem (one for each recovery token). This AccessFile contains the root AES key for decrypting the `/private` branch of the filesystem. The AES key to decrypt this file is determined by aggregating the user's and server's signatures of some known challenge (for instance, the user's username) and hashing the result.
 
 ### Creation & Recovery Flow
 
@@ -29,34 +29,34 @@ _Note: we separate the read & write flows here for clarity, but they will be don
 #### Write Creation
 
 * Alice
-  * generates 10 random BLS secret keys \(`SK_a`\)
+  * generates 10 random BLS secret keys (`SK_a`)
   * takes the SHA3-256 hash of each of these secret keys
   * sends the hashes to the server
 * The server
-  * generates 10 BLS secret keys \(`SK_f`\), one for each hash, and stores them in a database alongside the hashes
-  * sends Alice the public key for each \(`PK_f`\)
+  * generates 10 BLS secret keys (`SK_f`), one for each hash, and stores them in a database alongside the hashes
+  * sends Alice the public key for each (`PK_f`)
 * For each key, Alice
   * combines the public key with the relevant public key from the server to determine `PK_agg`
   * determines a did for each `PK_agg`: `did:key:zAliceRecovery`
-  * delegates a full permission UCAN \(`UCAN_recovery`\) to each `did:key:zAliceRecovery`, attested by her root  `did:key:zAlice` 
+  * delegates a full permission UCAN (`UCAN_recovery`) to each `did:key:zAliceRecovery`, attested by her root  `did:key:zAlice`&#x20;
 
 ![](../.gitbook/assets/screenshot-from-2021-01-08-15-10-02.png)
 
 #### Write Recovery
 
 * Alice
-  * enters one of her recovery codes, `SK_a` 
+  * enters one of her recovery codes, `SK_a`&#x20;
   * creates a new key pair `(SK_r, PK_r)` and associated DID `did:key:zAliceNew`
   * sends a request to the server including `SHA3_256(SK_a)` and `did:key:zAliceNew`
-* The server 
-  * looks up the relevant key to `SK_a` in the database: `SK_f` 
+* The server&#x20;
+  * looks up the relevant key to `SK_a` in the database: `SK_f`&#x20;
     * _Note: We can add a time delay on this part for added security. If a user reports their device missing or their security breached, this is also where we can halt an attacker._
   * alerts Alice if the key does not exist
-  * otherwise, signs a full permission UCAN \(`UCAN_new_f`\) from `did:key:zAliceRecovery` for `did:key:zAliceNew` 
+  * otherwise, signs a full permission UCAN (`UCAN_new_f`) from `did:key:zAliceRecovery` for `did:key:zAliceNew`&#x20;
   * `UCAN_new` to Alice
   * deletes the key pair from the DB
 * Alice
-  * signs a full permission UCAN \(`UCAN_new_a`\) from `did:key:zAliceRecovery` for `did:key:zAliceNew` 
+  * signs a full permission UCAN (`UCAN_new_a`) from `did:key:zAliceRecovery` for `did:key:zAliceNew`&#x20;
   * combines `UCAN_new_a` with `UCAN_new_f` to create `UCAN_new`, a fully permission UCAN for `did:key:zAliceNew`
 
 ![](../.gitbook/assets/screenshot-from-2021-01-08-15-12-55.png)
@@ -64,20 +64,20 @@ _Note: we separate the read & write flows here for clarity, but they will be don
 #### Read Creation
 
 * Alice
-  * generates 10 random BLS secret keys \(`SK_a`\)
+  * generates 10 random BLS secret keys (`SK_a`)
   * takes the SHA3\_256 hash of each of these secret keys
   * sends the hashes to the server
 * The server
-  * generates 10 BLS secret keys \(`SK_f`\), one for each hash, and stores them in a database alongside the hashes
+  * generates 10 BLS secret keys (`SK_f`), one for each hash, and stores them in a database alongside the hashes
   * signs some arbitrary piece of data `challenge`with each key
     * _Note: `challenge` does not have to be obscure; we can use the user's username for consistency_
-  * sends Alice the signature for each key \(`sig_f`\)
+  * sends Alice the signature for each key (`sig_f`)
 * For each key, Alice
   * signs the same `challenge` with each key to obtain `sig_a`
   * combines that signature with the relevant signature from the server to obtain `sig_agg`
-  * creates an `AccessFile` for each `UCAN_recovery` and includes the root AES key \(`R_root`\) to decrypt the user's private filesystem
+  * creates an `AccessFile` for each `UCAN_recovery` and includes the root AES key (`R_root`) to decrypt the user's private filesystem
 
-```text
+```
 # AccessFile
 
 {
@@ -89,38 +89,38 @@ _Note: we separate the read & write flows here for clarity, but they will be don
 }
 ```
 
-* Alice 
-  * takes the SHA3\_256 hash of `sig_agg` to determine an AES256 key `R_recovery` 
-  *  encrypts `AccessFile` with each `R_recovery` key and stores it in their filesystem at `/recovery/{sha3_256(R_recovery)}`
+* Alice&#x20;
+  * takes the SHA3\_256 hash of `sig_agg` to determine an AES256 key `R_recovery`&#x20;
+  * &#x20;encrypts `AccessFile` with each `R_recovery` key and stores it in their filesystem at `/recovery/{sha3_256(R_recovery)}`
 
 ![](../.gitbook/assets/screenshot-from-2021-01-08-15-22-13.png)
 
 #### **Read Recovery**
 
 * Alice
-  * Enters one of her recovery codes, `SK_a` 
-  * Sends a request to the server including `SHA3_256(SK_a)` 
-* The server 
-  * Looks up the relevant key to `SK_a` in the database: `SK_f` 
+  * Enters one of her recovery codes, `SK_a`&#x20;
+  * Sends a request to the server including `SHA3_256(SK_a)`&#x20;
+* The server&#x20;
+  * Looks up the relevant key to `SK_a` in the database: `SK_f`&#x20;
     * _Note: We can add a time delay on this part for added security. If a user reports their device missing or their security breached, this is also where we can halt an attacker._
   * Alerts Alice if the key does not exist
     * Otherwise, signs the original `challenge` with `SK_f` to obtain `sig_f`
   * Sends `sig_f` to Alice
   * Deletes the key pair from the DB
 * Alice
-  * Signs `challenge` with `SK_a` and combines the result with `sig_f` to obtain `sig_agg` 
-  * Takes the SHA3-256 hash of `sig_agg` to obtain  AES256 key `R_recovery` 
-  * Retrieves the encrypted `AccessFile` from `/recovery/{sha3_256(R_recovery)}` 
-  * Decrypts `AccessFile` with `R_recovery` 
+  * Signs `challenge` with `SK_a` and combines the result with `sig_f` to obtain `sig_agg`&#x20;
+  * Takes the SHA3-256 hash of `sig_agg` to obtain  AES256 key `R_recovery`&#x20;
+  * Retrieves the encrypted `AccessFile` from `/recovery/{sha3_256(R_recovery)}`&#x20;
+  * Decrypts `AccessFile` with `R_recovery`&#x20;
   * Uses `R_root` from the decrypted `AccessFile` to decrypt her `/private` filesystem
 
 ![](../.gitbook/assets/screenshot-from-2021-01-08-15-22-23.png)
 
 ### Fission Backup
 
-Fission can also offer to store a backup key for the user's account in a secure location. 
+Fission can also offer to store a backup key for the user's account in a secure location.&#x20;
 
-There is a trade-off here: **security/privacy** for **ease of use**. A user can guarantee that they won't be locked out of their account and can log into new accounts without going through the device linking process. But they will rely on Fission to keep their key safe, and Fission would have the technical capability to view their filesystem \(although their filesystem will remain encrypted at rest, and this would, of course, go against our principles\). The security/privacy deficit of this would still be less than a traditional Web 2.0 architecture. 
+There is a trade-off here: **security/privacy** for **ease of use**. A user can guarantee that they won't be locked out of their account and can log into new accounts without going through the device linking process. But they will rely on Fission to keep their key safe, and Fission would have the technical capability to view their filesystem (although their filesystem will remain encrypted at rest, and this would, of course, go against our principles). The security/privacy deficit of this would still be less than a traditional Web 2.0 architecture.&#x20;
 
 In this case, a user's backup key would be stored in a Hardware Security Module.
 
@@ -130,9 +130,9 @@ In this case, a user's backup key would be stored in a Hardware Security Module.
   * Generates a new key pair `(SK_f, PK_f)` and related DID `did:key:zFissionRecovery` and stores it in an HSM
   * Sends `PK_f` to Alice
 * Alice
-  * Creates a full permission UCAN `UCAN_Fission_Recovery` for `PK_f` 
+  * Creates a full permission UCAN `UCAN_Fission_Recovery` for `PK_f`&#x20;
   * Sends `UCAN_Fission_Recovery` to the server
-  * Uses key exchange to securely send the root AES key \(`R_root`\) to the server
+  * Uses key exchange to securely send the root AES key (`R_root`) to the server
 * The server
   * Stores `UCAN_Fission_Recovery` in the DB
   * Securely store `R_root` in the HSM
@@ -140,14 +140,14 @@ In this case, a user's backup key would be stored in a Hardware Security Module.
 #### Recovery
 
 * Alice
-  * Creates a new key pair `(SK_a, PK_a)` and related DID `did:key:zAliceNew` 
+  * Creates a new key pair `(SK_a, PK_a)` and related DID `did:key:zAliceNew`&#x20;
   * Sends `PK_a` to the server
 * The server
-  * Creates a full permission UCAN `UCAN_Alice_New` for `PK_a` using `SK_f` and extending `UCAN_Fission_Recovery` 
+  * Creates a full permission UCAN `UCAN_Alice_New` for `PK_a` using `SK_f` and extending `UCAN_Fission_Recovery`&#x20;
   * Sends `UCAN_Alice_New` to Alice
-  * Uses key exchange to securely send the root AEES key \(`R_root`\) to Alice
+  * Uses key exchange to securely send the root AEES key (`R_root`) to Alice
 * Alice
-  * Unlocks her private filesystem with `R_root` 
+  * Unlocks her private filesystem with `R_root`&#x20;
   * Stores `UCAN_Alice_New` in her filesystem
 
 ## Account Reconstruction
@@ -156,5 +156,4 @@ In the event that a user is locked out of all of their devices and loses all of 
 
 To reconstruct an account, a user generates a completely new root AES key for their filesystem, and a new base key pair and related DID for their account. Fission sets their DID at `_did.${username}.fission.name}` to the newly generated DID.
 
-The user then backs up their existing file system \(in case that they do find the necessary recovery codes\), creates a new `/private` branch of the filesystem \(encrypted with the newly created root AES key\), and updates `_dataroot.${username}.fission.name` to the root of this new filesystem.
-
+The user then backs up their existing file system (in case that they do find the necessary recovery codes), creates a new `/private` branch of the filesystem (encrypted with the newly created root AES key), and updates `_dataroot.${username}.fission.name` to the root of this new filesystem.

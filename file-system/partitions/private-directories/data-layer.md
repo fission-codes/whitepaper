@@ -6,7 +6,7 @@ This section describes how the `/private` partition would look to an **unauthori
 
 ## Encryption
 
-This layer is completely agnostic about file contents. By default, encryption is done via 256-bit AES-GCM \(e.g. via the [WebCrypto API](https://www.w3.org/TR/WebCryptoAPI/)\) but in principle can be done with any cipher \(e.g. [AES-SIV-GCM, XChaCha20-Poly1305](https://soatok.blog/2020/07/12/comparison-of-symmetric-encryption-methods/)\). Everything described below is compatible with any symmetric cipher.
+This layer is completely agnostic about file contents. By default, encryption is done via 256-bit AES-GCM (e.g. via the [WebCrypto API](https://www.w3.org/TR/WebCryptoAPI/)) but in principle can be done with any cipher (e.g. [AES-SIV-GCM, XChaCha20-Poly1305](https://soatok.blog/2020/07/12/comparison-of-symmetric-encryption-methods/)). Everything described below is compatible with any symmetric cipher.
 
 {% hint style="info" %}
 To see more about what is found _inside_ an SNode when unencrypted, please see the Private File Layer section.
@@ -18,7 +18,7 @@ Unlike the public file system DAG, the private file system is stored as a tree. 
 
 With a sufficiently compact encoding, this may be reasonable to sync the private index up to 1M namefilters. Some back of the envelope math:
 
-```text
+```
 1,024 CIDs * (35 bytes / CID) + 128 byte bitmask
 35,968 bytes
 ~36KB/index
@@ -102,9 +102,9 @@ message SecNode {
 
 ## Unique Nonces
 
-To avoid nonce collisions on large files broken into many chunks \(e.g. a stream of AES-GCM encrypted files\), we use a  nonce based on a random seed. The exact source of randomness does not matter, just the more random the better
+To avoid nonce collisions on large files broken into many chunks (e.g. a stream of AES-GCM encrypted files), we use a  nonce based on a random seed. The exact source of randomness does not matter, just the more random the better
 
- While different browsers use different generators, `crypto.getRandomValues` is required to contain a [CSPRNG](https://en.wikipedia.org/wiki/Cryptographically-secure_pseudorandom_number_generator), which should be good for up to around 4 billion \(2^32\) x 12-byte nonces \(2^96\) without encountering the birthday paradox. More or larger nonces will need to use a specialized large CSPRNG and/or include a monotonic counter to avoid collisions.
+&#x20;While different browsers use different generators, `crypto.getRandomValues` is required to contain a [CSPRNG](https://en.wikipedia.org/wiki/Cryptographically-secure\_pseudorandom\_number\_generator), which should be good for up to around 4 billion (2^32) x 12-byte nonces (2^96) without encountering the birthday paradox. More or larger nonces will need to use a specialized large CSPRNG and/or include a monotonic counter to avoid collisions.
 
 For example, with a 12-byte nonce:
 
@@ -116,19 +116,19 @@ crypto.getRandomValues(rands)
 
 ## Concurrency
 
-This is NOT a concurrent tree. All updates to this structure are batched through the linearized STM mechanism \(described in its own section\). Being an append-only data structure, merging is very straightforward: place the new names in their appropriate positions in the tree. This cannot be done in true parallel at this layer, since race conditions may occur that drop values from lower nodes.
+This is NOT a concurrent tree. All updates to this structure are batched through the linearized STM mechanism (described in its own section). Being an append-only data structure, merging is very straightforward: place the new names in their appropriate positions in the tree. This cannot be done in true parallel at this layer, since race conditions may occur that drop values from lower nodes.
 
-> Last, let's consider the case where it is truly ambiguous what order to apply changes using the same example but with different visibility \[...\] Here, we have no "right" answer. Alice and Bob both have made changes without the other's knowledge and now as they synchronize data we have to decide what to do. Importantly, there isn't a _right_ answer here. Different systems resolve this in different ways.
+> Last, let's consider the case where it is truly ambiguous what order to apply changes using the same example but with different visibility \[...] Here, we have no "right" answer. Alice and Bob both have made changes without the other's knowledge and now as they synchronize data we have to decide what to do. Importantly, there isn't a _right_ answer here. Different systems resolve this in different ways.
 >
-> ~[ Hypermerge's Architecture Documentation](https://github.com/automerge/hypermerge/blob/master/ARCHITECTURE.md)
+> \~[ Hypermerge's Architecture Documentation](https://github.com/automerge/hypermerge/blob/master/ARCHITECTURE.md)
 
 #### Multivalues-else-LWW
 
-In the case of namespace conflicts, store both leaves. In absence of other selection criteria \(such as hard-coded choice\), pick the highest \(in binary\) CID. In other words, pick the longest causal chain, and deterministically select an arbitrary element when the event numbers overlap. This is a variant of multivalues, with nondestructive last-writer-wins \(LWW\) semantics in the case of a longest chain.
+In the case of namespace conflicts, store both leaves. In absence of other selection criteria (such as hard-coded choice), pick the highest (in binary) CID. In other words, pick the longest causal chain, and deterministically select an arbitrary element when the event numbers overlap. This is a variant of multivalues, with nondestructive last-writer-wins (LWW) semantics in the case of a longest chain.
 
 ![Multivalue example, https://bartoszsypytkowski.com/operation-based-crdts-registers-and-sets/](../../../.gitbook/assets/multi-value-register-timeline.png)
 
-By default, WNFS automatically picks the the highest revision, or in the case of multiple values at a single version, the highest namefilter number. Here is one such example, where the algorithm would automatically chose `QmbX21...` as the default variant. The user can override this choice by pointing at `Qmr18U...` from the parent directory, or directly in the link. This is related to [preferred edges in a link/cut tree](https://en.wikipedia.org/wiki/Link/cut_tree#Preferred_paths).
+By default, WNFS automatically picks the the highest revision, or in the case of multiple values at a single version, the highest namefilter number. Here is one such example, where the algorithm would automatically chose `QmbX21...` as the default variant. The user can override this choice by pointing at `Qmr18U...` from the parent directory, or directly in the link. This is related to [preferred edges in a link/cut tree](https://en.wikipedia.org/wiki/Link/cut\_tree#Preferred\_paths).
 
 ![](../../../.gitbook/assets/screen-shot-2021-06-02-at-20.04.00.png)
 
@@ -136,14 +136,14 @@ By default, WNFS automatically picks the the highest revision, or in the case of
 
 Any observer may perform a merge to produce a valid WNFS structure. If an agent with read/write access performs such a merge, it is strongly recommended to do the following:
 
-1. Lazily root new nodes \(see "Lazy Progress" below\)
+1. Lazily root new nodes (see "Lazy Progress" below)
 2. Merge conflict branches, either merge the contents semantically, or simply select a preferred winner, and writing that as a new revision
 
-## Secret VNode \(SNode\) Content
+## Secret VNode (SNode) Content
 
 An SNode that has been secured in this way is called a ”secure virtual node”. The contents of these nodes is largely the same as their plaintext counterparts, plus a key table for their children.
 
-The core difference is the encrypted storage \(protocol layer\), and secrecy of the key used to start the decryption process. The key is always external to the SNode, and its not aware of which key was used to create it. Here at the protocol layer, we are not directly concerned with the contents.
+The core difference is the encrypted storage (protocol layer), and secrecy of the key used to start the decryption process. The key is always external to the SNode, and its not aware of which key was used to create it. Here at the protocol layer, we are not directly concerned with the contents.
 
 ```haskell
 data McBranch
@@ -166,8 +166,8 @@ Since the ratchets and namefilters are deterministic, we can look up a version i
 If you have a pointer to a particular file, there is no way of knowing that you have been linked to the latest version of a node. The information that you do have includes everything that you need to construct a name filter.
 
 * The current node’s identity nonce
-* The ratchet of the current node \(stored in the node\)
-* This parent's bare name filter \(stored in the node\)
+* The ratchet of the current node (stored in the node)
+* This parent's bare name filter (stored in the node)
 
 The user must always ”look ahead” to see if there have been updates to the file since they last looked. The three most common scenarios are that:
 
@@ -179,13 +179,13 @@ The user must always ”look ahead” to see if there have been updates to the f
 
 #### Simplified
 
-To balance these scenarios, we progressively check for files at revision `r + 2^n` , where `r` is the current revision, and `n` is the search index. First we check the next revision. If it does not exist, we know that we have the latest version. If it does exist, check `r + 2`, then `r+4`, `r+8` and so on. Once there’s a missing version, perform a binary search. For example, if looking at a node at revision 42 that has been updated 123 times since your last recorded pointer, it takes 14 checks \(roughly `O(2 log n)`\) to find the latest revision.
+To balance these scenarios, we progressively check for files at revision `r + 2^n` , where `r` is the current revision, and `n` is the search index. First we check the next revision. If it does not exist, we know that we have the latest version. If it does exist, check `r + 2`, then `r+4`, `r+8` and so on. Once there’s a missing version, perform a binary search. For example, if looking at a node at revision 42 that has been updated 123 times since your last recorded pointer, it takes 14 checks (roughly `O(2 log n)`) to find the latest revision.
 
-![](../../../.gitbook/assets/screen-shot-2021-06-03-at-23.46.07%20%281%29.png)
+![](<../../../.gitbook/assets/screen-shot-2021-06-03-at-23.46.07 (1).png>)
 
 #### Search Attack Resistance
 
-A fully deterministic lookup mechanism is open to an attack where the malicious user only writes nodes that are known to be on the lookup path, forcing a linear lookup time against a large number of nodes. To work around this, we add noise to the lookup values while looking performing large jumps: 
+A fully deterministic lookup mechanism is open to an attack where the malicious user only writes nodes that are known to be on the lookup path, forcing a linear lookup time against a large number of nodes. To work around this, we add noise to the lookup values while looking performing large jumps:&#x20;
 
 ```haskell
 -- Pseudocode
@@ -227,15 +227,15 @@ fastFoward rachet store = findUpperBound 0 0
 
 ## Lazy Progress
 
-Anyone that can update a pointer can make permanent revision progress for themselves \(in `localStorage` or as a symlink in their FS\), or others if they have write access to this file system.
+Anyone that can update a pointer can make permanent revision progress for themselves (in `localStorage` or as a symlink in their FS), or others if they have write access to this file system.
 
-As the user traverses the private section \(down the Y-axis, across the X-axis\), they attempt to make progress in time \(forwards in the Z-axis\). If they find a node that’s ahead of a link, it updates that one link in memory. At the end of their search in 3-dimensions \(with potentially multiple updates\), they write the new paths to WNFS.
+As the user traverses the private section (down the Y-axis, across the X-axis), they attempt to make progress in time (forwards in the Z-axis). If they find a node that’s ahead of a link, it updates that one link in memory. At the end of their search in 3-dimensions (with potentially multiple updates), they write the new paths to WNFS.
 
 Note that they only need to do this with the paths that they actually follow! Progress in revision history does not need to be in lock step, and will converge over time.
 
 Not all users with write access have the ability to write to the entire DAG. Writing to a subgraph is actually completely fine. Each traversal down a path will reach the most recently written node. The search space for that node is always smaller than its previous revisions, and can be further updated with other links or newer child nodes.
 
-This contributes back collaboratively to the overall performance of the system for all users. If a malicious user writes a bad node, they can be overwritten with a newer revision by a user with equal or higher privileges. Nothing is ever lost in WNFS, so reconstructing all links in a file system from scratch is _possible_ \(though compute intensive\).
+This contributes back collaboratively to the overall performance of the system for all users. If a malicious user writes a bad node, they can be overwritten with a newer revision by a user with equal or higher privileges. Nothing is ever lost in WNFS, so reconstructing all links in a file system from scratch is _possible _(though compute intensive).
 
 ![Partial Rooting](../../../.gitbook/assets/screen-shot-2021-06-09-at-21.45.41.png)
 
@@ -244,4 +244,3 @@ This contributes back collaboratively to the overall performance of the system f
 ## Name Graveyard
 
 The graveyard is a RECOMMENDED safeguard against writing to a file that will no longer be followed. It is a prefix tree containing hashes of all file descriptors that have been retired. McTrie merges must include all files even if they fail this check; it is only here as a convenience to prevent agents with imperfect knowledge to be aware that a particular path is no longer followed.
-

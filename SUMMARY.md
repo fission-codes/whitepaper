@@ -64,6 +64,7 @@
       * [Spiral Ratchet](file-system/partitions/private-directories/concepts/spiral-ratchet.md)
       * [I-Number](file-system/partitions/private-directories/concepts/i-number.md)
       * [Namefilter](file-system/partitions/private-directories/concepts/namefilter.md)
+      * [Cipher Chunking](file-system/partitions/private-directories/concepts/cipher-chunking.md)
     * [Data Layer](file-system/partitions/private-directories/data-layer.md)
     * [File Layer](file-system/partitions/private-directories/platform-layer.md)
     * [Append](file-system/partitions/private-directories/append.md)
@@ -95,4 +96,3 @@
 ## Dynamic FaaS
 
 * [Distributed & Edge FaaS](dynamic-faas/distributed-functions-as-a-service.md)
-

@@ -1,9 +1,9 @@
 # Concepts
 
-> 1. The world is everything that is the case  
-> \[...\]  
-> 1.13 The facts in logical space are the world  
->   
+> 1\. The world is everything that is the case\
+> \[...]\
+> 1.13 The facts in logical space are the world\
+> \
 > — Wittgnstein, Tractatus Logico-Philosophicus
 
 ## Authorization Space
@@ -12,11 +12,11 @@ Content itself doesn’t have an implicit owner. Instead, let’s consider the s
 
 This authorization space includes all possible resources that can be addressed. In fact, UCANs themselves are entities that live in the authorization space, as well as their contents.
 
-Judgements about the authorization space are [constructive](https://en.wikipedia.org/wiki/Intuitionistic_logic). While it’s technically possible to express concepts like negation, we generally limit ourselves to making true statements and present positive facts.
+Judgements about the authorization space are [constructive](https://en.wikipedia.org/wiki/Intuitionistic\_logic). While it’s technically possible to express concepts like negation, we generally limit ourselves to making true statements and present positive facts.
 
 ## Resource
 
-A resource is a pointer \(e.g. URI, CID, address\) that represents a thing to be acted on. Examples include:
+A resource is a pointer (e.g. URI, CID, address) that represents a thing to be acted on. Examples include:
 
 * DNSLinks
 * Email address
@@ -32,7 +32,7 @@ User-controlled data is a 90° rotation of the above picture. Users are in contr
 
 What if you're writing a collaborative application, and it needs access across user stores? Not a problem: users can grant access to their stores, and the caller can glue these rights together.
 
-![](../../.gitbook/assets/screen-shot-2021-05-05-at-8.16.49-pm%20%281%29.png)
+![](<../../.gitbook/assets/screen-shot-2021-05-05-at-8.16.49-pm (1).png>)
 
 ## Potency
 
@@ -44,13 +44,13 @@ The potency are the rights on some resource. Each potency type has its own eleme
 
 An authorization scope is the tuple `resource x potency`. Scopes compose, so a list of scopes can be considered the union of all of the inner scopes.
 
-![Union of two scopes](../../.gitbook/assets/img_0180.jpeg)
+![Union of two scopes](../../.gitbook/assets/img\_0180.jpeg)
 
 You can think of this as ”scoping” the total rights of the authorization space down to the relevant volume of authorizations.
 
-Inside this content space, can draw a boundary around some resource\(s\) \(their type, identifiers, and paths or children\), and their capabilities \(potencies\).
+Inside this content space, can draw a boundary around some resource(s) (their type, identifiers, and paths or children), and their capabilities (potencies).
 
-As a practical matter, since scopes form a group, you can be fairly loose: order doesn’t matter, and merging resources can be quite broad since the more powerful of any overlap will take precedence \(i.e. you don’t need a clean separation\).
+As a practical matter, since scopes form a group, you can be fairly loose: order doesn’t matter, and merging resources can be quite broad since the more powerful of any overlap will take precedence (i.e. you don’t need a clean separation).
 
 ### Rights Amplification
 
@@ -72,7 +72,7 @@ Logical or self-evident facts are a related form of proof. A statement of fact m
 
 As a simple example:
 
-```text
+```
 SHA3_256(”hello world”) = 0xa948904f2f0f479b8f8197694b30184b0d2ed1c1cd2a1ec0fb85d299a192a447
 ```
 
@@ -80,13 +80,13 @@ Perhaps non-intuitively, signing a challenge string also constitutes a fact: tha
 
 ## Delegation
 
-UCANs allow agents to delegate some \(or all\) of their rights to other agents — i.e. to act on their behalf. These form chains going all the way back to the resource originator/owner. Delegation \(output\) is _always_ a subset of the proofs \(inputs\).
+UCANs allow agents to delegate some (or all) of their rights to other agents — i.e. to act on their behalf. These form chains going all the way back to the resource originator/owner. Delegation (output) is _always_ a subset of the proofs (inputs).
 
-As mentioned earlier, scopes can be merged \(set union\). If merging the inputs \(proofs\), the output scope is a subset of the proof union. While this relationship commutes, it needs to be emphasized that if _any_ proof of a certain input scope is given, it may be included in the output authorization scope.
+As mentioned earlier, scopes can be merged (set union). If merging the inputs (proofs), the output scope is a subset of the proof union. While this relationship commutes, it needs to be emphasized that if _any_ proof of a certain input scope is given, it may be included in the output authorization scope.
 
 ### Example
 
-Meet Alice. She owns a number of resources \(the items in the box\).
+Meet Alice. She owns a number of resources (the items in the box).
 
 ![](../../.gitbook/assets/screen-shot-2021-08-30-at-18.16.05.png)
 
@@ -94,7 +94,7 @@ She wants to share all of them with Bob. She creates a UCAN that delegates right
 
 ![](../../.gitbook/assets/screen-shot-2021-08-30-at-18.18.53.png)
 
-Bob then want to also use this acces on his phone. He sometimes lets his neice \(Carol\) use his phone, so he doesn't want the phone to be able to access _everything_, so he scopes it down to just three capabilities and delegates to the public key on his phone.
+Bob then want to also use this acces on his phone. He sometimes lets his neice (Carol) use his phone, so he doesn't want the phone to be able to access _everything_, so he scopes it down to just three capabilities and delegates to the public key on his phone.
 
 Carol finds that she finds one of the capabilities very useful and asks if she can have access to it herself. Bob delegates just that one resource to Carol from his phone.
 
@@ -113,4 +113,3 @@ Finally, David's cloud service determines that his granddaughter, Evelyn, should
 There is no way to provide a proof that negates another _inside_ a UCAN. UCANs can be negated at the whole-UCAN level only. Please see the relevant section for more.
 
 ![](../../.gitbook/assets/screen-shot-2021-08-30-at-18.28.02.png)
-

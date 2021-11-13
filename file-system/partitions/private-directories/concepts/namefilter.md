@@ -1,6 +1,6 @@
 # Namefilter
 
-At the data layer, each secret node \(SNode\) is placed in a table and named with a namefilter. This is a [generalized combinatoric accumulator](https://www.jstage.jst.go.jp/article/transinf/E91.D/5/E91.D_5_1489/_pdf/-char/en) \(GCA\), which is tunable version of a [Nyberg's hash accumulator](https://link.springer.com/content/pdf/10.1007%2F3-540-60865-6_45.pdf) \(which in turn is a [Bloom filter](https://en.wikipedia.org/wiki/Bloom_filter)\).
+At the data layer, each secret node (SNode) is placed in a table and named with a namefilter. This is a [generalized combinatoric accumulator](https://www.jstage.jst.go.jp/article/transinf/E91.D/5/E91.D\_5\_1489/\_pdf/-char/en) (GCA), which is tunable version of a [Nyberg's hash accumulator](https://link.springer.com/content/pdf/10.1007%2F3-540-60865-6\_45.pdf) (which in turn is a [Bloom filter](https://en.wikipedia.org/wiki/Bloom\_filter)).
 
 ## Private Pathing
 
@@ -8,10 +8,10 @@ Much of this is covered elsewhere, but it is helpful for discussing why the name
 
 Namefilters are used as private paths. Instead of human-readable names, WNFS uses randomly-generated inumbers. A namefilter is thus a set of the randomly-generated inumbers on this path. The inumbers are nonces — they have no intrinsic meaning other than to provide a unique identity for a single file over time. They are not rotated on update.
 
-The set-like property of forgetting the order is important: it should be very hard \(read: impossible except edge cases\) to infer the hierarchical relationship between any two nodes.
+The set-like property of forgetting the order is important: it should be very hard (read: impossible except edge cases) to infer the hierarchical relationship between any two nodes.
 
 {% hint style="warning" %}
-Namefilters are _not_ a content address. They are based on the inumbers used to construct that path. This is important for validating if a namefilter is allowed to be constructed \(via UCAN, see below\).
+Namefilters are_ not_ a content address. They are based on the inumbers used to construct that path. This is important for validating if a namefilter is allowed to be constructed (via UCAN, see below).
 {% endhint %}
 
 ## Parameters
@@ -21,16 +21,16 @@ Namefilters are 2048-bit Bloom filters. These hold 47 path segments, and achieve
 ![](../../../../.gitbook/assets/screen-shot-2021-08-30-at-09.02.52.png)
 
 {% hint style="info" %}
-If later required, doubling `n` and `m` leaves `ε` and `k` constant. See [here for pretty graphs](https://hur.st/bloomfilter/?n=47&p=&m=2048&k=30) \(useful for parameter tuning, verified manually\).
+If later required, doubling `n` and `m` leaves `ε` and `k` constant. See [here for pretty graphs](https://hur.st/bloomfilter/?n=47\&p=\&m=2048\&k=30) (useful for parameter tuning, verified manually).
 {% endhint %}
 
 ### Hash Function
 
-Many Bloom filter implementations are optimized for speed, not consistency. We have chosen the [XXH32](https://cyan4973.github.io/xxHash/) \(i.e. 32-bit\) algorithm. It is about as fast as XXH64 for 256-bit \(i.e. small\) data.
+Many Bloom filter implementations are optimized for speed, not consistency. We have chosen the [XXH32](https://cyan4973.github.io/xxHash/) (i.e. 32-bit) algorithm. It is about as fast as XXH64 for 256-bit (i.e. small) data.
 
-XXH32 is very portable. It can be implemented within JavaScript's number system \(at time of writing, ES2021 and earlier\). It also can be natively implemented on any 32-bit machine, or on common 64-bit machines with a 32-bit compatability mode, such as [AMD64](https://www.amd.com/system/files/TechDocs/24594.pdf).
+XXH32 is very portable. It can be implemented within JavaScript's number system (at time of writing, ES2021 and earlier). It also can be natively implemented on any 32-bit machine, or on common 64-bit machines with a 32-bit compatability mode, such as [AMD64](https://www.amd.com/system/files/TechDocs/24594.pdf).
 
-However, for every element inserted into the Bloom filters we need `k = 30` different hash functions. We get these from the first two XXH32 invocations with seeds 0 and 1 and the [enhanced double hashing scheme](https://www.ccs.neu.edu/home/pete/pub/bloom-filters-verification.pdf) \(§5.2, Algorithm 2\) to generate more hash functions from the first two. In our case the enhanced double hashing scheme operates on 32-bit unsigned integer arithmetic. The resulting hashes are taken modulo `m = 2048` to convert these hashes into an index in the accumulator.
+However, for every element inserted into the Bloom filters we need `k = 30` different hash functions. We get these from the first two XXH32 invocations with seeds 0 and 1 and the [enhanced double hashing scheme](https://www.ccs.neu.edu/home/pete/pub/bloom-filters-verification.pdf) (§5.2, Algorithm 2) to generate more hash functions from the first two. In our case the enhanced double hashing scheme operates on 32-bit unsigned integer arithmetic. The resulting hashes are taken modulo `m = 2048` to convert these hashes into an index in the accumulator.
 
 ```typescript
 function* indicesFor(element: Uint8Array) {
@@ -53,9 +53,9 @@ function* indicesFor(element: Uint8Array) {
 
 ### Max Popcount / Hamming Saturation
 
-It is not possible to know an accurate count of the number of elements in a Bloom filter by simply looking it at. This is both a blessing \(obfuscation\) and a curse \(convenience\). We cannot rely on having exactly `n` elements in a filter when inserting more elements into an existing filter.
+It is not possible to know an accurate count of the number of elements in a Bloom filter by simply looking it at. This is both a blessing (obfuscation) and a curse (convenience). We cannot rely on having exactly `n` elements in a filter when inserting more elements into an existing filter.
 
-Bloom filters admit \(roughly\) how many elements they contain, and are relatively easy to correlate by their Hamming distance. To work around this issue with obfuscation, namefilters deterministically saturate the remaining space, filling just under _half_ of the available filter, while maintaining a very low false positive rate. The idea is to fill the namefilter with a constant Hamming weight, but still be easily constructible by someone with the bare namefilter.
+Bloom filters admit (roughly) how many elements they contain, and are relatively easy to correlate by their Hamming distance. To work around this issue with obfuscation, namefilters deterministically saturate the remaining space, filling just under _half_ of the available filter, while maintaining a very low false positive rate. The idea is to fill the namefilter with a constant Hamming weight, but still be easily constructible by someone with the bare namefilter.
 
 To satisfy these constraints, we have chosen a target saturation of 1019, with some tolerances. 1019 is chosen as it represents the 47 elements, yielding the lower bound false positive rate.
 
@@ -81,11 +81,11 @@ To preserve the cryptree property, key rotation requires access to the parent. A
 
 ## Private Versioning
 
-WNFS is a persistent, versioned file system. Including the version is essential for many parts of the system \(seen throughout the rest of this section\). In principle this can be any counter, including simple natural numbers, depending on the design goals of the broader system.
+WNFS is a persistent, versioned file system. Including the version is essential for many parts of the system (seen throughout the rest of this section). In principle this can be any counter, including simple natural numbers, depending on the design goals of the broader system.
 
 WNFS uses a backward-secret spiral ratchet for versioning, which is described in its own section. This ratchet is hashed and added to the bare namefilter.
 
-### Algorithm \(in Pseudocode\)
+### Algorithm (in Pseudocode)
 
 ```typescript
 const max: number = 1019
@@ -117,7 +117,7 @@ In this way, we can deterministically generate very different looking filters fo
 
 ## Design Considerations
 
-GCAs were chosen over other [arguably more sophisticated](https://www.fim.uni-passau.de/fileadmin/dokumente/fakultaeten/fim/forschung/mip-berichte/MIP_1210.pdf) options for three main reasons: witness side, raw performance, and ease of implementation for web browsers. For example, we were unable to find a widely-used RSA accumulator library on NPM or Crates, but implementing a GCA is very straightforward.
+GCAs were chosen over other [arguably more sophisticated](https://www.fim.uni-passau.de/fileadmin/dokumente/fakultaeten/fim/forschung/mip-berichte/MIP\_1210.pdf) options for three main reasons: witness side, raw performance, and ease of implementation for web browsers. For example, we were unable to find a widely-used RSA accumulator library on NPM or Crates, but implementing a GCA is very straightforward.
 
 Due to distinguishability, GCAs potentially leak some information about related, deeply-nested sibling nodes as the Hamming approaches zero. Our namefilter GCAs have a cardinality of 47 by default, which is much deeper than most file paths.
 
@@ -127,23 +127,22 @@ We considered using XOR or Cuckoo filters instead of class Bloom filters. XOR is
 
 Because it's important to show your work™️
 
-### False Positive Probability \(FPP\)
+### False Positive Probability (FPP)
 
 ![](../../../../.gitbook/assets/screen-shot-2021-08-30-at-09.27.45.png)
 
-### Optimal Number of Hash Functions \(k\)
+### Optimal Number of Hash Functions (k)
 
 ![](../../../../.gitbook/assets/screen-shot-2021-08-26-at-20.19.38.png)
 
-### Optimal Number of Elements \(n\) for Hash Count
+### Optimal Number of Elements (n) for Hash Count
 
 Just rearranged from calculating `k`
 
 ![](../../../../.gitbook/assets/screen-shot-2021-08-26-at-20.19.35.png)
 
-### Optimal Popcount \(X\)
+### Optimal Popcount (X)
 
-This is the formula to estimate the number of elements in a given Bloom filter \([source](https://en.wikipedia.org/wiki/Bloom_filter#Approximating_the_number_of_items_in_a_Bloom_filter)\)
+This is the formula to estimate the number of elements in a given Bloom filter ([source](https://en.wikipedia.org/wiki/Bloom\_filter#Approximating\_the\_number\_of\_items\_in\_a\_Bloom\_filter))
 
 ![](../../../../.gitbook/assets/screen-shot-2021-08-30-at-09.46.00.png)
-
