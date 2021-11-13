@@ -1,8 +1,8 @@
 ---
 description: >-
-  Text and images on this page are adapted from
-  https://github.com/qri-io/wnfs-go/blob/master/doc/cipherchunk.md#05-security-concerns.
-  They were contributed by Brendan O'Brien (@b5), and modified by @ex
+  Content on this page was adapted from
+  https://github.com/qri-io/wnfs-go/blob/master/doc/cipherchunk.md. It was
+  contributed by Brendan O'Brien (@b5), and modified by @expede
 ---
 
 # Cipher Chunking
