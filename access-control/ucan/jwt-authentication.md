@@ -239,11 +239,11 @@ This value depends on the resource type. A resource identifier is a canonical re
 
 These values may also include the wildcard (`*`). This means ”any resource of this type”, even if not yet created, bounded by proofs. These are generally used for account linking. Wildcards are not required to delegate longer paths, as paths are generally taken as `OR` filters.
 
-| Resource Value                 | Meaning                                                      |
-| ------------------------------ | ------------------------------------------------------------ |
-| `"*"`                          | Delegate all resources of any type that are in scope         |
-| `{"wnfs": "/file/path/"}`      | File paths in our file system                                |
-| `{"app": "*"}`                 | All apps that the `iss` has access to, including future ones |
-| `{"app": "myapp.fission.app"}` | A URL for the app (ideally the auto-assigned one)            |
-| `{"domain": "*"}`              | All domain names that a user has imported or bought          |
-| `{"domain": "somedomain.com"}` | A domain name that a user has imported or bought             |
+| Resource Value                                | Meaning                                                      |
+| --------------------------------------------- | ------------------------------------------------------------ |
+| `"*"`                                         | Delegate all resources of any type that are in scope         |
+| `{"wnfs": "username.example.com/file/path/"}` | File paths in our file system                                |
+| `{"app": "*"}`                                | All apps that the `iss` has access to, including future ones |
+| `{"app": "myapp.fission.app"}`                | A URL for the app (ideally the auto-assigned one)            |
+| `{"domain": "*"}`                             | All domain names that a user has imported or bought          |
+| `{"domain": "somedomain.com"}`                | A domain name that a user has imported or bought             |

@@ -99,7 +99,7 @@ This step MUST NOT delegate any rights (`att = []`), but MUST include the entire
 The AES256-GCM session key MUST be included in the "facts" (`fct`) field. Since UCANs are signed, this is used to assert that the session key came directly from the authorized user.
 
 {% hint style="warning" %}
-This will tell us that the sender intended that key for us, and no others. It is predicated on the assumption that the **provider never reuses that key** in any other channel.
+The UCAN audience tells us that the sender intended that key for us, and no others. It is predicated on the assumption that the **provider never reuses that key** in any other channel.
 {% endhint %}
 
 In short, this step proves provides two things:
@@ -109,7 +109,7 @@ In short, this step proves provides two things:
 
 #### Example
 
-💻 responds by broadcasting a "closed" UCAN on channel `did:key:zALICE`, encrypted with the session key. The embedded UCAN is proof that the sender does, in fact, have permissions for the account, but it does not delegate anything yet. The facts section (`fct`) includes the same session key that is used to encrypt the data on this channel.
+💻 responds by broadcasting a "closed" UCAN on channel `did:key:zALICE`, encrypted with the RSA public key associated with \``` did:key:zTHROWAWAY` ``. The embedded UCAN is proof that the sender does, in fact, have permissions for the account, but it does not delegate anything yet. The facts section (`fct`) includes the same session key that is used to encrypt the data on this channel.
 
 ```javascript
 // A UCAN with sent to the THROWAWAY address with *no delegation*

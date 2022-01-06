@@ -16,6 +16,7 @@
 * PACELC — PA/EL
 * Infinite latency
 * Tradeoffs — e.g. not good for financial transactions
+*
 
 ## WIP Select Resources
 
