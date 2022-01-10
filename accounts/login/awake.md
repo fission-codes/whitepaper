@@ -109,7 +109,7 @@ In short, this step proves provides two things:
 
 #### Example
 
-💻 responds by broadcasting a "closed" UCAN on channel `did:key:zALICE`, encrypted with the RSA public key associated with `did:key:zTHROWAWAY`. The embedded UCAN is proof that the sender does, in fact, have permissions for the account, but it does not delegate anything yet. The facts section (`fct`) includes the same session key that is used to encrypt the data on this channel.
+💻 responds by broadcasting a "closed" UCAN on channel `did:key:zALICE`, encrypted with the session key. The embedded UCAN is proof that the sender does, in fact, have permissions for the account, but it does not delegate anything yet. The facts section (`fct`) includes the same session key that is used to encrypt the data on this channel.
 
 ```javascript
 // A UCAN with sent to the THROWAWAY address with *no delegation*
