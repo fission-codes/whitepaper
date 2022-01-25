@@ -151,6 +151,8 @@ Steps 1-3 establish a connection with _a requesting machine_, but not necessaril
 
 The requestor displays a challenge (PIN code) to the user. It sends the PIN and DID/signing key (encrypted with the AES key) over pubsub. The UCAN holder decrypts and displays this PIN to the user and asks them to confirm that it matches. If it matches, you are talking to the correct machine, and you have the DID to delegate to 🎉
 
+If the user declines the PIN, the UCAN token holder should send a denied message to the requestor.
+
 #### Example
 
 📱 receives the above message and extracts the sender's DID (and thus PK). It then [verifies](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/verify) that the sender's PK is in the list of exchange keys found in DNS for the target username.
