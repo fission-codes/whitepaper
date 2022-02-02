@@ -1,6 +1,6 @@
 # Contributors
 
-## ****[**Brooklyn Zelenka**](https://github.com/expede/)**, **[**Fission**](https://fission.codes)****
+## ****[**Brooklyn Zelenka**](https://github.com/expede/)**,** [**Fission**](https://fission.codes)****
 
 ## [Daniel Holmgren](https://github.com/dholms), [Fission](https://fission.codes)
 

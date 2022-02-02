@@ -61,7 +61,7 @@ Contains information _about_ the node and its contents. This includes informatio
 The header is primarily system (SDK) managed, but may be influenced by the user (e.g. adding tags).
 
 {% hint style="info" %}
-The information stored in the header segment is _descriptive. _It is structural at the protocol layer, but not at the application layer.
+The information stored in the header segment is _descriptive._ It is structural at the protocol layer, but not at the application layer.
 {% endhint %}
 
 ### Content
@@ -69,5 +69,5 @@ The information stored in the header segment is _descriptive. _It is structural 
 The actual information storage and linking to other nodes. Links to the actual raw contents of a file. This is an internal detail, and that this is a separate segment is generally hidden from end users.
 
 {% hint style="info" %}
-The information stored in the content segment is primarily _operational. _It contains the primary semantic links that get exposed to the end user.
+The information stored in the content segment is primarily _operational._ It contains the primary semantic links that get exposed to the end user.
 {% endhint %}

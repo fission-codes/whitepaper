@@ -6,4 +6,4 @@ At the same time, development on cloud platforms has become increasingly complex
 
 To meet the technical and social needs of the 2020s and beyond, we introduce WebNative: a fast, web-scale, secure-by-default, edge framework where users own and control their identity and data. Further, code is executable on any machine and removes deployment as a separate development stage.
 
-We believe that this approach will free up developers to _focus _on shipping the interesting parts of the products and to empower designers, solo developers, and tinkerers to ship production apps on their own.
+We believe that this approach will free up developers to _focus_ on shipping the interesting parts of the products and to empower designers, solo developers, and tinkerers to ship production apps on their own.

@@ -11,7 +11,7 @@ Namefilters are used as private paths. Instead of human-readable names, WNFS use
 The set-like property of forgetting the order is important: it should be very hard (read: impossible except edge cases) to infer the hierarchical relationship between any two nodes.
 
 {% hint style="warning" %}
-Namefilters are_ not_ a content address. They are based on the inumbers used to construct that path. This is important for validating if a namefilter is allowed to be constructed (via UCAN, see below).
+Namefilters are _not_ a content address. They are based on the inumbers used to construct that path. This is important for validating if a namefilter is allowed to be constructed (via UCAN, see below).
 {% endhint %}
 
 ## Parameters

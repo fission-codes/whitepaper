@@ -1,6 +1,6 @@
 # Synchronization
 
-The Web Native File System is a functionally persistent data structure. It's an append-only structure (with some very minor caveats for 1. data owner _can _overwrite to protect user sovereignty, and 2. the private segment layout is mutable at the block layer for raw performance).
+The Web Native File System is a functionally persistent data structure. It's an append-only structure (with some very minor caveats for 1. data owner _can_ overwrite to protect user sovereignty, and 2. the private segment layout is mutable at the block layer for raw performance).
 
 In order to share the latest version of your data with others, the root CID needs to be broadcast. WNFS works offline, but even in an online setting is fundamentally a distributed system. Knowing if your local version is ahead of the broadcast tree, or vice versa, if very important to guard against data loss.
 

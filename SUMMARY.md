@@ -26,16 +26,7 @@
 
 * [Object Capability Model](access-control/cap-authz.md)
 * [Query Access](access-control/query-and-read.md)
-* [Command & Mutation](access-control/ucan/README.md)
-  * [Concepts](access-control/ucan/concepts.md)
-  * [JWT Structure](access-control/ucan/jwt-authentication.md)
-  * [Attenuation](access-control/ucan/webnative-attenuation/README.md)
-    * [Account](access-control/ucan/webnative-attenuation/account.md)
-    * [Domain Name](access-control/ucan/webnative-attenuation/domain-name.md)
-    * [File System](access-control/ucan/webnative-attenuation/file-system.md)
-    * [Web Application](access-control/ucan/webnative-attenuation/app.md)
-  * [Revocation](access-control/ucan/revocation.md)
-  * [Differences from OAuth](access-control/ucan/differences-from-oauth.md)
+* [Command & Mutation](access-control/ucan.md)
 
 ## Accounts
 
