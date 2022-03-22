@@ -2,7 +2,7 @@
 
 Fission uses UCANs for command and mutation auth. They are [JWT](https://blog.fission.codes/auth-without-backend/jwt.io)s that contain special keys. You can find their specification [here](https://github.com/ucan-wg/spec). UCAN was prioneered at Fission; as it became adopted by the wider community was spun out into a shared space with the various implementations from the organizations that have adopted it.
 
-Commands and mutations and relegated via capability endowment from the account that initially created the resource (the ”root owner”). This is a form of delegated access, where an agent (identified by DID) that has been granted certain capabilities may redelegate a subset to another agent. One of the most common tasks for apps is authorizing users to perform some action, like storing new data to storage, updating records, or fetching a file.&#x20;
+Commands and mutations are relegated via capability endowment from the account that initially created the resource (the ”root owner”). This is a form of delegated access, where an agent (identified by DID) that has been granted certain capabilities may redelegate a subset to another agent. One of the most common tasks for apps is authorizing users to perform some action, like storing new data to storage, updating records, or fetching a file.&#x20;
 
 Traditional app architecture has many users share one database ("multi-tenant"), with all user data fully interleaved with each other. Authorization here is primarily focused on keeping users from editing each other's records on this shared infrastructure. The server's rules give fairly coarse-grained control. Due to the inevitable exceptions to these rules, the logic becomes increasingly complex over time.
 
